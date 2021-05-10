@@ -1,6 +1,6 @@
-# {{project_name}}
+# Prescribing of antipsychotic during COVID-19 to specific groups with the population
 
-This is the code and configuration for {{project_name}}
+This is the code and configuration for antipsychotics-prescribing-during-COVID-19
 
 * The paper is [here]()
 * Raw model outputs, including charts, crosstabs, etc, are in `released_outputs/`

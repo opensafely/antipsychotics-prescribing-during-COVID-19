@@ -15,37 +15,89 @@ from cohortextractor import (codelist, codelist_from_csv, combine_codelists)
 
 # --- CODELISTS ---
 
-## Learning disabilities
+
+## Medication DM&D
+
+### First generation antipsychotics, excluding long acting depots
+antipsychotics_first_gen_codes = codelist_from_csv(
+  "codelists/opensafely-first-generation-antipsychotics-excluding-long-acting-depots-dmd.csv",
+  system = "snomed",
+  column = "dmd_id",
+)
+
+### Second generation antipsychotics excluding long acting injections
+antipsychotics_second_gen_codes = codelist_from_csv(
+  "codelists/opensafely-second-generation-antipsychotics-excluding-long-acting-injections.csv",
+  system = "snomed",
+  column = "dmd_id",
+)
+
+### Long acting injectable and depot antipsychotics
+antipsychotics_injectable_and_depot_codes = codelist_from_csv(
+  "codelists/opensafely-long-acting-injectable-and-depot-antipsychotics-dmd.csv",
+  system = "snomed",
+  column = "dmd_id",
+)
+
+### Prochlorperazine
+Prochlorperazine = codelist_from_csv(
+  "codelists/opensafely-prochlorperazine-dmd.csv",
+  system = "snomed",
+  column = "dmd_id",
+)
+
+
+## Groups
+
+### Learning disabilities
 learning_disability_codes = codelist_from_csv(
   "codelists/nhsd-primary-care-domain-refsets-ld_cod.csv",
   system = "snomed",
   column = "code",
 )
 
-## Autism
+### Autism
 autism_codes = codelist_from_csv(
   "codelists/nhsd-primary-care-domain-refsets-autism_cod.csv",
   system = "snomed",
   column = "code",
 )
 
-## Serious Mental Illness
+### Serious Mental Illness
 serious_mental_illness_codes = codelist_from_csv(
   "codelists/nhsd-primary-care-domain-refsets-mh_cod.csv",
   system = "snomed",
   column = "code",
 )
 
-## Care homes
+### Care homes
 carehome_primis_codes = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-longres.csv", 
-    system = "snomed", 
-    column = "code",
+  "codelists/primis-covid19-vacc-uptake-longres.csv", 
+  system = "snomed", 
+  column = "code",
 )
 
-## Dementia
+### Dementia
 dementia_codes = codelist_from_csv(
-    "codelists/nhsd-primary-care-domain-refsets-dem_cod.csv", 
-    system="snomed", 
-    column="code",
+  "codelists/nhsd-primary-care-domain-refsets-dem_cod.csv", 
+  system="snomed", 
+  column="code",
+)
+
+
+## Variables
+
+### Ethncity
+ethnicity_codes = codelist_from_csv(
+  "codelists/opensafely-ethnicity.csv",
+  system = "ctv3",
+  column = "Code",
+  category_column = "Grouping_6",
+)
+
+ethnicity_codes_16 = codelist_from_csv(
+  "codelists/opensafely-ethnicity.csv",
+  system = "ctv3",
+  column = "Code",
+  category_column = "Grouping_16",
 )

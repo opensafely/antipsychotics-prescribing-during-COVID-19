@@ -74,6 +74,49 @@ study = StudyDefinition(
   ),
   
   
+  ## Medication DM&D
+  
+  ## First generation antipsychotics, excluding long acting depots
+  antipsychotics_first_gen = patients.with_these_medications(
+    antipsychotics_first_gen_codes,
+    returning = "date",
+    date_format = "YYYY-MM-DD",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    return_expectations={"date": {"latest": start_date}},
+  ),
+  
+  ## Second generation antipsychotics excluding long acting injections
+  antipsychotics_second_gen = patients.with_these_medications(
+    antipsychotics_second_gen_codes,
+    returning = "date",
+    date_format = "YYYY-MM-DD",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    return_expectations={"date": {"latest": start_date}},
+  ),
+  
+  ## Long acting injectable and depot antipsychotics
+  antipsychotics_injectable_and_depot = patients.with_these_medications(
+    antipsychotics_injectable_and_depot_codes,
+    returning = "date",
+    date_format = "YYYY-MM-DD",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    return_expectations={"date": {"latest": start_date}},
+  ),
+  
+  ## Prochlorperazine
+  learning_disability_codes = patients.with_these_medications(
+    antipsychotics_first_gen_codes,
+    returning = "date",
+    date_format = "YYYY-MM-DD",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    return_expectations={"date": {"latest": start_date}},
+  ),
+  
+  
   ## Groups
   
   ### Learning disabilities
@@ -130,7 +173,81 @@ study = StudyDefinition(
     }
   ),
   
-  ### Ethnicity (Codelists TBC)
+  ### Ethnicity - 16 categories
+  ethnicity_16 = patients.with_these_clinical_events(
+    ethnicity_codes_16,
+    returning = "category",
+    find_last_match_in_period = True,
+    include_date_of_match = False,
+    return_expectations = {
+      "category": {
+        "ratios": {
+          "1": 0.0625,
+          "2": 0.0625,
+          "3": 0.0625,
+          "4": 0.0625,
+          "5": 0.0625,
+          "6": 0.0625,
+          "7": 0.0625,
+          "8": 0.0625,
+          "9": 0.0625,
+          "10": 0.0625,
+          "11": 0.0625,
+          "12": 0.0625,
+          "13": 0.0625,
+          "14": 0.0625,
+          "15": 0.0625,
+          "16": 0.0625,
+        }
+      },
+      "incidence": 0.75,
+    },
+  ),
+  
+  ethnicity_16_sus = patients.with_ethnicity_from_sus(
+    returning = "group_16",  
+    use_most_frequent_code = True,
+    return_expectations = {
+      "category": {"ratios": {"1": 0.0625,
+        "2": 0.0625,
+        "3": 0.0625,
+        "4": 0.0625,
+        "5": 0.0625,
+        "6": 0.0625,
+        "7": 0.0625,
+        "8": 0.0625,
+        "9": 0.0625,
+        "10": 0.0625,
+        "11": 0.0625,
+        "12": 0.0625,
+        "13": 0.0625,
+        "14": 0.0625,
+        "15": 0.0625,
+        "16": 0.0625,}},
+      "incidence": 0.4,
+    },
+  ),
+  
+  ### Ethnicity - 6 categories
+  ethnicity = patients.with_these_clinical_events(
+    ethnicity_codes,
+    returning = "category",
+    find_last_match_in_period = True,
+    include_date_of_match = False,
+    return_expectations = {
+      "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
+      "incidence": 0.75,
+    },
+  ),
+  
+  ethnicity_6_sus = patients.with_ethnicity_from_sus(
+    returning = "group_6",  
+    use_most_frequent_code = True,
+    return_expectations = {
+      "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
+      "incidence": 0.4,
+    },
+  ),
   
   ### Index of multiple deprivation
   imd = patients.categorised_as(

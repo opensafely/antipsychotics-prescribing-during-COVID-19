@@ -1,5 +1,29 @@
 {
   "files": {
+    "opensafely-first-generation-antipsychotics-excluding-long-acting-depots-dmd.csv": {
+      "id": "opensafely/first-generation-antipsychotics-excluding-long-acting-depots-dmd/1e9b227c",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/first-generation-antipsychotics-excluding-long-acting-depots-dmd/1e9b227c/",
+      "downloaded_at": "2021-05-14 14:52:43.063903Z",
+      "sha": "05377dd984eee854029417020513c043c4f25876"
+    },
+    "opensafely-second-generation-antipsychotics-excluding-long-acting-injections.csv": {
+      "id": "opensafely/second-generation-antipsychotics-excluding-long-acting-injections/6c7c3c11",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/second-generation-antipsychotics-excluding-long-acting-injections/6c7c3c11/",
+      "downloaded_at": "2021-05-14 14:52:43.386471Z",
+      "sha": "2330a3239958a1e120352e26fa7126e71d5dfdba"
+    },
+    "opensafely-long-acting-injectable-and-depot-antipsychotics-dmd.csv": {
+      "id": "opensafely/long-acting-injectable-and-depot-antipsychotics-dmd/536cc8dc",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/long-acting-injectable-and-depot-antipsychotics-dmd/536cc8dc/",
+      "downloaded_at": "2021-05-14 14:52:43.580266Z",
+      "sha": "c26f7b48ce7ff115f492cc3fe8c123f9cc82e191"
+    },
+    "opensafely-prochlorperazine-dmd.csv": {
+      "id": "opensafely/prochlorperazine-dmd/058baf47",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/prochlorperazine-dmd/058baf47/",
+      "downloaded_at": "2021-05-14 14:52:43.872417Z",
+      "sha": "f2823afd905cf7070e5f6a69fad42f617ed444b3"
+    },
     "nhsd-primary-care-domain-refsets-ld_cod.csv": {
       "id": "nhsd-primary-care-domain-refsets/ld_cod/20210127",
       "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/ld_cod/20210127/",
@@ -29,6 +53,12 @@
       "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/longres/v1/",
       "downloaded_at": "2021-05-14 14:28:15.737952Z",
       "sha": "4d4c94b9c6aa267c6a60657150bbc5ec7d2d7625"
+    },
+    "opensafely-ethnicity.csv": {
+      "id": "opensafely/ethnicity/2020-04-27",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/ethnicity/2020-04-27/",
+      "downloaded_at": "2021-05-14 15:19:09.976854Z",
+      "sha": "3d2f3998b71863a80b24d60f6f4282e14191ae13"
     }
   }
 }

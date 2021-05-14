@@ -1,3 +1,10 @@
+######################################
+
+# This script defines the project pipeline - it specifys the execution orders for all the code in this
+# repo using a series of actions.
+
+######################################
+
 version: '3.0'
 
 expectations:
@@ -5,6 +12,7 @@ expectations:
 
 actions:
 
+  # Extract study data
   generate_study_population:
     run: cohortextractor:latest generate_cohort --study-definition study_definition
     outputs:

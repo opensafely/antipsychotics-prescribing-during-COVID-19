@@ -16,6 +16,7 @@ from cohortextractor import (
   codelist,
   filter_codes_by_category,
   combine_codelists,
+  Measure
 )
 
 ## Import codelists from codelist.py (which pulls them from the codelist folder)
@@ -24,18 +25,20 @@ from codelists import *
   
 # --- DEFINE STUDY POPULATION ---
   
-## Define study start and end variables explicitly
+## Define study time variables
+from datetime import datetime
+
 start_date = "2019-01-01"
-end_date = "2021-04-30"
+end_date = datetime.today().strftime('%Y-%m-%d')
 
 ## Define study population and variables
 study = StudyDefinition(
   
   # Configure the expectations framework
   default_expectations={
-    "date": {"earliest": "1970-01-01", "latest": end_date},
+    "date": {"earliest": start_date, "latest": end_date},
     "rate": "uniform",
-    "incidence": 0.2,
+    "incidence": 0.1,
   },
   
   # Set index date to start date
@@ -56,13 +59,13 @@ study = StudyDefinition(
         """,
     
     has_died = patients.died_from_any_cause(
-      on_or_before="index_date",
-      returning="binary_flag",
+      on_or_before = "index_date",
+      returning = "binary_flag",
     ),
     
     registered = patients.satisfying(
       "registered_at_start",
-      registered_at_start = patients.registered_as_of(start_date),
+      registered_at_start = patients.registered_as_of("index_date"),
     ),
     
     has_follow_up_previous_year = patients.registered_with_one_practice_between(
@@ -79,41 +82,33 @@ study = StudyDefinition(
   ## First generation antipsychotics, excluding long acting depots
   antipsychotics_first_gen = patients.with_these_medications(
     antipsychotics_first_gen_codes,
-    returning = "date",
-    date_format = "YYYY-MM-DD",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations={"date": {"latest": start_date}},
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ## Second generation antipsychotics excluding long acting injections
   antipsychotics_second_gen = patients.with_these_medications(
     antipsychotics_second_gen_codes,
-    returning = "date",
-    date_format = "YYYY-MM-DD",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations={"date": {"latest": start_date}},
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ## Long acting injectable and depot antipsychotics
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
-    returning = "date",
-    date_format = "YYYY-MM-DD",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations={"date": {"latest": start_date}},
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ## Prochlorperazine
   learning_disability_codes = patients.with_these_medications(
     antipsychotics_first_gen_codes,
-    returning = "date",
-    date_format = "YYYY-MM-DD",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations={"date": {"latest": start_date}},
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   
@@ -122,50 +117,47 @@ study = StudyDefinition(
   ### Learning disabilities
   learning_disability = patients.with_these_clinical_events(
     learning_disability_codes,
-    returning = "binary_flag",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {"incidence": 0.2},
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning="binary_flag",
+    return_expectations={"incidence": 0.5}
   ),
   
   ### Autism
   autism = patients.with_these_clinical_events(
     autism_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {"incidence": 0.2},
+    return_expectations = {"incidence": 0.5}
   ),
   
   ### Serious Mental Illness
   serious_mental_illness = patients.with_these_clinical_events(
     serious_mental_illness_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {"incidence": 0.2},
+    return_expectations = {"incidence": 0.5}
   ),
   
   ### Care home
   care_home = patients.with_these_clinical_events(
     carehome_primis_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ### Dementia
   dementia = patients.with_these_clinical_events(
     dementia_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
+    return_expectations = {"incidence": 0.5}
   ),
   
   
   ## Variables
   
-  ### ### Sex
+  ### Sex
   sex = patients.sex(
     return_expectations = {
       "rate": "universal",
@@ -279,7 +271,7 @@ study = StudyDefinition(
   
   ### Age
   age = patients.age_as_of(
-    "2020-03-31",
+    "index_date",
     return_expectations = {
       "rate": "universal",
       "int": {"distribution": "population_ages"},
@@ -332,6 +324,28 @@ study = StudyDefinition(
   ### People without a diagnosis of clinical groups above  LD, SMI
   
 )
+
+
+# --- DEFINE MEASURES ---
+
+measures = [
+  
+  ## 1. Absolute number of antipsychotics issued each group
+  
+  ## 2. Number of first prescriptions (defined as none in previous two years)
+  
+  
+  ## 3. Using measures framework - Decile of antipsychotics / Rate per 1000
+  
+  ### First generation antipsychotics, excluding long acting depots
+  Measure(
+    id = "antipsychotics_first_gen",
+    numerator = "antipsychotics_first_gen",
+    denominator = "population",
+    group_by = ["practice"]
+  ),
+  
+]
 
 
 

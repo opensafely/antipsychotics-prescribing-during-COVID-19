@@ -7,6 +7,9 @@ nhsd-primary-care-domain-refsets/autism_cod/20210127
 nhsd-primary-care-domain-refsets/mh_cod/20210127
 nhsd-primary-care-domain-refsets/dem_cod/20210127
 primis-covid19-vacc-uptake/longres/v1
-opensafely/ethnicity/2020-04-27
-
+primis-covid19-vacc-uptake/eth2001/v1
+primis-covid19-vacc-uptake/non_eth2001/v1
+primis-covid19-vacc-uptake/eth_notgiptref/v1
+primis-covid19-vacc-uptake/eth_notstated/v1
+primis-covid19-vacc-uptake/eth_norecord/v1
 

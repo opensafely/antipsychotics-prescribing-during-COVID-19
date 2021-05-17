@@ -54,11 +54,35 @@
       "downloaded_at": "2021-05-14 14:28:15.737952Z",
       "sha": "4d4c94b9c6aa267c6a60657150bbc5ec7d2d7625"
     },
-    "opensafely-ethnicity.csv": {
-      "id": "opensafely/ethnicity/2020-04-27",
-      "url": "https://codelists.opensafely.org/codelist/opensafely/ethnicity/2020-04-27/",
-      "downloaded_at": "2021-05-14 15:19:09.976854Z",
-      "sha": "3d2f3998b71863a80b24d60f6f4282e14191ae13"
+    "primis-covid19-vacc-uptake-eth2001.csv": {
+      "id": "primis-covid19-vacc-uptake/eth2001/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth2001/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.065263Z",
+      "sha": "36e4eacba898e6ec72da8ff66e8c673bfd9aa8e4"
+    },
+    "primis-covid19-vacc-uptake-non_eth2001.csv": {
+      "id": "primis-covid19-vacc-uptake/non_eth2001/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/non_eth2001/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.658853Z",
+      "sha": "b8581424b9305f70148f1bbccc0d3e4703847df7"
+    },
+    "primis-covid19-vacc-uptake-eth_notgiptref.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_notgiptref/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notgiptref/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.918877Z",
+      "sha": "6245c85e4bd44c0c3aa573325cf55891efee45db"
+    },
+    "primis-covid19-vacc-uptake-eth_notstated.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_notstated/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notstated/v1/",
+      "downloaded_at": "2021-05-17 13:12:33.201871Z",
+      "sha": "a8997e1807a07d8f56e34ba3d0b95ee0082fec82"
+    },
+    "primis-covid19-vacc-uptake-eth_norecord.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_norecord/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_norecord/v1/",
+      "downloaded_at": "2021-05-17 13:12:33.449886Z",
+      "sha": "ca003bb021a14e704a6e81c139536ef459673da4"
     }
   }
 }

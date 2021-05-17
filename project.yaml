@@ -14,7 +14,15 @@ actions:
 
   # Extract study data
   generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output
     outputs:
       highly_sensitive:
-        cohort: output/input.csv
+        cohort: output/input_*.csv
+  
+  # Generate measures data
+  generate_measures:
+      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output
+      needs: [generate_study_population]
+      outputs:
+        moderately_sensitive:
+          measure_csv: output/measure_*.csv

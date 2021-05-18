@@ -87,12 +87,28 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.5}
   ),
   
+  antipsychotics_first_gen_event_code = patients.with_these_clinical_events(
+        codelist = antipsychotics_first_gen_codes,
+        between = ["index_date", "last_day_of_month(index_date)"],
+        returning = "code",
+        return_expectations = {"category": {
+            "ratios": {str(36152011000001103): 0.8, str(321393004): 0.2}}, }
+    ),
+  
   ## Second generation antipsychotics excluding long acting injections
   antipsychotics_second_gen = patients.with_these_medications(
     antipsychotics_second_gen_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
+  ),
+  
+  antipsychotics_second_gen_event_code = patients.with_these_medications(
+    antipsychotics_second_gen_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"category": {
+            "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
   ),
   
   ## Long acting injectable and depot antipsychotics
@@ -103,12 +119,28 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.5}
   ),
   
+  antipsychotics_injectable_and_depot_event_code = patients.with_these_medications(
+    antipsychotics_injectable_and_depot_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"category": {
+            "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
+  ),
+  
   ## Prochlorperazine
-  learning_disability_codes = patients.with_these_medications(
-    antipsychotics_first_gen_codes,
+  Prochlorperazine = patients.with_these_medications(
+    Prochlorperazine_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
+  ),
+  
+  Prochlorperazine_event_code = patients.with_these_medications(
+    Prochlorperazine_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "binary_flag",
+    return_expectations = {"category": {
+            "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }
   ),
   
   
@@ -329,20 +361,37 @@ study = StudyDefinition(
 
 measures = [
   
-  ## 1. Absolute number of antipsychotics issued each group
-  
-  ## 2. Number of first prescriptions (defined as none in previous two years)
-  
-  
-  ## 3. Using measures framework - Decile of antipsychotics / Rate per 1000
-  
   ### First generation antipsychotics, excluding long acting depots
   Measure(
-    id = "antipsychotics_first_gen",
-    numerator = "antipsychotics_first_gen",
-    denominator = "population",
-    group_by = ["practice"]
-  ),
+        id = "antipsychotics_first_gen",
+        numerator = "antipsychotics_first_gen",
+        denominator = "population",
+        group_by = ["practice", "antipsychotics_first_gen_event_code"]
+    ),
+    
+  ### Second generation antipsychotics excluding long acting injections
+  Measure(
+        id = "antipsychotics_second_gen",
+        numerator = "antipsychotics_second_gen",
+        denominator = "population",
+        group_by = ["practice", "antipsychotics_second_gen_event_code"]
+    ),
+  
+  ## Long acting injectable and depot antipsychotics
+  Measure(
+        id = "antipsychotics_injectable_and_depot",
+        numerator = "antipsychotics_injectable_and_depot",
+        denominator = "population",
+        group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
+    ),
+  
+  ## Prochlorperazine
+    Measure(
+        id = "Prochlorperazine",
+        numerator = "Prochlorperazine",
+        denominator = "population",
+        group_by = ["practice", "Prochlorperazine_event_code"]
+    ),
   
 ]
 

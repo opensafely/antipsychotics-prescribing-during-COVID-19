@@ -12,13 +12,6 @@ expectations:
 
 actions:
 
-  # Write pytest's output to metadata/run_tests.log
-  run_tests:
-    run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
-    outputs:
-      moderately_sensitive:
-        log: output/pytest.xml
-        
   # Extract study cohort data
   generate_study_population:
     run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data
@@ -64,4 +57,12 @@ actions:
     outputs:
       moderately_sensitive:
         notebook: output/results/antipsychotics_measures.html
+  
+  # Process data
+  data_process:
+    run: r:latest analysis/R/Scripts/00_process_data.R
+    needs: [generate_study_population]
+    outputs:
+      moderately_sensitive:
+        data: output/data/data_total_antipsychotics_issued.rds
 

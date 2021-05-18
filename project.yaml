@@ -60,7 +60,7 @@ actions:
   
   # Process data
   data_process:
-    run: r:latest analysis/R/Scripts/00_process_data.R
+    run: r:latest analysis/r/scripts/00_process_data.R
     needs: [generate_study_population]
     outputs:
       moderately_sensitive:

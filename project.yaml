@@ -12,17 +12,56 @@ expectations:
 
 actions:
 
-  # Extract study data
+  # Write pytest's output to metadata/run_tests.log
+  run_tests:
+    run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
+    outputs:
+      moderately_sensitive:
+        log: output/pytest.xml
+        
+  # Extract study cohort data
   generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data
     outputs:
       highly_sensitive:
-        cohort: output/input_*.csv
+        cohort: output/data/input_*.csv
+  
+  # Patient to practice lookup
+  generate_study_population_practice_count:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_practice_count --output-dir=output/data
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_practice_count.csv
   
   # Generate measures data
   generate_measures:
-      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output
+      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
       needs: [generate_study_population]
       outputs:
         moderately_sensitive:
-          measure_csv: output/measure_*.csv
+          measure_csv: output/data/measure_*.csv
+          
+  # Practice counts
+  get_practice_count:
+    run: python:latest python analysis/python/scripts/get_practice_count.py --output-dir=output/data
+    needs: [generate_study_population_practice_count]
+    outputs:
+      moderately_sensitive:
+        text: output/data/practice_count.json
+  
+  # Patient counts
+  get_patient_count:
+    run: python:latest python analysis/python/scripts/get_patients_counts.py --output-dir=output/data
+    needs: [generate_study_population]
+    outputs:
+      moderately_sensitive:
+        text: output/data/patient_count.json
+        
+  # Measures notebook
+  generate_notebook:
+    run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
+    needs: [generate_measures, get_practice_count, get_patient_count]
+    outputs:
+      moderately_sensitive:
+        notebook: output/results/antipsychotics_measures.html
+

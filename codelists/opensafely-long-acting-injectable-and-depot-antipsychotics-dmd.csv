@@ -1,0 +1,88 @@
+dmd_type,dmd_id,dmd_name,bnf_code
+VMP,4559111000001109,Risperidone 25mg powder and solvent for suspension for injection vials,0402020AAAAAAAA
+VMP,4177011000001109,Risperidone 50mg powder and solvent for suspension for injection vials,0402020AAAAABAB
+VMP,4176911000001105,Risperidone 37.5mg powder and solvent for suspension for injection vials,0402020AAAAACAC
+AMP,4520711000001102,Risperdal Consta 25mg powder and solvent for suspension for injection vials,0402020AABBAAAA
+AMP,4167011000001101,Risperdal Consta 50mg powder and solvent for suspension for injection vials,0402020AABBABAB
+AMP,4166711000001102,Risperdal Consta 37.5mg powder and solvent for suspension for injection vials,0402020AABBACAC
+VMP,19223711000001101,Paliperidone 50mg/0.5ml suspension for injection pre-filled syringes,0402020ABAAAAAA
+VMP,19223811000001109,Paliperidone 75mg/0.75ml suspension for injection pre-filled syringes,0402020ABAAABAB
+VMP,19223511000001106,Paliperidone 100mg/1ml suspension for injection pre-filled syringes,0402020ABAAACAC
+VMP,19223611000001105,Paliperidone 150mg/1.5ml suspension for injection pre-filled syringes,0402020ABAAADAD
+VMP,21199511000001108,Paliperidone 150mg/1.5ml suspension for injection pre-filled syringes and Paliperidone 100mg/1ml suspension for injection pre-filled syringes,0402020ABAAAEAE
+VMP,32878911000001109,Paliperidone 175mg/0.875ml prolonged-release suspension for injection pre-filled syringes,0402020ABAAAFAF
+VMP,32879011000001100,Paliperidone 263mg/1.315ml prolonged-release suspension for injection pre-filled syringes,0402020ABAAAGAG
+VMP,32879111000001104,Paliperidone 350mg/1.75ml prolonged-release suspension for injection pre-filled syringes,0402020ABAAAHAH
+VMP,32879211000001105,Paliperidone 525mg/2.625ml prolonged-release suspension for injection pre-filled syringes,0402020ABAAAIAI
+AMP,19208911000001101,Xeplion 50mg/0.5ml suspension for injection pre-filled syringes,0402020ABBBAAAA
+AMP,19210011000001104,Xeplion 75mg/0.75ml suspension for injection pre-filled syringes,0402020ABBBABAB
+AMP,19210611000001106,Xeplion 100mg/1ml suspension for injection pre-filled syringes,0402020ABBBACAC
+AMP,19210911000001100,Xeplion 150mg/1.5ml suspension for injection pre-filled syringes,0402020ABBBADAD
+AMP,21198611000001103,Xeplion 150mg/1.5ml and 100mg/1ml suspension for injection treatment initiation pack,0402020ABBBAEAE
+AMP,32866911000001100,Trevicta 175mg/0.875ml prolonged-release suspension for injection pre-filled syringes,0402020ABBCAAAF
+AMP,32867811000001107,Trevicta 263mg/1.315ml prolonged-release suspension for injection pre-filled syringes,0402020ABBCABAG
+AMP,32868111000001104,Trevicta 350mg/1.75ml prolonged-release suspension for injection pre-filled syringes,0402020ABBCACAH
+AMP,32868411000001109,Trevicta 525mg/2.625ml prolonged-release suspension for injection pre-filled syringes,0402020ABBCADAI
+VMP,17037611000001102,Olanzapine embonate 210mg powder and solvent for suspension for injection vials,0402020ACAAAAAA
+VMP,17038211000001100,Olanzapine embonate 300mg powder and solvent for suspension for injection vials,0402020ACAAABAB
+VMP,17038711000001107,Olanzapine embonate 405mg powder and solvent for suspension for injection vials,0402020ACAAACAC
+AMP,17037811000001103,Zypadhera 210mg powder and solvent for suspension for injection vials,0402020ACBBAAAA
+AMP,17038411000001101,Zypadhera 300mg powder and solvent for suspension for injection vials,0402020ACBBABAB
+AMP,17039011000001100,Zypadhera 405mg powder and solvent for suspension for injection vials,0402020ACBBACAC
+VMP,23661211000001102,Aripiprazole 400mg powder and solvent for suspension for injection vials,0402020ADAAAAAA
+VMP,31087211000001107,Aripiprazole 400mg powder and solvent for suspension for injection pre-filled syringes,0402020ADAAABAB
+AMP,23636811000001103,Abilify Maintena 400mg powder and solvent for prolonged-release suspension for injection vials,0402020ADBBAAAA
+AMP,31078011000001108,Abilify Maintena 400mg powder and solvent for prolonged-release suspension for injection pre-filled syringes,0402020ADBBABAB
+VMP,36068811000001106,Flupentixol 20mg/1ml solution for injection ampoules,0402020G0AAAAAA
+AMP,33643111000001103,Flupentixol 20mg/1ml solution for injection ampoules,0402020G0AAAAAA
+VMP,36068611000001107,Flupentixol 100mg/1ml solution for injection ampoules,0402020G0AAABAB
+VMP,36068911000001101,Flupentixol 40mg/2ml solution for injection ampoules,0402020G0AAACAC
+AMP,33643311000001101,Flupentixol 40mg/2ml solution for injection ampoules,0402020G0AAACAC
+VMP,36058011000001108,Flupentixol 50mg/0.5ml solution for injection ampoules,0402020G0AAAHAH
+AMP,33643511000001107,Flupentixol 50mg/0.5ml solution for injection ampoules,0402020G0AAAHAH
+VMP,36068711000001103,Flupentixol 200mg/1ml solution for injection ampoules,0402020G0AAAIAI
+AMP,3102911000001100,Depixol 20mg/1ml solution for injection ampoules,0402020G0BBAAAA
+AMP,3102111000001103,Depixol 40mg/2ml solution for injection ampoules,0402020G0BBABAC
+AMP,3101311000001105,Depixol Conc 100mg/1ml solution for injection ampoules,0402020G0BBADAB
+AMP,3100711000001101,Depixol Conc 50mg/0.5ml solution for injection ampoules,0402020G0BBAFAH
+AMP,3104011000001105,Depixol Low Volume 200mg/1ml solution for injection ampoules,0402020G0BBAGAI
+AMP,9488311000001103,Psytixol 20mg/1ml solution for injection ampoules,0402020G0BCAAAA
+AMP,9489211000001101,Psytixol 40mg/2ml solution for injection ampoules,0402020G0BCABAC
+AMP,9490711000001100,Psytixol 50mg/0.5ml solution for injection ampoules,0402020G0BCACAH
+AMP,9494211000001104,Psytixol 100mg/1ml solution for injection ampoules,0402020G0BCADAB
+AMP,9494511000001101,Psytixol 200mg/1ml solution for injection ampoules,0402020G0BCAEAI
+VMP,36058211000001103,Fluphenazine decanoate 12.5mg/0.5ml solution for injection ampoules,0402020L0AAAAAA
+AMP,588611000001108,Fluphenazine decanoate 12.5mg/0.5ml solution for injection ampoules,0402020L0AAAAAA
+VMP,36058611000001101,Fluphenazine decanoate 50mg/0.5ml solution for injection ampoules,0402020L0AAABAB
+AMP,4744611000001101,Fluphenazine decanoate 50mg/0.5ml solution for injection ampoules,0402020L0AAABAB
+AMP,688411000001101,Fluphenazine decanoate 50mg/0.5ml solution for injection ampoules,0402020L0AAABAB
+VMP,36058411000001104,Fluphenazine decanoate 25mg/1ml solution for injection ampoules,0402020L0AAACAC
+AMP,214011000001101,Fluphenazine decanoate 25mg/1ml solution for injection ampoules,0402020L0AAACAC
+AMP,527111000001107,Fluphenazine decanoate 25mg/1ml solution for injection ampoules,0402020L0AAACAC
+AMP,356411000001100,Fluphenazine decanoate 25mg/1ml solution for injection ampoules,0402020L0AAACAC
+VMP,36058711000001105,Fluphenazine decanoate 50mg/2ml solution for injection ampoules,0402020L0AAADAD
+VMP,36058311000001106,Fluphenazine decanoate 250mg/10ml solution for injection vials,0402020L0AAAEAE
+VMP,36058111000001109,Fluphenazine decanoate 100mg/1ml solution for injection ampoules,0402020L0AAAFAF
+AMP,58111000001107,Fluphenazine decanoate 100mg/1ml solution for injection ampoules,0402020L0AAAFAF
+AMP,933411000001103,Fluphenazine decanoate 100mg/1ml solution for injection ampoules,0402020L0AAAFAF
+AMP,461511000001107,Fluphenazine decanoate 100mg/1ml solution for injection ampoules,0402020L0AAAFAF
+VMP,36058511000001100,Fluphenazine decanoate 25mg/1ml solution for injection pre-filled syringes,0402020L0AAAGAG
+VMP,36058811000001102,Fluphenazine decanoate 50mg/2ml solution for injection pre-filled syringes,0402020L0AAAHAH
+AMP,790311000001100,Modecate 12.5mg/0.5ml solution for injection ampoules,0402020L0BBAAAA
+AMP,556111000001108,Modecate 25mg/1ml solution for injection ampoules,0402020L0BBABAC
+AMP,119311000001100,Modecate 50mg/2ml solution for injection ampoules,0402020L0BBACAD
+AMP,928411000001107,Modecate 250mg/10ml solution for injection vials,0402020L0BBADAE
+AMP,66211000001107,Modecate 25mg/1ml solution for injection pre-filled syringes,0402020L0BBADAG
+AMP,153511000001100,Modecate 50mg/2ml solution for injection pre-filled syringes,0402020L0BBAEAH
+AMP,837811000001102,Modecate Concentrate 50mg/0.5ml solution for injection ampoules,0402020L0BBAFAB
+AMP,565211000001101,Modecate Concentrate 100mg/1ml solution for injection ampoules,0402020L0BBAGAF
+VMP,36053711000001104,Haloperidol decanoate 50mg/1ml solution for injection ampoules,0402020T0AAAAAA
+VMP,36053611000001108,Haloperidol decanoate 100mg/1ml solution for injection ampoules,0402020T0AAABAB
+AMP,3747311000001104,Haldol Decanoate 50mg/1ml solution for injection ampoules,0402020T0BBAAAA
+AMP,3748011000001101,Haldol Decanoate 100mg/1ml solution for injection ampoules,0402020T0BBABAB
+AMP,3822011000001103,Piportil Depot 50mg/1ml solution for injection ampoules,0402020V0BBAAAA
+AMP,8823211000001101,Piportil Depot 100mg/2ml solution for injection ampoules,0402020V0BBABAB
+VMP,36152111000001102,Zuclopenthixol decanoate 200mg/1ml solution for injection ampoules,0402020Z0AAAAAA
+VMP,36152211000001108,Zuclopenthixol decanoate 500mg/1ml solution for injection ampoules,0402020Z0AAABAB
+AMP,178611000001106,Clopixol 200mg/1ml solution for injection ampoules,0402020Z0BBAAAA
+AMP,32911000001106,Clopixol Conc 500mg/1ml solution for injection ampoules,0402020Z0BBACAB

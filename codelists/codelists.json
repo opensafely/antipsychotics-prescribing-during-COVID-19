@@ -1,0 +1,88 @@
+{
+  "files": {
+    "opensafely-first-generation-antipsychotics-excluding-long-acting-depots-dmd.csv": {
+      "id": "opensafely/first-generation-antipsychotics-excluding-long-acting-depots-dmd/1e9b227c",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/first-generation-antipsychotics-excluding-long-acting-depots-dmd/1e9b227c/",
+      "downloaded_at": "2021-05-14 14:52:43.063903Z",
+      "sha": "05377dd984eee854029417020513c043c4f25876"
+    },
+    "opensafely-second-generation-antipsychotics-excluding-long-acting-injections.csv": {
+      "id": "opensafely/second-generation-antipsychotics-excluding-long-acting-injections/6c7c3c11",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/second-generation-antipsychotics-excluding-long-acting-injections/6c7c3c11/",
+      "downloaded_at": "2021-05-14 14:52:43.386471Z",
+      "sha": "2330a3239958a1e120352e26fa7126e71d5dfdba"
+    },
+    "opensafely-long-acting-injectable-and-depot-antipsychotics-dmd.csv": {
+      "id": "opensafely/long-acting-injectable-and-depot-antipsychotics-dmd/536cc8dc",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/long-acting-injectable-and-depot-antipsychotics-dmd/536cc8dc/",
+      "downloaded_at": "2021-05-14 14:52:43.580266Z",
+      "sha": "c26f7b48ce7ff115f492cc3fe8c123f9cc82e191"
+    },
+    "opensafely-prochlorperazine-dmd.csv": {
+      "id": "opensafely/prochlorperazine-dmd/058baf47",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/prochlorperazine-dmd/058baf47/",
+      "downloaded_at": "2021-05-14 14:52:43.872417Z",
+      "sha": "f2823afd905cf7070e5f6a69fad42f617ed444b3"
+    },
+    "nhsd-primary-care-domain-refsets-ld_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/ld_cod/20210127",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/ld_cod/20210127/",
+      "downloaded_at": "2021-05-14 14:18:20.927030Z",
+      "sha": "0c5bc3b050a55c2090e16932fd7364a0be775cb4"
+    },
+    "nhsd-primary-care-domain-refsets-autism_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/autism_cod/20210127",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/autism_cod/20210127/",
+      "downloaded_at": "2021-05-14 14:28:15.116594Z",
+      "sha": "56f54c22b803ef74f97d2f6eb54f46c351a4ee5f"
+    },
+    "nhsd-primary-care-domain-refsets-mh_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/mh_cod/20210127",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/mh_cod/20210127/",
+      "downloaded_at": "2021-05-14 14:28:15.325615Z",
+      "sha": "6e98da3c8765354b47ab74d1bef4679966a337f3"
+    },
+    "nhsd-primary-care-domain-refsets-dem_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/dem_cod/20210127",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/dem_cod/20210127/",
+      "downloaded_at": "2021-05-14 14:28:15.564457Z",
+      "sha": "96defdd5b5345aaed6c6e2e71188c966288e4731"
+    },
+    "primis-covid19-vacc-uptake-longres.csv": {
+      "id": "primis-covid19-vacc-uptake/longres/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/longres/v1/",
+      "downloaded_at": "2021-05-14 14:28:15.737952Z",
+      "sha": "4d4c94b9c6aa267c6a60657150bbc5ec7d2d7625"
+    },
+    "primis-covid19-vacc-uptake-eth2001.csv": {
+      "id": "primis-covid19-vacc-uptake/eth2001/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth2001/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.065263Z",
+      "sha": "36e4eacba898e6ec72da8ff66e8c673bfd9aa8e4"
+    },
+    "primis-covid19-vacc-uptake-non_eth2001.csv": {
+      "id": "primis-covid19-vacc-uptake/non_eth2001/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/non_eth2001/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.658853Z",
+      "sha": "b8581424b9305f70148f1bbccc0d3e4703847df7"
+    },
+    "primis-covid19-vacc-uptake-eth_notgiptref.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_notgiptref/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notgiptref/v1/",
+      "downloaded_at": "2021-05-17 13:12:32.918877Z",
+      "sha": "6245c85e4bd44c0c3aa573325cf55891efee45db"
+    },
+    "primis-covid19-vacc-uptake-eth_notstated.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_notstated/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notstated/v1/",
+      "downloaded_at": "2021-05-17 13:12:33.201871Z",
+      "sha": "a8997e1807a07d8f56e34ba3d0b95ee0082fec82"
+    },
+    "primis-covid19-vacc-uptake-eth_norecord.csv": {
+      "id": "primis-covid19-vacc-uptake/eth_norecord/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_norecord/v1/",
+      "downloaded_at": "2021-05-17 13:12:33.449886Z",
+      "sha": "ca003bb021a14e704a6e81c139536ef459673da4"
+    }
+  }
+}

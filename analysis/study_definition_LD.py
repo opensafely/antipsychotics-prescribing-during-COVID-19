@@ -56,6 +56,8 @@ study = StudyDefinition(
         has_follow_up_previous_year
         AND
         (sex = "M" OR sex = "F")
+        AND
+        learning_disability
         """,
     
     has_died = patients.died_from_any_cause(
@@ -150,8 +152,8 @@ study = StudyDefinition(
   learning_disability = patients.with_these_clinical_events(
     learning_disability_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning="binary_flag",
-    return_expectations={"incidence": 0.5}
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ### Autism
@@ -203,74 +205,6 @@ study = StudyDefinition(
       "category": {"ratios": {"M": 0.49, "F": 0.51}},
     }
   ),
-  
-  ### Ethnicity
-  ethnicity = patients.with_these_clinical_events(
-    ethnicity_codes,
-    returning = "category",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {
-      "category": {
-        "ratios": {
-          "1": 0.25,
-          "2": 0.05,
-          "3": 0.05,
-          "4": 0.05,
-          "5": 0.05,
-          "6": 0.05,
-          "7": 0.05,
-          "8": 0.05,
-          "9": 0.05,
-          "10": 0.05,
-          "11": 0.05,
-          "12": 0.05,
-          "13": 0.05,
-          "14": 0.05,
-          "15": 0.05,
-          "16": 0.05,
-        }
-      },
-      "incidence": 0.75,
-    },
-  ),
-  
-  ### Any other ethnicity code
-  ethnicity_other = patients.with_these_clinical_events(
-    ethnicity_other_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity not given - patient refused
-  ethnicity_not_given = patients.with_these_clinical_events(
-    ethnicity_not_given_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-    return_expectations = {"incidence": 0.00000001},
-  ),
-  
-  ### Ethnicity not stated
-  ethnicity_not_stated = patients.with_these_clinical_events(
-    ethnicity_not_stated_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity no record
-  ethnicity_no_record = patients.with_these_clinical_events(
-    ethnicity_no_record_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),  
   
   ### Index of multiple deprivation
   imd = patients.categorised_as(

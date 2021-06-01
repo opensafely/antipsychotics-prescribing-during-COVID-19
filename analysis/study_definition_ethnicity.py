@@ -18,7 +18,7 @@ from cohortextractor import (
 )
 
 ## Import codelists from codelist.py (which pulls them from the codelist folder)
-from codelists import ethnicity_codes
+from codelists import *
 
 
 # --- DEFINE STUDY POPULATION ---
@@ -78,33 +78,37 @@ study = StudyDefinition(
   ## Any other ethnicity code
   ethnicity_other = patients.with_these_clinical_events(
     ethnicity_other_codes,
-    returning = "category",
+    returning = "binary_flag",
     find_last_match_in_period = True,
     on_or_before = "index_date",
+    return_expectations = {"incidence": 0.1}
   ),
   
   ## Ethnicity not given - patient refused
   ethnicity_not_given = patients.with_these_clinical_events(
     ethnicity_not_given_codes,
-    returning = "category",
+    returning = "binary_flag",
     find_last_match_in_period = True,
     on_or_before = "index_date",
+    return_expectations = {"incidence": 0.1}
   ),
   
   ## Ethnicity not stated
   ethnicity_not_stated = patients.with_these_clinical_events(
     ethnicity_not_stated_codes,
-    returning = "category",
+    returning = "binary_flag",
     find_last_match_in_period = True,
     on_or_before = "index_date",
+    return_expectations = {"incidence": 0.1}
   ),
   
   ## Ethnicity no record
   ethnicity_no_record = patients.with_these_clinical_events(
     ethnicity_no_record_codes,
-    returning = "category",
+    returning = "binary_flag",
     find_last_match_in_period = True,
     on_or_before = "index_date",
+    return_expectations = {"incidence": 0.1}
   ), 
   
   
@@ -127,14 +131,15 @@ study = StudyDefinition(
       "14": "eth='14'", 
       "15": "eth='15'", 
       "16": "eth='16'", 
-      "17": "NOT eth AND ethnicity_other)", 
-      "18": "NOT eth AND ethnicity_not_given)",  
-      "19": "NOT eth AND ethnicity_not_stated)",  
-      "20": "NOT eth AND ethnicity_no_record)",  
+      "17": "NOT eth AND ethnicity_other", 
+      "18": "NOT eth AND ethnicity_not_given",  
+      "19": "NOT eth AND ethnicity_not_stated",  
+      "20": "NOT eth AND ethnicity_no_record",  
     }, 
     return_expectations = {
       "category": {"ratios": {
-        "1": 0.25,
+        "0": 0.01,
+        "1": 0.24,
         "2": 0.05,
         "3": 0.05,
         "4": 0.05,

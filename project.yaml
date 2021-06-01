@@ -8,11 +8,11 @@
 version: '3.0'
 
 expectations:
-  population_size: 1000
+  population_size: 100000
 
 actions:
 
-  # Extract study cohort data
+  # Extract cohort data
   
   ## Learning disability
   generate_LD_cohort:
@@ -20,6 +20,24 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/data/input_LD_*.feather
+  
+  ## Ethnicity      
+  generate_study_population_ethnicity:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_ethnicity --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_ethnicity.feather
+        
+  
+  # Data processing
+  
+  ## Add ethnicity
+  join_ethnicity:
+    run: python:latest python analysis/python/scripts/join_ethnicity.py
+    needs: [generate_LD_cohort, generate_study_population_ethnicity]
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input*.feather
 
   # # Patient to practice lookup
   # generate_study_population_practice_count:

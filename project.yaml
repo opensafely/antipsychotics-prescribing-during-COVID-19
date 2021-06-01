@@ -15,11 +15,39 @@ actions:
   # Extract cohort data
   
   ## Learning disability
-  generate_LD_cohort:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_LD --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+  generate_ld_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_ld --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
-        cohort: output/data/input_LD_*.feather
+        cohort: output/data/input_ld_*.feather
+  
+  ## Autism
+  generate_autism_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_autism --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_autism_*.feather
+  
+  ## Serious Mental Illness
+  generate_smi_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_smi --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_smi_*.feather
+  
+  ## Care home
+  generate_care_home_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_care_home --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_care_home_*.feather
+  
+  ## Dementia
+  generate_dementia_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_dementia --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_dementia_*.feather
   
   ## Ethnicity      
   generate_study_population_ethnicity:

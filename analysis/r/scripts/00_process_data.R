@@ -180,11 +180,7 @@ my_read_csv <- function(x) {
     select(date, practice, 
            antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, Prochlorperazine,
            autism, care_home, dementia, learning_disability, serious_mental_illness,
-           age, ethnicity, imd, region, sex, stp) %>%
-    melt(id.vars = c("date", "practice")) %>%
-    mutate(value = as.numeric(value)) %>%
-    group_by(date, practice, variable) %>%
-    summarise(Total = sum(value, na.rm = T))
+           age, ethnicity, imd, region, sex, stp)
 }
 
 ## Output processed data to rds
@@ -201,4 +197,4 @@ tbl <- lapply(filenames, my_read_csv) %>% bind_rows()
 
 
 # Save dataset as .rds files ----
-write_rds(tbl, here::here("output", "data", "data_total_antipsychotics_issued.rds"), compress="gz")
+write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz")

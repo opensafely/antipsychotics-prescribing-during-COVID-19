@@ -62,7 +62,7 @@ actions:
   ## Add ethnicity
   join_ethnicity:
     run: python:latest python analysis/python/scripts/join_ethnicity.py
-    needs: [generate_ld_cohort, generate_study_population_ethnicity]
+    needs: [generate_ld_cohort, generate_autism_cohort, generate_smi_cohort, generate_care_home_cohort, generate_dementia_cohort, generate_study_population_ethnicity]
     outputs:
       highly_sensitive:
         cohort: output/data/input*.feather

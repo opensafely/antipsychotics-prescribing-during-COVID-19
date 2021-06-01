@@ -115,7 +115,7 @@ study = StudyDefinition(
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning = "code",
+    returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
@@ -138,7 +138,7 @@ study = StudyDefinition(
   Prochlorperazine_event_code = patients.with_these_medications(
     Prochlorperazine_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning = "binary_flag",
+    returning = "code",
     return_expectations = {"category": {
             "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }
   ),

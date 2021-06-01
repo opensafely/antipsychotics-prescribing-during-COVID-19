@@ -40,7 +40,7 @@ antipsychotics_injectable_and_depot_codes = codelist_from_csv(
 )
 
 ### Prochlorperazine
-Prochlorperazine_codes = codelist_from_csv(
+prochlorperazine_codes = codelist_from_csv(
   "codelists/opensafely-prochlorperazine-dmd.csv",
   system = "snomed",
   column = "dmd_id",

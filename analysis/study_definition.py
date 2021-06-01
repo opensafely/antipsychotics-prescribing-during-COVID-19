@@ -106,7 +106,7 @@ study = StudyDefinition(
   antipsychotics_second_gen_event_code = patients.with_these_medications(
     antipsychotics_second_gen_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning = "binary_flag",
+    returning = "code",
     return_expectations = {"category": {
             "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
   ),
@@ -115,14 +115,14 @@ study = StudyDefinition(
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning = "binary_flag",
+    returning = "code",
     return_expectations = {"incidence": 0.5}
   ),
   
   antipsychotics_injectable_and_depot_event_code = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning = "binary_flag",
+    returning = "code",
     return_expectations = {"category": {
             "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
   ),

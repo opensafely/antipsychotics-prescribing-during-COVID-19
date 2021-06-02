@@ -297,7 +297,7 @@ measures = [
   
   ### First generation antipsychotics, excluding long acting depots
   Measure(
-    id = "antipsychotics_first_gen",
+    id = "care_home_antipsychotics_first_gen",
     numerator = "antipsychotics_first_gen",
     denominator = "population",
     group_by = ["practice", "antipsychotics_first_gen_event_code"]
@@ -305,7 +305,7 @@ measures = [
   
   ### Second generation antipsychotics excluding long acting injections
   Measure(
-    id = "antipsychotics_second_gen",
+    id = "care_home_antipsychotics_second_gen",
     numerator = "antipsychotics_second_gen",
     denominator = "population",
     group_by = ["practice", "antipsychotics_second_gen_event_code"]
@@ -313,7 +313,7 @@ measures = [
   
   ## Long acting injectable and depot antipsychotics
   Measure(
-    id = "antipsychotics_injectable_and_depot",
+    id = "care_home_antipsychotics_injectable_and_depot",
     numerator = "antipsychotics_injectable_and_depot",
     denominator = "population",
     group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
@@ -321,10 +321,10 @@ measures = [
   
   ## Prochlorperazine
   Measure(
-    id = "Prochlorperazine",
-    numerator = "Prochlorperazine",
+    id = "care_home_prochlorperazine",
+    numerator = "prochlorperazine",
     denominator = "population",
-    group_by = ["practice", "Prochlorperazine_event_code"]
+    group_by = ["practice", "prochlorperazine_event_code"]
   ),
   
 ]

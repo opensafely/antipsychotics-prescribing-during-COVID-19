@@ -15,7 +15,8 @@
 ## Import libraries
 library('tidyverse')
 library('lubridate')
-library('reshape2')
+library('arrow')
+library('here')
 
 ## Custom functions
 
@@ -211,10 +212,12 @@ filenames <- list.files(path = here::here("output", "data"))
 
 # Quick summaries ----
 print(filenames)
-# data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
-# names(data_extract)
+data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
+
+print(names(data_extract))
 # dim(data_extract)
 # summary(data_extract)
+write_rds(data_extract, here::here("output", "data", "data_processed.rds"), compress="gz")
 
 # print(names(tbl))
 # print(summary(tbl))
@@ -223,8 +226,7 @@ print(filenames)
 # print(table(tbl$antipsychotics_second_gen_event_code))
 # print(table(tbl$learning_disability))
 # 
-tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
-head(tbl2)
-table(tbl2$antipsychotics_first_gen_event_code)
-sum(tbl2$antipsychotics_first_gen, na.rm = T)
-write_rds(tbl2, here::here("output", "data", "data_processed.rds"), compress="gz")
+#tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
+#head(tbl2)
+#table(tbl2$antipsychotics_first_gen_event_code)
+#sum(tbl2$antipsychotics_first_gen, na.rm = T)

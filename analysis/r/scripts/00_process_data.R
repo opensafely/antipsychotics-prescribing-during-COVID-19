@@ -211,6 +211,8 @@ write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz"
 
 
 # Quick summaries ----
+print(names(tbl))
+print(summary(tbl))
 print(table(tbl$antipsychotics_first_gen))
 print(table(tbl$antipsychotics_first_gen_event_code))
 print(table(tbl$antipsychotics_second_gen_event_code))

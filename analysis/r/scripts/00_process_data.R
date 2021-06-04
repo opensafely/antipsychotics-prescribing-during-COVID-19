@@ -207,18 +207,23 @@ tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
 
 
 # Save dataset as .rds files ----
-write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz")
+#write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz")
 
 
 # Quick summaries ----
-print(names(tbl))
-print(summary(tbl))
-print(table(tbl$antipsychotics_first_gen))
-print(table(tbl$antipsychotics_first_gen_event_code))
-print(table(tbl$antipsychotics_second_gen_event_code))
-print(table(tbl$learning_disability))
+data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
+names(data_extract)
+dim(data_extract)
+summary(data_extract)
 
-tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
-head(tbl2)
-table(tbl2$antipsychotics_first_gen_event_code)
-sum(tbl2$antipsychotics_first_gen, na.rm = T)
+# print(names(tbl))
+# print(summary(tbl))
+# print(table(tbl$antipsychotics_first_gen))
+# print(table(tbl$antipsychotics_first_gen_event_code))
+# print(table(tbl$antipsychotics_second_gen_event_code))
+# print(table(tbl$learning_disability))
+# 
+# tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
+# head(tbl2)
+# table(tbl2$antipsychotics_first_gen_event_code)
+# sum(tbl2$antipsychotics_first_gen, na.rm = T)

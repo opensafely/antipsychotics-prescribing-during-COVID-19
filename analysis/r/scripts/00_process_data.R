@@ -202,7 +202,7 @@ dir.create(here::here("output", "data", "Processed"), showWarnings = FALSE, recu
 filenames <- list.files(path = here::here("output", "data"))
 
 #tbl <- lapply(filenames, my_read_csv) %>% bind_rows()
-tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
+#tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
 
 
 # Save dataset as .rds files ----
@@ -223,7 +223,8 @@ print(filenames)
 # print(table(tbl$antipsychotics_second_gen_event_code))
 # print(table(tbl$learning_disability))
 # 
-# tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
-# head(tbl2)
-# table(tbl2$antipsychotics_first_gen_event_code)
-# sum(tbl2$antipsychotics_first_gen, na.rm = T)
+tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
+head(tbl2)
+table(tbl2$antipsychotics_first_gen_event_code)
+sum(tbl2$antipsychotics_first_gen, na.rm = T)
+write_rds(tbl2, here::here("output", "data", "data_processed.rds"), compress="gz")

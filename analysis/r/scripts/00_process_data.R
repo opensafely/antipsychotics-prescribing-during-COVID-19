@@ -211,6 +211,7 @@ tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
 
 
 # Quick summaries ----
+print(filenames)
 data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
 names(data_extract)
 dim(data_extract)

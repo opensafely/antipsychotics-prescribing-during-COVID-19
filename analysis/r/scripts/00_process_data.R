@@ -199,8 +199,7 @@ dir.create(here::here("output", "data", "Processed"), showWarnings = FALSE, recu
 # Process data ----
 
 ## Read in, format and combine data
-filenames <- list.files(path = here::here("output", "data"),
-                        pattern = "input_ld")
+filenames <- list.files(path = here::here("output", "data"))
 
 #tbl <- lapply(filenames, my_read_csv) %>% bind_rows()
 tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
@@ -212,10 +211,10 @@ tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
 
 # Quick summaries ----
 print(filenames)
-data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
-names(data_extract)
-dim(data_extract)
-summary(data_extract)
+# data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
+# names(data_extract)
+# dim(data_extract)
+# summary(data_extract)
 
 # print(names(tbl))
 # print(summary(tbl))

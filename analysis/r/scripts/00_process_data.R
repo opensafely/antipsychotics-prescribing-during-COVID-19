@@ -183,6 +183,15 @@ my_read_csv <- function(x) {
            age, ethnicity, imd, region, sex, stp)
 }
 
+## Read feather data
+my_read_feather <- function(x) {
+  
+  ## Read in data
+  data_extract <- arrow::read_feather(
+    here::here("output", "data", x)) %>%
+    mutate(date = as.Date(substr(x, 10, 19), format = "%Y-%m-%d"))
+}
+
 ## Output processed data to rds
 dir.create(here::here("output", "data", "Processed"), showWarnings = FALSE, recursive=TRUE)
 
@@ -191,10 +200,23 @@ dir.create(here::here("output", "data", "Processed"), showWarnings = FALSE, recu
 
 ## Read in, format and combine data
 filenames <- list.files(path = here::here("output", "data"),
-                        pattern = "input_20")
+                        pattern = "input_ld")
 
-tbl <- lapply(filenames, my_read_csv) %>% bind_rows()
+#tbl <- lapply(filenames, my_read_csv) %>% bind_rows()
+tbl <- lapply(filenames, my_read_feather) %>% bind_rows()
 
 
 # Save dataset as .rds files ----
 write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz")
+
+
+# Quick summaries ----
+print(table(tbl$antipsychotics_first_gen))
+print(table(tbl$antipsychotics_first_gen_event_code))
+print(table(tbl$antipsychotics_second_gen_event_code))
+print(table(tbl$learning_disability))
+
+tbl2 <- read_csv(here::here("output", "data", "measure_ld_antipsychotics_first_gen.csv"))
+head(tbl2)
+table(tbl2$antipsychotics_first_gen_event_code)
+sum(tbl2$antipsychotics_first_gen, na.rm = T)

@@ -134,19 +134,19 @@ actions:
   #     moderately_sensitive:
   #       text: output/data/patient_count.json
   #       
-  # # Measures notebook
-  # generate_notebook:
-  #   run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
-  #   needs: [generate_measures, get_practice_count, get_patient_count]
-  #   outputs:
-  #     moderately_sensitive:
-  #       notebook: output/results/antipsychotics_measures.html
-  # 
-  # # Process data
-  # data_process:
-  #   run: r:latest analysis/r/scripts/00_process_data.R
-  #   needs: [generate_study_population]
-  #   outputs:
-  #     moderately_sensitive:
-  #       data: output/data/data_processed.rds
-  # 
+  # Measures notebook
+  generate_notebook:
+    run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
+    needs: [generate_measures_ld]
+    outputs:
+      moderately_sensitive:
+        notebook: output/results/antipsychotics_measures.html
+
+  # Process data
+  data_process:
+    run: r:latest analysis/r/scripts/00_process_data.R
+    needs: [generate_ld_cohort, generate_measures_ld]
+    outputs:
+      moderately_sensitive:
+        data: output/data/data_processed.rds
+

@@ -147,6 +147,22 @@ actions:
     run: r:latest analysis/r/scripts/00_process_data.R
     needs: [generate_ld_cohort, generate_measures_ld]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         data: output/data/data_processed.rds
+        
+  # Data summaries
+  data_summaries:
+    run: r:latest -e 'rmarkdown::render("analysis/r/markdown/data_summaries.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    needs: [generate_ld_cohort]
+    outputs:
+      moderately_sensitive:
+        html: output/data_summaries.html
+        
+  # Practice counts
+  get_data_columns:
+    run: python:latest python analysis/python/scripts/data_columns.py --output-dir=output/data
+    needs: [generate_ld_cohort]
+    outputs:
+      moderately_sensitive:
+        text: output/data/data_columns.json
 

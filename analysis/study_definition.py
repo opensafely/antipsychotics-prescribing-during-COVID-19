@@ -56,8 +56,6 @@ study = StudyDefinition(
         has_follow_up_previous_year
         AND
         (sex = "M" OR sex = "F")
-        AND
-        care_home
         """,
     
     has_died = patients.died_from_any_cause(
@@ -297,7 +295,7 @@ measures = [
   
   ### First generation antipsychotics, excluding long acting depots
   Measure(
-    id = "care_home_antipsychotics_first_gen",
+    id = "antipsychotics_first_gen",
     numerator = "antipsychotics_first_gen",
     denominator = "population",
     group_by = ["practice", "antipsychotics_first_gen_event_code"]
@@ -305,7 +303,7 @@ measures = [
   
   ### Second generation antipsychotics excluding long acting injections
   Measure(
-    id = "care_home_antipsychotics_second_gen",
+    id = "antipsychotics_second_gen",
     numerator = "antipsychotics_second_gen",
     denominator = "population",
     group_by = ["practice", "antipsychotics_second_gen_event_code"]
@@ -313,7 +311,7 @@ measures = [
   
   ## Long acting injectable and depot antipsychotics
   Measure(
-    id = "care_home_antipsychotics_injectable_and_depot",
+    id = "antipsychotics_injectable_and_depot",
     numerator = "antipsychotics_injectable_and_depot",
     denominator = "population",
     group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
@@ -321,7 +319,7 @@ measures = [
   
   ## Prochlorperazine
   Measure(
-    id = "care_home_prochlorperazine",
+    id = "prochlorperazine",
     numerator = "prochlorperazine",
     denominator = "population",
     group_by = ["practice", "prochlorperazine_event_code"]

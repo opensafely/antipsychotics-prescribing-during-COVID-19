@@ -3,7 +3,7 @@ import os
 import json
 import numpy as np
 
-sentinel_measures = ["antipsychotics_first_gen", "antipsychotics_second_gen", "antipsychotics_injectable_and_depot", "Prochlorperazine"]
+antipsychotics_measures = ["antipsychotics_first_gen", "antipsychotics_second_gen", "antipsychotics_injectable_and_depot", "prochlorperazine"]
 
 patient_counts_dict = {}
 patient_dict = {}
@@ -11,9 +11,9 @@ patient_dict = {}
 
 for file in os.listdir('output/data'):
     if file.startswith('input'):
-        df = pd.read_csv(os.path.join('output/data', file))
+        df = pd.read_feather(os.path.join('output/data', file))
 
-        for measure in sentinel_measures:
+        for measure in antipsychotics_measures:
             df_subset = df[df[measure]==1]
             # get unique patients
             patients = list(df_subset['patient_id'])

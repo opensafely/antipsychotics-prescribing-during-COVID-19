@@ -9,14 +9,9 @@
 ## Import packages
 import pandas as pd
 import os
-from pathlib import Path
-
 
 ## Import data
-BASE_DIR = Path(__file__).parents[3]
-OUTPUT_DIR = BASE_DIR / "output/data"
-ethnicity_df = pd.read_feather(OUTPUT_DIR / 'input_ethnicity.feather')
-
+ethnicity_df = pd.read_feather('output/data/input_ethnicity.feather')
 
 # --- ADD ETHNICITY ---
 

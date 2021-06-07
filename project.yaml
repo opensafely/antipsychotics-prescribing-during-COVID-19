@@ -153,7 +153,7 @@ actions:
   # Data summaries
   data_summaries:
     run: r:latest -e 'rmarkdown::render("analysis/r/markdown/data_summaries.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
-    needs: [generate_ld_cohort]
+    needs: [generate_ld_cohort, join_ethnicity]
     outputs:
       moderately_sensitive:
         html: output/data_summaries.html

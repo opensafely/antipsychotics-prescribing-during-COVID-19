@@ -88,12 +88,12 @@ study = StudyDefinition(
   ),
   
   antipsychotics_first_gen_event_code = patients.with_these_clinical_events(
-        codelist = antipsychotics_first_gen_codes,
-        between = ["index_date", "last_day_of_month(index_date)"],
-        returning = "code",
-        return_expectations = {"category": {
-            "ratios": {str(36152011000001103): 0.8, str(321393004): 0.2}}, }
-    ),
+    codelist = antipsychotics_first_gen_codes,
+    between = ["index_date", "last_day_of_month(index_date)"],
+    returning = "code",
+    return_expectations = {"category": {
+      "ratios": {str(36152011000001103): 0.8, str(321393004): 0.2}}, }
+  ),
   
   ## Second generation antipsychotics excluding long acting injections
   antipsychotics_second_gen = patients.with_these_medications(
@@ -108,7 +108,7 @@ study = StudyDefinition(
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "code",
     return_expectations = {"category": {
-            "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
+      "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
   ),
   
   ## Long acting injectable and depot antipsychotics
@@ -124,23 +124,23 @@ study = StudyDefinition(
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "code",
     return_expectations = {"category": {
-            "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
+      "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
   ),
   
   ## Prochlorperazine
-  Prochlorperazine = patients.with_these_medications(
-    Prochlorperazine_codes,
+  prochlorperazine = patients.with_these_medications(
+    prochlorperazine_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
-  Prochlorperazine_event_code = patients.with_these_medications(
-    Prochlorperazine_codes,
+  prochlorperazine_event_code = patients.with_these_medications(
+    prochlorperazine_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "code",
     return_expectations = {"category": {
-            "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }
+      "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }
   ),
   
   
@@ -150,8 +150,8 @@ study = StudyDefinition(
   learning_disability = patients.with_these_clinical_events(
     learning_disability_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
-    returning="binary_flag",
-    return_expectations={"incidence": 0.5}
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.5}
   ),
   
   ### Autism
@@ -203,74 +203,6 @@ study = StudyDefinition(
       "category": {"ratios": {"M": 0.49, "F": 0.51}},
     }
   ),
-  
-  ### Ethnicity
-  ethnicity = patients.with_these_clinical_events(
-    ethnicity_codes,
-    returning = "category",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {
-      "category": {
-        "ratios": {
-          "1": 0.25,
-          "2": 0.05,
-          "3": 0.05,
-          "4": 0.05,
-          "5": 0.05,
-          "6": 0.05,
-          "7": 0.05,
-          "8": 0.05,
-          "9": 0.05,
-          "10": 0.05,
-          "11": 0.05,
-          "12": 0.05,
-          "13": 0.05,
-          "14": 0.05,
-          "15": 0.05,
-          "16": 0.05,
-        }
-      },
-      "incidence": 0.75,
-    },
-  ),
-  
-  ### Any other ethnicity code
-  ethnicity_other = patients.with_these_clinical_events(
-    ethnicity_other_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity not given - patient refused
-  ethnicity_not_given = patients.with_these_clinical_events(
-    ethnicity_not_given_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-    return_expectations = {"incidence": 0.00000001},
-  ),
-  
-  ### Ethnicity not stated
-  ethnicity_not_stated = patients.with_these_clinical_events(
-    ethnicity_not_stated_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity no record
-  ethnicity_no_record = patients.with_these_clinical_events(
-    ethnicity_no_record_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),  
   
   ### Index of multiple deprivation
   imd = patients.categorised_as(
@@ -363,35 +295,35 @@ measures = [
   
   ### First generation antipsychotics, excluding long acting depots
   Measure(
-        id = "antipsychotics_first_gen",
-        numerator = "antipsychotics_first_gen",
-        denominator = "population",
-        group_by = ["practice", "antipsychotics_first_gen_event_code"]
-    ),
-    
+    id = "antipsychotics_first_gen",
+    numerator = "antipsychotics_first_gen",
+    denominator = "population",
+    group_by = ["practice", "antipsychotics_first_gen_event_code"]
+  ),
+  
   ### Second generation antipsychotics excluding long acting injections
   Measure(
-        id = "antipsychotics_second_gen",
-        numerator = "antipsychotics_second_gen",
-        denominator = "population",
-        group_by = ["practice", "antipsychotics_second_gen_event_code"]
-    ),
+    id = "antipsychotics_second_gen",
+    numerator = "antipsychotics_second_gen",
+    denominator = "population",
+    group_by = ["practice", "antipsychotics_second_gen_event_code"]
+  ),
   
   ## Long acting injectable and depot antipsychotics
   Measure(
-        id = "antipsychotics_injectable_and_depot",
-        numerator = "antipsychotics_injectable_and_depot",
-        denominator = "population",
-        group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
-    ),
+    id = "antipsychotics_injectable_and_depot",
+    numerator = "antipsychotics_injectable_and_depot",
+    denominator = "population",
+    group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
+  ),
   
   ## Prochlorperazine
-    Measure(
-        id = "Prochlorperazine",
-        numerator = "Prochlorperazine",
-        denominator = "population",
-        group_by = ["practice", "Prochlorperazine_event_code"]
-    ),
+  Measure(
+    id = "prochlorperazine",
+    numerator = "prochlorperazine",
+    denominator = "population",
+    group_by = ["practice", "prochlorperazine_event_code"]
+  ),
   
 ]
 

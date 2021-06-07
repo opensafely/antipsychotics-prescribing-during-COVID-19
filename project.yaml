@@ -8,61 +8,96 @@
 version: '3.0'
 
 expectations:
-  population_size: 1000
+  population_size: 100000
 
 actions:
 
-  # Extract study cohort data
-  generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data
+  # Extract data ----
+  
+  ## Cohort data
+  extract_data:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
-        cohort: output/data/input_*.csv
+        cohort: output/data/input_*.feather
   
-  # Patient to practice lookup
-  generate_study_population_practice_count:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_practice_count --output-dir=output/data
+  ## Ethnicity      
+  extract_ethnicity:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_ethnicity --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
-        cohort: output/data/input_practice_count.csv
+        cohort: output/data/input_ethnicity.feather
+        
+  ## Patient to practice lookup
+  patient_practice_lookup:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_practice_count --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_practice_count.feather
+        
   
-  # Generate measures data
-  generate_measures:
-      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
-      needs: [generate_study_population]
-      outputs:
-        moderately_sensitive:
-          measure_csv: output/data/measure_*.csv
-          
-  # Practice counts
+  # Data processing ----
+  
+  ## Patient counts
+  get_patient_count:
+    run: python:latest python analysis/get_patient_counts.py --output-dir=output/data
+    needs: [extract_data]
+    outputs:
+       moderately_sensitive:
+         text: output/data/patient_count.json
+         
+  ## Practice count
   get_practice_count:
-    run: python:latest python analysis/python/scripts/get_practice_count.py --output-dir=output/data
-    needs: [generate_study_population_practice_count]
+    run: python:latest python analysis/get_practice_count.py --output-dir=output/data
+    needs: [patient_practice_lookup]
     outputs:
       moderately_sensitive:
         text: output/data/practice_count.json
   
-  # Patient counts
-  get_patient_count:
-    run: python:latest python analysis/python/scripts/get_patients_counts.py --output-dir=output/data
-    needs: [generate_study_population]
+  ## Add ethnicity
+  join_ethnicity:
+    run: python:latest python analysis/join_ethnicity.py
+    needs: [extract_data, extract_ethnicity]
     outputs:
-      moderately_sensitive:
-        text: output/data/patient_count.json
+      highly_sensitive:
+        cohort: output/data/input*.feather
         
-  # Measures notebook
+  ## Generate measures
+  generate_measures:
+      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
+      needs: [join_ethnicity]
+      outputs:
+        moderately_sensitive:
+          measure_csv: output/data/measure_*.csv
+  
+  # ### Generate measures, by group
+  # generate_measures_demographics:
+  #   run: python:latest python analysis/calculate_measures.py
+  #   needs: [join_ethnicity]
+  #   outputs:
+  #     moderately_sensitive:
+  #       measure: output/combined_measure_*.csv
+  # 
+  #   ### Generate measures, by group and demographic
+  # generate_measures_demographics:
+  #   run: python:latest python analysis/calculate_measures.py
+  #   needs: [join_ethnicity]
+  #   outputs:
+  #     moderately_sensitive:
+  #       measure: output/combined_measure_*.csv
+  
+  
+  # Results ----
+  
+  ## Whole population
   generate_notebook:
-    run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
+    run: jupyter:latest jupyter nbconvert /workspace/notebooks/antipsychotic_measures.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
     needs: [generate_measures, get_practice_count, get_patient_count]
     outputs:
       moderately_sensitive:
-        notebook: output/results/antipsychotics_measures.html
-  
-  # Process data
-  data_process:
-    run: r:latest analysis/r/scripts/00_process_data.R
-    needs: [generate_study_population]
-    outputs:
-      moderately_sensitive:
-        data: output/data/data_processed.rds
+        notebook: output/antipsychotic_measures.html
+          
+
+
+        
 

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import seaborn as sns
-from IPython.display import HTML, display
+from IPython.display import HTML, display, Markdown
 
 # Legend locations for matplotlib
 # https://github.com/ebmdatalab/datalab-pandas/blob/master/ebmdatalab/charts.py
@@ -23,7 +23,7 @@ LOWER_CENTER = 8
 UPPER_CENTER = 9
 CENTER = 10
 
-BASE_DIR = Path(__file__).parents[3]
+BASE_DIR = Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output/data"
 
 
@@ -47,6 +47,12 @@ def load_and_drop(measure, practice=False):
 
     df = pd.read_csv(f_in, parse_dates=["date"])
     df = drop_irrelevant_practices(df)
+    return df
+
+def convert_ethnicity(df):
+    ethnicity_codes = {1.0: "White", 2.0: "Mixed", 3.0: "Asian", 4.0: "Black", 5.0:"Other", np.nan: "unknown", 0: "unknown"}
+
+    df = df.replace({"ethnicity": ethnicity_codes})
     return df
 
 
@@ -142,7 +148,7 @@ def get_percentage_practices(measure_table):
 
     num_practices_in_study = get_number_practices(measure_table)
 
-    return (num_practices_in_study / num_practices) * 100
+    return np.round((num_practices_in_study / num_practices) * 100, 2)
 
 
 def get_number_events_mil(measure_table, measure_id):
@@ -181,12 +187,7 @@ def deciles_chart_ebm(
     sns.set_style("whitegrid", {"grid.color": ".9"})
     if not ax:
         fig, ax = plt.subplots(1, 1)
-    df = add_percentiles(
-        df,
-        period_column=period_column,
-        column=column,
-        show_outer_percentiles=show_outer_percentiles,
-    )
+    df = compute_deciles(df, period_column, column, show_outer_percentiles)
     linestyles = {
         "decile": {
             "line": "b--",
@@ -263,27 +264,34 @@ def deciles_chart_ebm(
     return plt
 
 
-def add_percentiles(
-    df, period_column=None, column=None, show_outer_percentiles=True
+def compute_deciles(
+    measure_table, groupby_col, values_col, has_outer_percentiles=True
 ):
-    """For each period in `period_column`, compute percentiles across that
-    range.
-    Adds `percentile` column.
+    """Computes deciles.
+
+    Args:
+        measure_table: A measure table.
+        groupby_col: The name of the column to group by.
+        values_col: The name of the column for which deciles are computed.
+        has_outer_percentiles: Whether to compute the nine largest and nine smallest
+            percentiles as well as the deciles.
+
+    Returns:
+        A data frame with `groupby_col`, `values_col`, and `percentile` columns.
     """
-    deciles = np.arange(0.1, 1, 0.1)
-    bottom_percentiles = np.arange(0.01, 0.1, 0.01)
-    top_percentiles = np.arange(0.91, 1, 0.01)
-    if show_outer_percentiles:
+    quantiles = np.arange(0.1, 1, 0.1)
+    if has_outer_percentiles:
         quantiles = np.concatenate(
-            (deciles, bottom_percentiles, top_percentiles)
+            [quantiles, np.arange(0.01, 0.1, 0.01), np.arange(0.91, 1, 0.01)]
         )
-    else:
-        quantiles = deciles
-    df = df.groupby(period_column)[column].quantile(quantiles).reset_index()
-    df = df.rename(index=str, columns={"level_1": "percentile"})
-    # create integer range of percentiles
-    df["percentile"] = df["percentile"].apply(lambda x: int(x * 100))
-    return df
+
+    percentiles = (
+        measure_table.groupby(groupby_col)[values_col]
+        .quantile(pd.Series(quantiles, name="percentile"))
+        .reset_index()
+    )
+    percentiles["percentile"] = percentiles["percentile"] * 100
+    return percentiles
 
 
 def deciles_chart(
@@ -291,12 +299,7 @@ def deciles_chart(
 ):
     """period_column must be dates / datetimes"""
 
-    df = add_percentiles(
-        df,
-        period_column=period_column,
-        column=column,
-        show_outer_percentiles=False,
-    )
+    df = compute_deciles(df, period_column, column, False)
 
     if interactive:
 
@@ -393,7 +396,7 @@ def generate_sentinel_measure(
     term_column,
     dates_list,
     interactive=True,
-):
+    ):
     """Generates tables and charts for the measure with the given ID.
 
     Args:
@@ -405,7 +408,7 @@ def generate_sentinel_measure(
         term_column: The name of the term column in the codelist table.
         dates_list: Not used.
         interactive: Flag indicating whether or not the chart should be interactive.
-    """
+    """        
     df = data_dict[measure]
     childs_df = create_child_table(
         df, codelist_dict[measure], code_column, term_column, measure
@@ -416,22 +419,190 @@ def generate_sentinel_measure(
     num_events_mil = get_number_events_mil(df, measure)
     num_patients = get_number_patients(measure)
 
-    print(
+    display(Markdown(
         f"Practices included: {practices_included} ({practices_included_percent}%)"
-    )
-    print(
+    ))
+    display(Markdown(
         f"Total patients: {num_patients:.2f}M ({num_events_mil:.2f}M events)"
-    )
+    ))
 
     df = data_dict_practice[measure]
     calculate_rate(df, measure, "population")
 
     display(HTML(childs_df.to_html()))
+    
+    return df
+    
 
-    deciles_chart(
-        df,
-        period_column="date",
-        column="num_per_thousand",
-        ylabel="rate per 1000",
-        interactive=interactive,
-    )
+def calculate_imd_group(df, disease_column, rate_column):
+    imd_column = pd.to_numeric(df["imd"])
+    df["imd"] = pd.qcut(imd_column, q=5,duplicates="drop", labels=['Most deprived', '2', '3', '4', 'Least deprived'])      
+    
+    df_rate = df.groupby(by=["date", "imd", 'practice'])[[rate_column]].mean().reset_index()
+
+    df_population = df.groupby(by=["date", "imd", 'practice'])[[disease_column, "population"]].sum().reset_index()
+    
+    df_merged = df_rate.merge(df_population, on=["date", "imd", 'practice'], how="inner")
+    
+    return df_merged
+
+def redact_small_numbers(df, n, counts_columns):
+    """
+    Takes counts df as input and suppresses low numbers.  Sequentially redacts
+    low numbers from each column until count of redcted values >=n.
+    
+    df: input df
+    n: threshold for low number suppression
+    counts_columns: list of columns in df that contain counts to be suppressed.
+    """
+    
+    def suppress_column(column):    
+        suppressed_count = column[column<=n].sum()
+        column = column.where(column<=n, np.nan)
+        
+        while suppressed_count <=n:
+            suppressed_count += column.min()
+            column.iloc[column.idxmin()] = np.nan   
+        return column
+        
+    for column in counts_columns:
+        df[column] = suppress_column(df[column])
+    
+    return df   
+
+
+
+def calculate_rate_standardise(df, numerator, denominator, rate_per=1000, standardise=False, age_group_column=False):
+    """
+    df: measures df
+    numerator: numerator column in df
+    denominator: denominator column in df
+    groupby: list containing columns to group by when calculating rate
+    rate_per: defines level of rate measure
+    standardise: Boolean, whether to apply age standardisation
+    age_group_column: if applying age standardisation, defines column that is age
+    """
+    rate = df[numerator]/(df[denominator]/rate_per)
+    df['rate'] = rate
+    
+    def standardise_row(row):
+    
+        age_group = row[age_group_column]
+        rate = row['rate']
+        
+        
+        standardised_rate = rate * standard_pop.loc[str(age_group)]
+        return standardised_rate
+    
+   
+    if standardise:
+        path = "european_standard_population.csv"
+        standard_pop = pd.read_csv(path)
+        
+        age_band_grouping_dict = {
+            '0-4 years': '0-19',
+            '5-9 years': '0-19',
+            '10-14 years': '0-19',
+            '15-19 years': '0-19',
+            '20-24 years': '20-29',
+            '25-29 years': '20-29',
+            '30-34 years': '30-39',
+            '35-39 years': '30-39',
+            '40-44 years': '40-49',
+            '45-49 years': '40-49',
+            '50-54 years': '50-59',
+            '55-59 years': '50-59',
+            '60-64 years': '60-69',
+            '65-69 years': '60-69',
+            '70-74 years': '70-79',
+            '75-79 years': '70-79',
+            '80-84 years': '80+',
+            '85-89 years': '80+',
+            '90plus years': '80+',
+        }
+
+        standard_pop = standard_pop.set_index('AgeGroup')
+        standard_pop = standard_pop.groupby(age_band_grouping_dict, axis=0).sum()
+        standard_pop = standard_pop.reset_index().rename(columns={'index': 'AgeGroup'})
+
+
+        standard_pop["AgeGroup"] = standard_pop["AgeGroup"].str.replace(" years", "")
+        standard_pop = standard_pop.set_index("AgeGroup")["EuropeanStandardPopulation"]
+        standard_pop = standard_pop / standard_pop.sum()
+        
+        #apply standardisation
+        df['rate_standardised'] = df.apply(standardise_row, axis=1)
+        
+    return df
+
+
+def calculate_statistics(df, baseline_date, comparative_dates):
+    """Calculates % change between given dates
+
+    Args:
+        df: measures dataframe with num_per_thousand column
+        baseline_date: date to use as baseline. Format: YYYY-MM-DD.
+        comparative_dates: list of dates to comare to baseline.
+        
+    returns:
+        list of % differences
+    """
+    median_baseline = df[df['date'] == baseline_date]['num_per_thousand'].median()
+    differences = []
+    values = []
+    for date in comparative_dates:
+        value = df[df['date'] == date]['num_per_thousand'].median()
+        difference = round(((value - median_baseline) / median_baseline)*100, 2)
+        differences.append(difference)
+        values.append(value)
+    
+    return median_baseline, values, differences
+
+def classify_changes(changes):
+    """Classifies list of % changes
+
+    Args:
+        changes: list of percentage changes
+    """
+    
+    if (-15 <= changes[0] < 15) and (-15 <= changes[1] < 15):
+        classification = 'no change'
+        
+    elif (changes[0] > 15) or (changes[1] > 15):
+        classification = 'increase'
+    
+    elif (changes[0] <= -15) and not (-15 <= changes[1] < 15) :
+        classification = 'sustained drop'
+    
+    elif (changes[0] <= -15) and (-15 <= changes[1] < 15) :
+        classification = 'recovery'
+    
+    else:
+        classification = 'none'
+        
+        
+    display(Markdown(
+            f"Overall classification: {classification}"
+        ))
+
+def display_changes(baseline, values, changes, dates):
+    """Display % changes at given dates
+
+    Args:
+        changes: list of % changes
+        dates: list of readable dates changes refer to
+    """
+    
+    for value, change, date in zip(values, changes, dates):
+        display(Markdown(
+            f"Change in median from April 2019 ({baseline}) - {date} ({value}): ({change}%)"
+        ))
+
+
+
+
+
+
+
+
+

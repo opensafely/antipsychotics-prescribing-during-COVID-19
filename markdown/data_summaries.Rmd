@@ -1,0 +1,35 @@
+---
+title: "Practice registration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library(tidyverse)
+library(lubridate)
+library(readr)
+library(arrow)
+
+```
+
+
+## Number of people using antipsychotics
+```{r, echo = FALSE}
+filenames <- list.files(path = here::here("output", "data"))
+
+print(filenames)
+
+data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
+
+names(data_extract)
+
+table(data_extract$antipsychotics_first_gen_event_code)
+
+table(data_extract$antipsychotics_first_gen)
+```

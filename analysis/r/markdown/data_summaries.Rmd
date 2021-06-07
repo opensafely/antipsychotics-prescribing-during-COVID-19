@@ -16,13 +16,17 @@ library(lubridate)
 library(readr)
 library(arrow)
 
-## Import data
-data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
 ```
 
 
-## Number of poeple using antipsychotics
+## Number of people using antipsychotics
 ```{r, echo = FALSE}
+filenames <- list.files(path = here::here("output", "data"))
+
+print(filenames)
+
+data_extract <- arrow::read_feather(here::here("output", "data", "input_ld_2019-01-01.feather"))
+
 names(data_extract)
 
 table(data_extract$antipsychotics_first_gen_event_code)

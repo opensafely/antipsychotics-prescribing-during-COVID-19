@@ -1,0 +1,42 @@
+---
+title: "Prescribing of antipsychotic during COVID-19 to specific groups with the population"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library('tidyverse')
+library('lubridate')
+library('reshape2')
+
+## Import processed data
+data_processed <- read_rds(here::here("output", "data", "data_processed.rds"))
+
+```
+
+## Background
+DataLab is delivering analysis on healthcare disruption and has identified that the use of antipsychotics in people with dementia and living in care homes may be an area of concern. The following results look at prescribing of antipsychotics during COVID-19 to specific groups with the population. The groups considered are:
+
+* Autism
+* Care homes
+* Dementia
+* Learning disability 
+* Serious Mental Illness
+
+* Age
+* Ethnicity
+* IMD
+* Region/STP
+* Sex
+
+
+## Absolute number of antipsychotics issued each group
+
+
+

@@ -135,12 +135,12 @@ actions:
   #       text: output/data/patient_count.json
   #       
   # Measures notebook
-  generate_notebook:
-    run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
-    needs: [generate_measures_ld]
-    outputs:
-      moderately_sensitive:
-        notebook: output/results/antipsychotics_measures.html
+  # generate_notebook:
+  #   run: jupyter:latest jupyter nbconvert /workspace/analysis/python/notebooks/antipsychotics_measures.ipynb --execute --to html --output-dir=/workspace/output/results --ExecutePreprocessor.timeout=86400 --no-input
+  #   needs: [generate_measures_ld]
+  #   outputs:
+  #     moderately_sensitive:
+  #       notebook: output/results/antipsychotics_measures.html
 
 #   # Process data
 #   data_process:

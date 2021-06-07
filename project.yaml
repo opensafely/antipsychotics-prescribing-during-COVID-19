@@ -37,7 +37,7 @@ actions:
         
   
   # Data processing ----
-  
+
   ## Patient counts
   get_patient_count:
     run: python:latest python analysis/get_patient_counts.py --output-dir=output/data
@@ -61,6 +61,14 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/data/input*.feather
+  
+  ## Process data
+  data_process:
+    run: r:latest analysis/process_data.R
+    needs: [join_ethnicity]
+    outputs:
+      moderately_sensitive:
+        tables: output/data/data_*.rds
         
   ## Generate measures
   generate_measures:
@@ -87,9 +95,18 @@ actions:
   #       measure: output/combined_measure_*.csv
   
   
+
   # Results ----
   
-  ## Whole population
+  ## Figures
+  summary_figures:
+    run: r:latest analysis/summary_plots.R
+    needs: [data_process]
+    outputs:
+      moderately_sensitive:
+        plots: output/figures/plot*.svg
+  
+  ## Whole population notebook
   generate_notebook:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/antipsychotic_measures.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
     needs: [generate_measures, get_practice_count, get_patient_count]

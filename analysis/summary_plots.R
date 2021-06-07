@@ -12,6 +12,7 @@
 ## Import libraries
 library('tidyverse')
 library('lubridate')
+library('reshape2')
 
 ## Create output directory
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)

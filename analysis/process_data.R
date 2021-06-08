@@ -173,6 +173,9 @@ data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_
 
 
 # Save dataset(s) as .rds files ----
-write_rds(data_processed, here::here("output", "data", "data_processed.rds"), compress="gz")
-
-
+write_rds(data_processed, here::here("output", "data", "data_processed_all.rds"), compress="gz")
+write_rds(data_processed %>% filter(learning_disability == 1), here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
+write_rds(data_processed %>% filter(autism == 1), here::here("output", "data", "data_processed_autism.rds"), compress="gz")
+write_rds(data_processed %>% filter(serious_mental_illness == 1), here::here("output", "data", "data_processed_serious_mental_illness.rds"), compress="gz")
+write_rds(data_processed %>% filter(care_home == 1), here::here("output", "data", "data_processed_care_home.rds"), compress="gz")
+write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data", "data_processed_dementia.rds"), compress="gz")

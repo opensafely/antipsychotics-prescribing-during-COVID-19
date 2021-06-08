@@ -19,25 +19,7 @@ library('arrow')
 library('here')
 
 ## Custom functions
-
-### Factorise
-fct_case_when <- function(...) {
-  # uses dplyr::case_when but converts the output to a factor,
-  # with factors ordered as they appear in the case_when's  ... argument
-  args <- as.list(match.call())
-  levels <- sapply(args[-1], function(f) f[[3]])  # extract RHS of formula
-  levels <- levels[!is.na(levels)]
-  factor(dplyr::case_when(...), levels=levels)
-}
-
-## Read in data
-my_read_feather <- function(x) {
-  
-    data_extract <- arrow::read_feather(
-      here::here("output", "data", x)) %>%
-      mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
-    
-}
+source(here("analysis", "custom_functions.R"))
 
 ## Output processed data to rds
 dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recursive=TRUE)
@@ -172,6 +154,15 @@ data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_
   arrange(date, patient_id, practice)
 
 
+# Calculate measures --
+measures_all <- calculate_measures(data_processed, cohort = "all")
+measures_learning_disability <- calculate_measures(data_processed, cohort = "learning_disability")
+measures_autism <- calculate_measures(data_processed, cohort = "autism")
+measures_serious_mental_illness <- calculate_measures(data_processed, cohort = "serious_mental_illness")
+measures_care_home <- calculate_measures(data_processed, cohort = "care_home")
+measures_dementia <- calculate_measures(data_processed, cohort = "dementia")
+
+
 # Save dataset(s) as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_processed_all.rds"), compress="gz")
 write_rds(data_processed %>% filter(learning_disability == 1), here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
@@ -179,3 +170,10 @@ write_rds(data_processed %>% filter(autism == 1), here::here("output", "data", "
 write_rds(data_processed %>% filter(serious_mental_illness == 1), here::here("output", "data", "data_processed_serious_mental_illness.rds"), compress="gz")
 write_rds(data_processed %>% filter(care_home == 1), here::here("output", "data", "data_processed_care_home.rds"), compress="gz")
 write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data", "data_processed_dementia.rds"), compress="gz")
+
+write_rds(measures_all, here::here("output", "data", "measures_all.rds"), compress="gz")
+write_rds(data_learning_disability %>% filter(learning_disability == 1), here::here("output", "data", "measures_learning_disability.rds"), compress="gz")
+write_rds(data_autism %>% filter(autism == 1), here::here("output", "data", "measures_autism.rds"), compress="gz")
+write_rds(data_serious_mental_illness %>% filter(serious_mental_illness == 1), here::here("output", "data", "measures_serious_mental_illness.rds"), compress="gz")
+write_rds(data_care_home %>% filter(care_home == 1), here::here("output", "data", "measures_care_home.rds"), compress="gz")
+write_rds(measures_dementia %>% filter(dementia == 1), here::here("output", "data", "measures_dementia.rds"), compress="gz")

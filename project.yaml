@@ -78,7 +78,7 @@ actions:
       needs: [join_ethnicity]
       outputs:
         moderately_sensitive:
-          measure_csv: output/data/measure_*.csv
+          measure_csv: output/data/custom_measures_*.csv
   
   # ### Generate measures, by group
   # generate_measures_demographics:

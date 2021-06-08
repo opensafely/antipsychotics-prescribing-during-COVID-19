@@ -163,7 +163,9 @@ measures_care_home <- calculate_measures(data_processed, cohort = "care_home")
 measures_dementia <- calculate_measures(data_processed, cohort = "dementia")
 
 
-# Save dataset(s) as .rds files ----
+# Save datasets ----
+
+## Processed data as .rds files
 write_rds(data_processed, here::here("output", "data", "data_processed_all.rds"), compress="gz")
 write_rds(data_processed %>% filter(learning_disability == 1), here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
 write_rds(data_processed %>% filter(autism == 1), here::here("output", "data", "data_processed_autism.rds"), compress="gz")
@@ -171,9 +173,10 @@ write_rds(data_processed %>% filter(serious_mental_illness == 1), here::here("ou
 write_rds(data_processed %>% filter(care_home == 1), here::here("output", "data", "data_processed_care_home.rds"), compress="gz")
 write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data", "data_processed_dementia.rds"), compress="gz")
 
-write_rds(measures_all, here::here("output", "data", "measures_all.rds"), compress="gz")
-write_rds(data_learning_disability %>% filter(learning_disability == 1), here::here("output", "data", "measures_learning_disability.rds"), compress="gz")
-write_rds(data_autism %>% filter(autism == 1), here::here("output", "data", "measures_autism.rds"), compress="gz")
-write_rds(data_serious_mental_illness %>% filter(serious_mental_illness == 1), here::here("output", "data", "measures_serious_mental_illness.rds"), compress="gz")
-write_rds(data_care_home %>% filter(care_home == 1), here::here("output", "data", "measures_care_home.rds"), compress="gz")
-write_rds(measures_dementia %>% filter(dementia == 1), here::here("output", "data", "measures_dementia.rds"), compress="gz")
+## Measures data as csvs
+write_csv(measures_all, here::here("output", "data", "measures_all.csv"))
+write_csv(data_learning_disability %>% filter(learning_disability == 1), here::here("output", "data", "measures_learning_disability.csv"))
+write_csv(data_autism %>% filter(autism == 1), here::here("output", "data", "measures_autism.csv"))
+write_csv(data_serious_mental_illness %>% filter(serious_mental_illness == 1), here::here("output", "data", "measures_serious_mental_illness.csv"))
+write_csv(data_care_home %>% filter(care_home == 1), here::here("output", "data", "measures_care_home.csv"))
+write_csv(measures_dementia %>% filter(dementia == 1), here::here("output", "data", "measures_dementia.csv"))

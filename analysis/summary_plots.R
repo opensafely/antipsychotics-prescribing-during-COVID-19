@@ -13,16 +13,21 @@
 library('tidyverse')
 library('lubridate')
 library('reshape2')
+library('here')
 
 ## Create output directory
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
-data_processed <- readRDS(here::here("output", "data", "data_processed.rds"))
-data_processed_learning_disability <- readRDS(here::here("output", "data", "data_processed_learning_disability.rds"))
-
+data_processed <- readRDS(here::here("output", "data", "data_processed_all.rds"))
+data_processed_ld <- readRDS(here::here("output", "data", "data_processed_learning_disability.rds"))
+data_processed_autism <- readRDS(here::here("output", "data", "data_processed_autism.rds"))
+data_processed_serious_mental_illness <- readRDS(here::here("output", "data", "data_processed_serious_mental_illness.rds"))
+data_processed_care_home <- readRDS(here::here("output", "data", "data_processed_care_home.rds"))
+data_processed_dementia <- readRDS(here::here("output", "data", "data_processed_dementia.rds"))
 
 # Custom functions ----
+source(here("analysis", "custom_functions.R"))
 
 
 # Figures ----

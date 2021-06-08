@@ -55,8 +55,7 @@ antipsychotics_first_gen <- ggplot(data_processed, aes(x = date, y = antipsychot
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-ggsave(
-  here::here("output", "figures", "plot_total_antipsychotics_first_gen.svg"),
+ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_first_gen.svg"),
   antipsychotics_first_gen,
   units = "cm", width = 40, height = 20
 )
@@ -72,8 +71,7 @@ antipsychotics_second_gen <-  ggplot(data_processed, aes(x = date, y = antipsych
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-ggsave(
-  here::here("output", "figures", "plot_total_antipsychotics_second_gen.svg"),
+ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_second_gen.svg"),
   antipsychotics_second_gen,
   units = "cm", width = 40, height = 20
 )
@@ -89,8 +87,7 @@ antipsychotics_injectable_and_depot <-  ggplot(data_processed, aes(x = date, y =
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-ggsave(
-  here::here("output", "figures", "plot_total_antipsychotics_injectable_and_depot.svg"),
+ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_injectable_and_depot.svg"),
   antipsychotics_injectable_and_depot,
   units = "cm", width = 40, height = 20
 )
@@ -106,8 +103,7 @@ prochlorperazine <-  ggplot(data_processed, aes(x = date, y = prochlorperazine, 
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-ggsave(
-  here::here("output", "figures", "plot_total_prochlorperazine.svg"),
+ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine.svg"),
   prochlorperazine,
   units = "cm", width = 40, height = 20
 )

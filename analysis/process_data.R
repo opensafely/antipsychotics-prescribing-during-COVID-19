@@ -175,8 +175,8 @@ write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data",
 
 ## Measures data as csvs
 write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
-write_csv(data_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
-write_csv(data_autism , here::here("output", "data", "custom_measures_autism.csv"))
-write_csv(data_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
-write_csv(data_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
+write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
+write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
+write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
+write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
 write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))

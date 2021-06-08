@@ -31,14 +31,14 @@ source(here("analysis", "custom_functions.R"))
 
 
 # Format data ----
-filenames <- list.files(path = here::here("output", "data"), pattern = "input_2")
+data_processed <- rbind(lapply(data_processed_all, cohort = "all", calculate_totals) %>% bind_rows(),
+             lapply(data_processed_all, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
+             lapply(data_processed_all, cohort = "autism", calculate_totals) %>% bind_rows(),
+             lapply(data_processed_all, cohort = "serious_mental_illness", calculate_totals) %>% bind_rows(),
+             lapply(data_processed_all, cohort = "care_home", calculate_totals) %>% bind_rows(),
+             lapply(data_processed_all, cohort = "dementia", calculate_totals) %>% bind_rows()) %>%
+  as.data.frame()
 
-data_processed <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bind_rows(),
-             lapply(filenames, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
-             lapply(filenames, cohort = "autism", calculate_totals) %>% bind_rows(),
-             lapply(filenames, cohort = "serious_mental_illness", calculate_totals) %>% bind_rows(),
-             lapply(filenames, cohort = "care_home", calculate_totals) %>% bind_rows(),
-             lapply(filenames, cohort = "dementia", calculate_totals) %>% bind_rows())
 
 # Figures ----
 
@@ -56,8 +56,8 @@ antipsychotics_first_gen <- ggplot(data_processed, aes(x = date, y = antipsychot
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_first_gen.svg"),
-  antipsychotics_first_gen,
-  units = "cm", width = 40, height = 20
+       antipsychotics_first_gen,
+       units = "cm", width = 40, height = 20
 )
 
 ### Second generation antipsychotics, excluding long acting depots
@@ -72,8 +72,8 @@ antipsychotics_second_gen <-  ggplot(data_processed, aes(x = date, y = antipsych
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_second_gen.svg"),
-  antipsychotics_second_gen,
-  units = "cm", width = 40, height = 20
+       antipsychotics_second_gen,
+       units = "cm", width = 40, height = 20
 )
 
 ### Long acting injectable and depot antipsychotics
@@ -88,8 +88,8 @@ antipsychotics_injectable_and_depot <-  ggplot(data_processed, aes(x = date, y =
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_injectable_and_depot.svg"),
-  antipsychotics_injectable_and_depot,
-  units = "cm", width = 40, height = 20
+       antipsychotics_injectable_and_depot,
+       units = "cm", width = 40, height = 20
 )
 
 ### Prochlorperazine
@@ -104,8 +104,8 @@ prochlorperazine <-  ggplot(data_processed, aes(x = date, y = prochlorperazine, 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine.svg"),
-  prochlorperazine,
-  units = "cm", width = 40, height = 20
+       prochlorperazine,
+       units = "cm", width = 40, height = 20
 )
 
 # ## Learning disability inequalities
@@ -164,5 +164,6 @@ ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine.svg
 # )
 
 
-  
+
+
 

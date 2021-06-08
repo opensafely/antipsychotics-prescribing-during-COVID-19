@@ -39,6 +39,10 @@ data_extract <- rbind(lapply(filenames, my_read_feather) %>%
 
 data_extract_ethnicity <- arrow::read_feather(
   here::here("output", "data", "input_ethnicity.feather")) %>%
+  head()
+
+data_extract_ethnicity <- arrow::read_feather(
+  here::here("output", "data", "input_ethnicity.feather")) %>%
   mutate(ethnicity_long =  ifelse(is.na(eth) & ethnicity_other == 1, 17, 
                              ifelse(is.na(eth) & ethnicity_not_given == 1, 18,
                                     ifelse(is.na(eth) & ethnicity_not_stated == 1, 19,

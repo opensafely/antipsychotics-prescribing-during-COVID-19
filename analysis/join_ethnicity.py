@@ -18,7 +18,7 @@ ethnicity_df = pd.read_feather('output/data/input_ethnicity.feather')
 for file in os.listdir('output/data'):
   if file.startswith('input'):
     #exclude ethnicity
-    if file.split('_')[1] not in ['ethnicity.csv', 'practice']:
+    if file.split('_')[1] not in ['ethnicity.feather', 'practice']:
       file_path = os.path.join('output/data', file)
       df = pd.read_feather(file_path)
       merged_df = df.merge(ethnicity_df, how = 'left', on = 'patient_id')

@@ -65,10 +65,12 @@ actions:
   ## Process data
   data_process:
     run: r:latest analysis/process_data.R
-    needs: [join_ethnicity]
+    needs: [extract_ethnicity, join_ethnicity]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         tables: output/data/data_*.rds
+      moderately_sensitive:
+        tables: output/data/custom_measures_*.csv
         
   ## Generate measures
   generate_measures:

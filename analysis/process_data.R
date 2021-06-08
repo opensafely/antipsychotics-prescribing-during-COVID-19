@@ -30,210 +30,14 @@ fct_case_when <- function(...) {
   factor(dplyr::case_when(...), levels=levels)
 }
 
-## Read in data and format
-my_read_csv <- function(x) {
+## Read in data
+my_read_feather <- function(x) {
   
-  ## Read in data (don't rely on defaults)
-  data_extract <- read_csv(
-    here::here("output", "data", x),
-    col_types = cols_only(
-      
-      # Identifier
-      patient_id = col_integer(),
-      
-      # Outcome(s)
-      antipsychotics_first_gen = col_logical(),
-      antipsychotics_second_gen = col_logical(),
-      antipsychotics_injectable_and_depot = col_logical(),
-      Prochlorperazine = col_logical(),
-      
-      # Groups
-      learning_disability = col_logical(),
-      autism = col_logical(),
-      serious_mental_illness = col_logical(),
-      care_home = col_logical(),
-      dementia = col_logical(),
-      
-      # Demographic
-      age = col_integer(),
-      sex = col_character(),
-      ethnicity = col_character(),
-      ethnicity_other = col_date(format="%Y-%m-%d"),
-      ethnicity_not_given = col_date(format="%Y-%m-%d"),
-      ethnicity_not_stated = col_date(format="%Y-%m-%d"),
-      ethnicity_no_record = col_date(format="%Y-%m-%d"),
-      
-      # Geographical
-      practice = col_integer(),
-      imd = col_character(),
-      region = col_character(),
-      stp = col_character()
-      
-    ), na = character()) 
-  
-  # Add date column and parse NAs
-  data_extract <- data_extract %>%
-    mutate(date = substr(x, 7, 16)) %>%
-    mutate(across(
-      .cols = where(is.character),
-      .fns = ~na_if(.x, "")
-    )) %>%
-    mutate(across(
-      .cols = c(where(is.numeric), -ends_with("_id")), #convert numeric+integer but not id variables
-      .fns = ~na_if(.x, 0)
-    )) %>%
-    arrange(patient_id)
-  
-  ## Format columns (i.e, set factor levels)
-  data_extract %>%
-    mutate(
-      
-      # Age band
-      ageband = cut(
-        age,
-        breaks = c(-Inf, 10, 20, 30, 40, 50, 60, 70, 80, 90, Inf),
-        labels = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90+"),
-        right = FALSE
-      ),
-      
-      # Sex
-      sex = fct_case_when(
-        sex == "F" ~ "Female",
-        sex == "M" ~ "Male",
-        #sex == "I" ~ "Inter-sex",
-        #sex == "U" ~ "Unknown",
-        TRUE ~ NA_character_
-      ),
-      
-      # Ethnicity
-      ethnicity =  ifelse(is.na(ethnicity) & !is.na(ethnicity_other), 17, 
-                          ifelse(is.na(ethnicity) & !is.na(ethnicity_not_given), 18,
-                                 ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 19,
-                                        ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 20,
-                                               ethnicity)))),
-      
-      ethnicity = ifelse(is.na(ethnicity), 20, ethnicity),
-      
-      ethnicity = fct_case_when(
-        ethnicity == "1" ~ "White - British",
-        ethnicity == "2" ~ "White - Irish",
-        ethnicity == "3" ~ "White - Any other White background",
-        ethnicity == "4" ~ "Mixed - White and Black Caribbean",
-        ethnicity == "5" ~ "Mixed - White and Black African",
-        ethnicity == "6" ~ "Mixed - White and Asian",
-        ethnicity == "7" ~ "Mixed - Any other mixed background",
-        ethnicity == "8" ~ "Asian or Asian British - Indian",
-        ethnicity == "9" ~ "Asian or Asian British - Pakistani",
-        ethnicity == "10" ~ "Asian or Asian British - Bangladeshi",
-        ethnicity == "11" ~ "Asian or Asian British - Any other Asian background",
-        ethnicity == "12" ~ "Black or Black British - Caribbean",
-        ethnicity == "13" ~ "Black or Black British - African",
-        ethnicity == "14" ~ "Black or Black British - Any other Black background",
-        ethnicity == "15" ~ "Other ethnic groups - Chinese",
-        ethnicity == "16" ~ "Other ethnic groups - Any other ethnic group",
-        ethnicity == "17" ~ "Patients with any other ethnicity code",
-        ethnicity == "18" ~ "Ethnicity not given - patient refused",
-        ethnicity == "19" ~ "Ethnicity not stated",
-        ethnicity == "20" ~ "Ethnicity not recorded",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_
-      ),
-      
-      # IMD
-      imd = na_if(imd, "0"),
-      imd = fct_case_when(
-        imd == 1 ~ "1 most deprived",
-        imd == 2 ~ "2",
-        imd == 3 ~ "3",
-        imd == 4 ~ "4",
-        imd == 5 ~ "5 least deprived",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_
-      ),
-      
-      # Region
-      region = fct_case_when(
-        region == "London" ~ "London",
-        region == "East" ~ "East of England",
-        region == "East Midlands" ~ "East Midlands",
-        region == "North East" ~ "North East",
-        region == "North West" ~ "North West",
-        region == "South East" ~ "South East",
-        region == "South West" ~ "South West",
-        region == "West Midlands" ~ "West Midlands",
-        region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_
-      ),
-      
-      ## STP
-      stp = as.factor(stp)
-      
-    ) %>%
-    droplevels() %>%
-    mutate(
-      across(
-        where(is.logical),
-        ~.x*1L
-      )
-    ) %>%
-    filter(!is.na(practice)) %>%
-    select(date, practice, 
-           antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, Prochlorperazine,
-           autism, care_home, dementia, learning_disability, serious_mental_illness,
-           age, ethnicity, imd, region, sex, stp)
-}
-
-## Read in and process data
-my_read_feather <- function(x, group = "learning_disability") {
-  
-  if(group %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
-    
-    ## Read in data
     data_extract <- arrow::read_feather(
       here::here("output", "data", x)) %>%
-      mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d")) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, paste0(group)) %>%
-      rename(group = paste0(group)) %>%
-      filter(group == 1) %>%
-      select(-group) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(group))
+      mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
     
-  } else {
-    
-    ## Read in data
-    data_extract <- arrow::read_feather(
-      here::here("output", "data", x)) %>%
-      mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d")) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = "all")
-  }
-  
 }
-
-my_read_feather_ld <- function(x) {
-  
-  ## Read in data
-    data_extract <- arrow::read_feather(
-      here::here("output", "data", x)) %>%
-      mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d")) %>%
-      filter(learning_disability == 1) %>%
-      group_by(date)
-}
-
-
 
 ## Output processed data to rds
 dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recursive=TRUE)
@@ -241,22 +45,134 @@ dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recu
 
 # Process data ----
 
-## Read in, format and combine data
+## Read in and combine data
 filenames <- list.files(path = here::here("output", "data"), pattern = "input_2")
 
-tbl <- rbind(lapply(filenames, group = "all", my_read_feather) %>% bind_rows(),
-             lapply(filenames, group = "learning_disability", my_read_feather) %>% bind_rows(),
-             lapply(filenames, group = "autism", my_read_feather) %>% bind_rows(),
-             lapply(filenames, group = "serious_mental_illness", my_read_feather) %>% bind_rows(),
-             lapply(filenames, group = "care_home", my_read_feather) %>% bind_rows(),
-             lapply(filenames, group = "dementia", my_read_feather) %>% bind_rows())
+data_extract <- rbind(lapply(filenames, my_read_feather) %>% 
+                        bind_rows()) %>%
+  select(date, patient_id, practice, antipsychotics_first_gen, antipsychotics_first_gen_event_code,
+         antipsychotics_second_gen, antipsychotics_second_gen_event_code, antipsychotics_injectable_and_depot,
+         antipsychotics_injectable_and_depot_event_code, prochlorperazine, prochlorperazine_event_code, 
+         learning_disability, autism, serious_mental_illness, care_home, dementia, sex, imd, age, region, stp)
 
-## Learning disability dataset
-data_ld <- lapply(filenames, my_read_feather_ld) %>% bind_rows()
+data_extract_ethnicity <- arrow::read_feather(
+  here::here("output", "data", "input_ethnicity.feather")) %>%
+  mutate(ethnicity_long =  ifelse(is.na(eth) & ethnicity_other == 1, 17, 
+                             ifelse(is.na(eth) & ethnicity_not_given == 1, 18,
+                                    ifelse(is.na(eth) & ethnicity_not_stated == 1, 19,
+                                           ifelse(is.na(eth) & ethnicity_no_record == 1, 20,
+                                                  eth)))),
+         ethnicity_long = ifelse(is.na(ethnicity_long), 20, ethnicity_long),
+         ethnicity_short = ifelse(ethnicity_long %in% c(1,2,3), 1, ethnicity_long),
+         ethnicity_short = ifelse(ethnicity_long %in% c(4,5,6,7), 2, ethnicity_short),
+         ethnicity_short = ifelse(ethnicity_long %in% c(8,9,10,11), 3, ethnicity_short),
+         ethnicity_short = ifelse(ethnicity_long %in% c(12,13,14), 4, ethnicity_short),
+         ethnicity_short = ifelse(ethnicity_long %in% c(15,16), 5, ethnicity_short),
+         ethnicity_short = ifelse(ethnicity_short %in% c(1:16), ethnicity_short, 6)) %>%
+  select(patient_id, ethnicity_long, ethnicity_short)
+
+## Format columns (i.e, set factor levels)
+data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_id") %>%
+  mutate(
+    
+    # Age
+    ageband = cut(
+      age,
+      breaks = c(-Inf, 18, 30, 40, 50, 60, 65, Inf),
+      labels = c("under 18", "18-30", "30s", "40s", "50s", "60-64", "65+"),
+      right = FALSE
+    ),
+    
+    # Ethnicity
+    ethnicity_long = fct_case_when(
+      ethnicity_long == "1" ~ "White - British",
+      ethnicity_long == "2" ~ "White - Irish",
+      ethnicity_long == "3" ~ "White - Any other White background",
+      ethnicity_long == "4" ~ "Mixed - White and Black Caribbean",
+      ethnicity_long == "5" ~ "Mixed - White and Black African",
+      ethnicity_long == "6" ~ "Mixed - White and Asian",
+      ethnicity_long == "7" ~ "Mixed - Any other mixed background",
+      ethnicity_long == "8" ~ "Asian or Asian British - Indian",
+      ethnicity_long == "9" ~ "Asian or Asian British - Pakistani",
+      ethnicity_long == "10" ~ "Asian or Asian British - Bangladeshi",
+      ethnicity_long == "11" ~ "Asian or Asian British - Any other Asian background",
+      ethnicity_long == "12" ~ "Black or Black British - Caribbean",
+      ethnicity_long == "13" ~ "Black or Black British - African",
+      ethnicity_long == "14" ~ "Black or Black British - Any other Black background",
+      ethnicity_long == "15" ~ "Other ethnic groups - Chinese",
+      ethnicity_long == "16" ~ "Other ethnic groups - Any other ethnic group",
+      ethnicity_long == "17" ~ "Patients with any other ethnicity code",
+      ethnicity_long == "18" ~ "Ethnicity not given - patient refused",
+      ethnicity_long == "19" ~ "Ethnicity not stated",
+      ethnicity_long == "20" ~ "Ethnicity not recorded",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
+    ),
+    
+    # Ethnicity
+    ethnicity_short = fct_case_when(
+      ethnicity_short == "1" ~ "White",
+      ethnicity_short == "2" ~ "Mixed",
+      ethnicity_short == "3" ~ "Asian or Asian British",
+      ethnicity_short == "4" ~ "Black or Black British",
+      ethnicity_short == "5" ~ "Other ethnic groups",
+      ethnicity_short == "6" ~ "Unknown",
+      #TRUE ~ "Unknown"
+      TRUE ~ NA_character_
+    ),
+    
+    # IMD
+    imd = na_if(imd, "0"),
+    imd = as.integer(imd),
+    imd = fct_case_when(
+      (imd >=1) & (imd < 32844*1/5) ~ "1 most deprived",
+      (imd >= 32844*1/5) & (imd < 32844*2/5) ~ "2",
+      (imd >= 32844*2/5) & (imd < 32844*3/5) ~ "3",
+      (imd >= 32844*3/5) & (imd < 32844*4/5) ~ "4",
+      (imd >= 32844*4/5) ~ "5 least deprived",
+      TRUE ~ NA_character_
+    ),
+    
+    # Sex
+    sex = fct_case_when(
+      sex == "F" ~ "Female",
+      sex == "M" ~ "Male",
+      #sex == "I" ~ "Inter-sex",
+      #sex == "U" ~ "Unknown",
+      TRUE ~ NA_character_
+    ),
+    
+    # Region
+    region = fct_case_when(
+      region == "London" ~ "London",
+      region == "East" ~ "East of England",
+      region == "East Midlands" ~ "East Midlands",
+      region == "North East" ~ "North East",
+      region == "North West" ~ "North West",
+      region == "South East" ~ "South East",
+      region == "South West" ~ "South West",
+      region == "West Midlands" ~ "West Midlands",
+      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
+    ),
+    
+    ## STP
+    stp = as.factor(stp)
+    
+    ) %>%
+  droplevels() %>%
+  mutate(
+    across(
+      where(is.logical),
+      ~.x*1L
+    )
+  ) %>%
+  droplevels() %>%
+  arrange(date, patient_id, practice)
 
 
 # Save dataset(s) as .rds files ----
-write_rds(tbl, here::here("output", "data", "data_processed.rds"), compress="gz")
-write_rds(data_ld, here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
+write_rds(data_processed, here::here("output", "data", "data_processed.rds"), compress="gz")
 
 

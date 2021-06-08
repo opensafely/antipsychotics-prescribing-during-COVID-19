@@ -70,7 +70,7 @@ actions:
       highly_sensitive:
         tables: output/data/data_*.rds
       moderately_sensitive:
-        tables: output/data/custom_measure_*.csv
+        tables: output/data/custom_measures_*.csv
         
   ## Generate measures
   generate_measures:

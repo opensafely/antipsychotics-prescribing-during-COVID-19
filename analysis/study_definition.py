@@ -149,7 +149,7 @@ study = StudyDefinition(
   ### Learning disabilities
   learning_disability = patients.with_these_clinical_events(
     learning_disability_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -157,7 +157,7 @@ study = StudyDefinition(
   ### Autism
   autism = patients.with_these_clinical_events(
     autism_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -165,7 +165,7 @@ study = StudyDefinition(
   ### Serious Mental Illness
   serious_mental_illness = patients.with_these_clinical_events(
     serious_mental_illness_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -173,7 +173,7 @@ study = StudyDefinition(
   ### Care home
   care_home = patients.with_these_clinical_events(
     carehome_primis_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -181,7 +181,7 @@ study = StudyDefinition(
   ### Dementia
   dementia = patients.with_these_clinical_events(
     dementia_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),

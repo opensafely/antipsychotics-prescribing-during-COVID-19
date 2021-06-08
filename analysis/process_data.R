@@ -154,7 +154,7 @@ data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_
   arrange(date, patient_id, practice)
 
 
-# Calculate measures --
+# Calculate measures ----
 measures_all <- calculate_measures(data_processed, cohort = "all")
 measures_learning_disability <- calculate_measures(data_processed, cohort = "learning_disability")
 measures_autism <- calculate_measures(data_processed, cohort = "autism")
@@ -180,3 +180,5 @@ write_csv(measures_autism , here::here("output", "data", "custom_measures_autism
 write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
 write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
 write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
+
+

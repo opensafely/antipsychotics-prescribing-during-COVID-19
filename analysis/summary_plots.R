@@ -19,7 +19,7 @@ library('here')
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
-data_processed <- readRDS(here::here("output", "data", "data_processed_all.rds"))
+data_processed_all <- readRDS(here::here("output", "data", "data_processed_all.rds"))
 data_processed_ld <- readRDS(here::here("output", "data", "data_processed_learning_disability.rds"))
 data_processed_autism <- readRDS(here::here("output", "data", "data_processed_autism.rds"))
 data_processed_serious_mental_illness <- readRDS(here::here("output", "data", "data_processed_serious_mental_illness.rds"))
@@ -30,12 +30,22 @@ data_processed_dementia <- readRDS(here::here("output", "data", "data_processed_
 source(here("analysis", "custom_functions.R"))
 
 
+# Format data ----
+filenames <- list.files(path = here::here("output", "data"), pattern = "input_2")
+
+data_processed <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bind_rows(),
+             lapply(filenames, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
+             lapply(filenames, cohort = "autism", calculate_totals) %>% bind_rows(),
+             lapply(filenames, cohort = "serious_mental_illness", calculate_totals) %>% bind_rows(),
+             lapply(filenames, cohort = "care_home", calculate_totals) %>% bind_rows(),
+             lapply(filenames, cohort = "dementia", calculate_totals) %>% bind_rows())
+
 # Figures ----
 
 ## Total number of antipsychotics issued
 
 ### First generation antipsychotics, excluding long acting depots
-antipsychotics_first_gen <-  ggplot(data_processed, aes(x = date, y = antipsychotics_first_gen, colour = group)) +
+antipsychotics_first_gen <- ggplot(data_processed, aes(x = date, y = antipsychotics_first_gen, colour = group)) +
   geom_line() +
   facet_wrap(~group, scales = "free") +
   theme_bw() +
@@ -102,60 +112,60 @@ ggsave(
   units = "cm", width = 40, height = 20
 )
 
-## Learning disability inequalities
-
-### Sex
-data_ld_by_sex <- data_processed_learning_disability %>%
-  select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine,
-         sex) %>%
-  group_by(date, sex) %>%
-  summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-            antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-            antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-            prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-  melt(id.vars = c("date", "sex")) %>%
-  ggplot(aes(x = date, y = value, colour = sex)) +
-  geom_line() +
-  facet_wrap(~variable, scales = "free") +
-  theme_bw() +
-  theme(legend.position = "bottom") +
-  ylab("Absolute number of antipsychotics issued to those with learning disabilities per month, by sex") +
-  xlab("date") +
-  scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
-
-ggsave(
-  here::here("output", "figures", "plot_ld_sex.svg"),
-  data_ld_by_sex,
-  units = "cm", width = 40, height = 20
-)
-
-### IMD
-data_ld_by_imd <- data_processed_learning_disability %>%
-  select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine,
-         imd) %>%
-  filter(imd != 0) %>%
-  group_by(date, imd) %>%
-  summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-            antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-            antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-            prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-  melt(id.vars = c("date", "imd")) %>%
-  ggplot(aes(x = date, y = value, colour = imd)) +
-  geom_line() +
-  facet_wrap(~variable, scales = "free") +
-  theme_bw() +
-  theme(legend.position = "bottom") +
-  ylab("Absolute number of antipsychotics issued to those with learning disabilities per month, by imd") +
-  xlab("date") +
-  scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
-
-ggsave(
-  here::here("output", "figures", "plot_ld_imd.svg"),
-  data_ld_by_imd,
-  units = "cm", width = 40, height = 20
-)
+# ## Learning disability inequalities
+# 
+# ### Sex
+# data_ld_by_sex <- data_processed_learning_disability %>%
+#   select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine,
+#          sex) %>%
+#   group_by(date, sex) %>%
+#   summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
+#             antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
+#             antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
+#             prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+#   melt(id.vars = c("date", "sex")) %>%
+#   ggplot(aes(x = date, y = value, colour = sex)) +
+#   geom_line() +
+#   facet_wrap(~variable, scales = "free") +
+#   theme_bw() +
+#   theme(legend.position = "bottom") +
+#   ylab("Absolute number of antipsychotics issued to those with learning disabilities per month, by sex") +
+#   xlab("date") +
+#   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+#   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+# 
+# ggsave(
+#   here::here("output", "figures", "plot_ld_sex.svg"),
+#   data_ld_by_sex,
+#   units = "cm", width = 40, height = 20
+# )
+# 
+# ### IMD
+# data_ld_by_imd <- data_processed_learning_disability %>%
+#   select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine,
+#          imd) %>%
+#   filter(imd != 0) %>%
+#   group_by(date, imd) %>%
+#   summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
+#             antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
+#             antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
+#             prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+#   melt(id.vars = c("date", "imd")) %>%
+#   ggplot(aes(x = date, y = value, colour = imd)) +
+#   geom_line() +
+#   facet_wrap(~variable, scales = "free") +
+#   theme_bw() +
+#   theme(legend.position = "bottom") +
+#   ylab("Absolute number of antipsychotics issued to those with learning disabilities per month, by imd") +
+#   xlab("date") +
+#   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+#   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+# 
+# ggsave(
+#   here::here("output", "figures", "plot_ld_imd.svg"),
+#   data_ld_by_imd,
+#   units = "cm", width = 40, height = 20
+# )
 
 
   

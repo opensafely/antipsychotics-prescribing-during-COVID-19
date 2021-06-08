@@ -78,5 +78,36 @@ calculate_measures <- function(x, cohort = "learning_disability") {
   }
   
 }
+
+# Totals data set ----
+calculate_totals <- function(x, cohort = "learning_disability") {
+  
+  if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
+    
+    data_processed <-  data_processed_all %>%
+      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
+             antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
+      rename(cohort = paste0(cohort)) %>%
+      filter(cohort == 1) %>%
+      select(-cohort) %>%
+      group_by(date) %>%
+      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
+                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
+                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
+                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+      mutate(group = paste0(cohort))
+    
+  }else {
+    
+    data_processed <- data_processed_all %>%
+        select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine) %>%
+        group_by(date) %>%
+        summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
+            antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
+            antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
+            prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+        mutate(group = "all")
+  }
+}
       
       

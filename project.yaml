@@ -70,7 +70,7 @@ actions:
       highly_sensitive:
         tables: output/data/data_*.rds
       moderately_sensitive:
-        tables: output/data/measure_*.csv
+        tables: output/data/custom_measure_*.csv
         
   ## Generate measures
   generate_measures:
@@ -78,7 +78,7 @@ actions:
       needs: [join_ethnicity]
       outputs:
         moderately_sensitive:
-          measure_csv: output/data/custom_measures_*.csv
+          measure_csv: output/data/measures_*.csv
   
   # ### Generate measures, by group
   # generate_measures_demographics:

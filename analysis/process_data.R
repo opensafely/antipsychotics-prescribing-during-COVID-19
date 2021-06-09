@@ -53,11 +53,11 @@ measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) 
 write_rds(data_totals, here::here("output", "data", "data_totals.rds"), compress="gz")
 
 ## Measures data as csvs
-# write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
-# write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
-# write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
-# write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
-# write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
-# write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
-# 
+write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
+write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
+write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
+write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
+write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
+write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
+
 

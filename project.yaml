@@ -69,7 +69,8 @@ actions:
     outputs:
       moderately_sensitive:
         data: output/data/data_*.rds
-
+        tables: output/data/custom_measures_*.csv
+        
   ## Generate measures
   generate_measures:
       run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data

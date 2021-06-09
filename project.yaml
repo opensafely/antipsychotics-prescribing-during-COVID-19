@@ -65,13 +65,11 @@ actions:
   ## Process data
   data_process:
     run: r:latest analysis/process_data.R
-    needs: [extract_ethnicity, join_ethnicity]
+    needs: [join_ethnicity]
     outputs:
-      highly_sensitive:
-        tables: output/data/data_*.rds
       moderately_sensitive:
-        tables: output/data/custom_measures_*.csv
-        
+        data: output/data/data_*.rds
+
   ## Generate measures
   generate_measures:
       run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data

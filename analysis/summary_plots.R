@@ -19,7 +19,7 @@ library('here')
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
-data_processed <- readRDS(here::here("output", "data", "data_processed_totals.rds"))
+data_processed <- readRDS(here::here("output", "data", "data_totals.rds"))
 
 # Figures ----
 

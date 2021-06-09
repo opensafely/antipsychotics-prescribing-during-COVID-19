@@ -32,7 +32,7 @@ calculate_measures <- function(x, cohort = "learning_disability") {
   if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
     
     ## Read in data
-    measures_data <- data_processed %>%
+    measures_data <- x %>%
       select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen, 
              antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
       rename(cohort = paste0(cohort)) %>%
@@ -57,7 +57,7 @@ calculate_measures <- function(x, cohort = "learning_disability") {
   } else {
     
     ## Read in data
-    measures_data <- data_processed %>%
+    measures_data <- x %>%
       select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen, 
              antipsychotics_injectable_and_depot, prochlorperazine) %>%
       group_by(date, practice) %>%
@@ -84,7 +84,7 @@ calculate_totals <- function(x, cohort = "learning_disability") {
   
   if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
     
-    data_processed <-  data_processed_all %>%
+    data_processed <-  x %>%
       select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
              antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
       rename(cohort = paste0(cohort)) %>%
@@ -99,7 +99,7 @@ calculate_totals <- function(x, cohort = "learning_disability") {
     
   }else {
     
-    data_processed <- data_processed_all %>%
+    data_processed <- x %>%
         select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine) %>%
         group_by(date) %>%
         summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),

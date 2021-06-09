@@ -54,7 +54,7 @@ data_extract_ethnicity <- arrow::read_feather(
   select(patient_id, ethnicity_long, ethnicity_short)
 
 ## Format columns (i.e, set factor levels)
-data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_id") %>%
+data_processed_all <- left_join(data_extract, data_extract_ethnicity, by = "patient_id") %>%
   mutate(
     
     # Age
@@ -153,25 +153,37 @@ data_processed <- left_join(data_extract, data_extract_ethnicity, by = "patient_
   droplevels() %>%
   arrange(date, patient_id, practice)
 
+rm(data_extract)
+
+
+# Totals data ----
+data_processed <- rbind(calculate_totals(data_processed_all, "all"),
+                        calculate_totals(data_processed_all, "learning_disability"),
+                        calculate_totals(data_processed_all, "autism"),
+                        calculate_totals(data_processed_all, "serious_mental_illness"),
+                        calculate_totals(data_processed_all, "care_home"),
+                        calculate_totals(data_processed_all, "dementia"))
+
 
 # Calculate measures ----
-measures_all <- calculate_measures(data_processed, cohort = "all")
-measures_learning_disability <- calculate_measures(data_processed, cohort = "learning_disability")
-measures_autism <- calculate_measures(data_processed, cohort = "autism")
-measures_serious_mental_illness <- calculate_measures(data_processed, cohort = "serious_mental_illness")
-measures_care_home <- calculate_measures(data_processed, cohort = "care_home")
-measures_dementia <- calculate_measures(data_processed, cohort = "dementia")
+measures_all <- calculate_measures(data_processed_all, cohort = "all")
+measures_learning_disability <- calculate_measures(data_processed_all, cohort = "learning_disability")
+measures_autism <- calculate_measures(data_processed_all, cohort = "autism")
+measures_serious_mental_illness <- calculate_measures(data_processed_all, cohort = "serious_mental_illness")
+measures_care_home <- calculate_measures(data_processed_all, cohort = "care_home")
+measures_dementia <- calculate_measures(data_processed_all, cohort = "dementia")
 
 
 # Save datasets ----
 
 ## Processed data as .rds files
-write_rds(data_processed, here::here("output", "data", "data_processed_all.rds"), compress="gz")
-write_rds(data_processed %>% filter(learning_disability == 1), here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
-write_rds(data_processed %>% filter(autism == 1), here::here("output", "data", "data_processed_autism.rds"), compress="gz")
-write_rds(data_processed %>% filter(serious_mental_illness == 1), here::here("output", "data", "data_processed_serious_mental_illness.rds"), compress="gz")
-write_rds(data_processed %>% filter(care_home == 1), here::here("output", "data", "data_processed_care_home.rds"), compress="gz")
-write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data", "data_processed_dementia.rds"), compress="gz")
+write_rds(data_processed, here::here("output", "data", "data_processed_totals.rds"), compress="gz")
+#write_rds(data_processed, here::here("output", "data", "data_processed_all.rds"), compress="gz")
+# write_rds(data_processed %>% filter(learning_disability == 1), here::here("output", "data", "data_processed_learning_disability.rds"), compress="gz")
+# write_rds(data_processed %>% filter(autism == 1), here::here("output", "data", "data_processed_autism.rds"), compress="gz")
+# write_rds(data_processed %>% filter(serious_mental_illness == 1), here::here("output", "data", "data_processed_serious_mental_illness.rds"), compress="gz")
+# write_rds(data_processed %>% filter(care_home == 1), here::here("output", "data", "data_processed_care_home.rds"), compress="gz")
+# write_rds(data_processed %>% filter(dementia == 1), here::here("output", "data", "data_processed_dementia.rds"), compress="gz")
 
 ## Measures data as csvs
 write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))

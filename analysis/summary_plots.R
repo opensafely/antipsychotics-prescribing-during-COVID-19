@@ -19,26 +19,7 @@ library('here')
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
-data_processed_all <- readRDS(here::here("output", "data", "data_processed_all.rds"))
-data_processed_ld <- readRDS(here::here("output", "data", "data_processed_learning_disability.rds"))
-data_processed_autism <- readRDS(here::here("output", "data", "data_processed_autism.rds"))
-data_processed_serious_mental_illness <- readRDS(here::here("output", "data", "data_processed_serious_mental_illness.rds"))
-data_processed_care_home <- readRDS(here::here("output", "data", "data_processed_care_home.rds"))
-data_processed_dementia <- readRDS(here::here("output", "data", "data_processed_dementia.rds"))
-
-# Custom functions ----
-source(here("analysis", "custom_functions.R"))
-
-
-# Format data ----
-data_processed <- rbind(lapply(data_processed_all, cohort = "all", calculate_totals) %>% bind_rows(),
-             lapply(data_processed_all, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
-             lapply(data_processed_all, cohort = "autism", calculate_totals) %>% bind_rows(),
-             lapply(data_processed_all, cohort = "serious_mental_illness", calculate_totals) %>% bind_rows(),
-             lapply(data_processed_all, cohort = "care_home", calculate_totals) %>% bind_rows(),
-             lapply(data_processed_all, cohort = "dementia", calculate_totals) %>% bind_rows()) %>%
-  as.data.frame()
-
+data_processed <- readRDS(here::here("output", "data", "data_processed_totals.rds"))
 
 # Figures ----
 

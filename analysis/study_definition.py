@@ -87,7 +87,7 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.5}
   ),
   
-  antipsychotics_first_gen_event_code = patients.with_these_clinical_events(
+  antipsychotics_first_gen_event_code = patients.with_these_medications(
     codelist = antipsychotics_first_gen_codes,
     between = ["index_date", "last_day_of_month(index_date)"],
     returning = "code",

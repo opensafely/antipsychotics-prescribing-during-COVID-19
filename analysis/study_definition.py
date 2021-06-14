@@ -82,14 +82,45 @@ study = StudyDefinition(
   ## First generation antipsychotics, excluding long acting depots
   antipsychotics_first_gen = patients.with_these_medications(
     antipsychotics_first_gen_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
+  antipsychotics_first_gen_incident = patients.satisfying(
+    
+    """
+    antipsychotics_first_gen_current_date
+    AND 
+    NOT antipsychotics_first_gen_last_date
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    antipsychotics_first_gen_current_date = patients.with_these_medications(
+      antipsychotics_first_gen_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.1}
+    ),
+    
+    antipsychotics_first_gen_last_date = patients.with_these_medications(
+      antipsychotics_first_gen_codes,
+      returning = "date",
+      find_first_match_in_period = True,
+      between = ["antipsychotics_first_gen_current_date - 2 years", "antipsychotics_first_gen_current_date - 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.5}
+    ),
+  ),
+  
   antipsychotics_first_gen_event_code = patients.with_these_clinical_events(
     codelist = antipsychotics_first_gen_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "code",
     return_expectations = {"category": {
       "ratios": {str(36152011000001103): 0.8, str(321393004): 0.2}}, }
@@ -98,14 +129,45 @@ study = StudyDefinition(
   ## Second generation antipsychotics excluding long acting injections
   antipsychotics_second_gen = patients.with_these_medications(
     antipsychotics_second_gen_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
+  antipsychotics_second_gen_incident = patients.satisfying(
+    
+    """
+    antipsychotics_second_gen_current_date
+    AND 
+    NOT antipsychotics_second_gen_last_date
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    antipsychotics_second_gen_current_date = patients.with_these_medications(
+      antipsychotics_second_gen_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.1}
+    ),
+    
+    antipsychotics_second_gen_last_date = patients.with_these_medications(
+      antipsychotics_second_gen_codes,
+      returning = "date",
+      find_first_match_in_period = True,
+      between = ["antipsychotics_second_gen_current_date - 2 years", "antipsychotics_second_gen_current_date - 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.5}
+    ),
+  ),
+  
   antipsychotics_second_gen_event_code = patients.with_these_medications(
     antipsychotics_second_gen_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "code",
     return_expectations = {"category": {
       "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
@@ -114,14 +176,45 @@ study = StudyDefinition(
   ## Long acting injectable and depot antipsychotics
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
+  antipsychotics_injectable_and_depot_incident = patients.satisfying(
+    
+    """
+    antipsychotics_injectable_and_depot_current_date
+    AND 
+    NOT antipsychotics_injectable_and_depot_last_date
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    antipsychotics_injectable_and_depot_current_date = patients.with_these_medications(
+      antipsychotics_injectable_and_depot_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.1}
+    ),
+    
+    antipsychotics_injectable_and_depot_last_date = patients.with_these_medications(
+      antipsychotics_injectable_and_depot_codes,
+      returning = "date",
+      find_first_match_in_period = True,
+      between = ["antipsychotics_injectable_and_depot_current_date - 2 years", "antipsychotics_injectable_and_depot_current_date - 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.5}
+    ),
+  ),
+  
   antipsychotics_injectable_and_depot_event_code = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "code",
     return_expectations = {"category": {
       "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
@@ -130,14 +223,45 @@ study = StudyDefinition(
   ## Prochlorperazine
   prochlorperazine = patients.with_these_medications(
     prochlorperazine_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
   
+  prochlorperazine_incident = patients.satisfying(
+    
+    """
+    prochlorperazine_current_date
+    AND 
+    NOT prochlorperazine_last_date
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    prochlorperazine_current_date = patients.with_these_medications(
+      prochlorperazine_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.1}
+    ),
+    
+    prochlorperazine_last_date = patients.with_these_medications(
+      prochlorperazine_codes,
+      returning = "date",
+      find_first_match_in_period = True,
+      between = ["prochlorperazine_current_date - 2 years", "prochlorperazine_current_date - 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.5}
+    ),
+  ),
+  
   prochlorperazine_event_code = patients.with_these_medications(
     prochlorperazine_codes,
-    between = ["index_date", "last_day_of_month(index_date)"],
+    on_or_before = "index_date",
     returning = "code",
     return_expectations = {"category": {
       "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }

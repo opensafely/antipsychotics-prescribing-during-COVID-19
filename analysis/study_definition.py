@@ -92,7 +92,7 @@ study = StudyDefinition(
     """
     antipsychotics_first_gen_current_date
     AND 
-    NOT antipsychotics_first_gen_last_date
+    NOT antipsychotics_first_gen_1yr_date
     """, 
     
     return_expectations = {
@@ -108,7 +108,7 @@ study = StudyDefinition(
       return_expectations = {"incidence": 0.1}
     ),
     
-    antipsychotics_first_gen_last_date = patients.with_these_medications(
+    antipsychotics_first_gen_1yr_date = patients.with_these_medications(
       antipsychotics_first_gen_codes,
       returning = "date",
       find_first_match_in_period = True,
@@ -123,23 +123,14 @@ study = StudyDefinition(
     """
     antipsychotics_first_gen_current_date
     AND 
-    NOT antipsychotics_first_gen_last_date
+    NOT antipsychotics_first_gen_2yr_date
     """, 
     
     return_expectations = {
       "incidence": 0.01,
     },
     
-    antipsychotics_first_gen_current_date = patients.with_these_medications(
-      antipsychotics_first_gen_codes,
-      returning = "date",
-      find_last_match_in_period = True,
-      between = ["index_date", "last_day_of_month(index_date)"],
-      date_format = "YYYY-MM-DD",
-      return_expectations = {"incidence": 0.1}
-    ),
-    
-    antipsychotics_first_gen_last_date = patients.with_these_medications(
+    antipsychotics_first_gen_2yr_date = patients.with_these_medications(
       antipsychotics_first_gen_codes,
       returning = "date",
       find_first_match_in_period = True,

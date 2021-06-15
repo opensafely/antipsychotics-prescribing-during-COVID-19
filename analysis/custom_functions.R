@@ -244,7 +244,7 @@ calculate_incident_1yr <- function(x, cohort = "learning_disability") {
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
       mutate(group = paste0(cohort))
     
   }else {
@@ -256,7 +256,7 @@ calculate_incident_1yr <- function(x, cohort = "learning_disability") {
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop', .groups = 'drop') %>%
       mutate(group = "all")
   }
 }
@@ -280,7 +280,7 @@ calculate_incident_2yr <- function(x, cohort = "learning_disability") {
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
       mutate(group = paste0(cohort))
     
   }else {
@@ -292,7 +292,7 @@ calculate_incident_2yr <- function(x, cohort = "learning_disability") {
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
+                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
       mutate(group = "all")
   }
 }
@@ -321,7 +321,7 @@ calculate_measures <- function(x, cohort = "learning_disability") {
                 antipsychotics_injectable_and_depot_event = sum(antipsychotics_injectable_and_depot == 1),
                 antipsychotics_injectable_and_depot_population = sum(antipsychotics_injectable_and_depot %in% c(0,1)),
                 prochlorperazine_event = sum(prochlorperazine == 1),
-                prochlorperazine_population = sum(prochlorperazine %in% c(0,1))) %>%
+                prochlorperazine_population = sum(prochlorperazine %in% c(0,1)), .groups = 'drop') %>%
       mutate(antipsychotics_first_gen = antipsychotics_first_gen_event/antipsychotics_first_gen_population*1000,
              antipsychotics_second_gen = antipsychotics_second_gen_event/antipsychotics_second_gen_population*1000,
              antipsychotics_injectable_and_depot = antipsychotics_injectable_and_depot_event/antipsychotics_injectable_and_depot_population*1000,
@@ -343,7 +343,7 @@ calculate_measures <- function(x, cohort = "learning_disability") {
                 antipsychotics_injectable_and_depot_event = sum(antipsychotics_injectable_and_depot == 1),
                 antipsychotics_injectable_and_depot_population = sum(antipsychotics_injectable_and_depot %in% c(0,1)),
                 prochlorperazine_event = sum(prochlorperazine == 1),
-                prochlorperazine_population = sum(prochlorperazine %in% c(0,1))) %>%
+                prochlorperazine_population = sum(prochlorperazine %in% c(0,1)), .groups = 'drop') %>%
       mutate(antipsychotics_first_gen = antipsychotics_first_gen_event/antipsychotics_first_gen_population*1000,
              antipsychotics_second_gen = antipsychotics_second_gen_event/antipsychotics_second_gen_population*1000,
              antipsychotics_injectable_and_depot = antipsychotics_injectable_and_depot_event/antipsychotics_injectable_and_depot_population*1000,

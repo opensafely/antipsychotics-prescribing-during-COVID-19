@@ -73,10 +73,10 @@ measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) 
 
 ## Totals data as .rds files
 write_rds(data_totals, here::here("output", "data", "data_totals_groups.rds"), compress="gz")
-write_rds(sex,imd,ethnicity, stp, region, age, here::here("output", "data", "data_totals_demographics.rds"), compress="gz")
+write_rds(c(sex,imd,ethnicity, stp, region, age), here::here("output", "data", "data_totals_demographics.rds"), compress="gz")
 
 ## Totals (incident) data as .rds files
-write_rds(data_incident_1yr, data_incident_2yr, here::here("output", "data", "data_incident_groups.rds"), compress="gz")
+write_rds(c(data_incident_1yr, data_incident_2yr), here::here("output", "data", "data_incident_groups.rds"), compress="gz")
 
 ## Measures data as csvs
 write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))

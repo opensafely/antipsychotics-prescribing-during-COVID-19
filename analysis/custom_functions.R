@@ -62,7 +62,7 @@ calculate_totals <- function(x, cohort = "learning_disability") {
 }
 
 # Totals (incident) data set ----
-calculate_incident_1y <- function(x, cohort = "learning_disability") {
+calculate_incident_1yr <- function(x, cohort = "learning_disability") {
   
   data_extract <- arrow::read_feather(
     here::here("output", "data", x)) %>%
@@ -98,7 +98,7 @@ calculate_incident_1y <- function(x, cohort = "learning_disability") {
   }
 }
 
-calculate_incident_2y <- function(x, cohort = "learning_disability") {
+calculate_incident_2yr <- function(x, cohort = "learning_disability") {
   
   data_extract <- arrow::read_feather(
     here::here("output", "data", x)) %>%

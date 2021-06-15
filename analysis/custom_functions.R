@@ -142,7 +142,8 @@ calculate_totals <- function(x, cohort = "learning_disability") {
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
                 prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
-      mutate(group = paste0(cohort))
+      mutate(group = paste0(cohort)) %>%
+      rename(age = ageband)
     
   } else if(cohort == "ethnicity"){
     
@@ -208,6 +209,7 @@ calculate_totals <- function(x, cohort = "learning_disability") {
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
                 prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
+      rename(ethnicity = ethnicity_short) %>%
       mutate(group = paste0(cohort))
     
   } else {
@@ -256,7 +258,7 @@ calculate_incident_1yr <- function(x, cohort = "learning_disability") {
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop', .groups = 'drop') %>%
+                prochlorperazine = sum(prochlorperazine, na.rm = T), .groups = 'drop') %>%
       mutate(group = "all")
   }
 }
@@ -353,4 +355,32 @@ calculate_measures <- function(x, cohort = "learning_disability") {
   }
   
 }
-      
+
+# Plot totals by demographic ----
+antipsychotic_plot_by_demographic <- function(antipsychotic = "antipsychotics_first_gen", cohort = "sex") {
+  
+  data_plot <- data_totals_demographics[[cohort]] %>%
+    rename(y = paste0(antipsychotic),
+           colour = paste0(cohort))
+  
+   ggplot(data_plot, aes(x = date, y = y, colour = colour)) +
+    geom_line() + facet_wrap(~group, scales = "free") +
+    theme_bw() +
+    theme(legend.position = "right",
+          legend.box.background = element_rect(color = "black"),
+          legend.key.size = unit(0.5, 'cm'),
+          legend.key.height = unit(0.5, 'cm'),
+          legend.key.width = unit(0.2, 'cm'),
+          legend.text = element_text(size=6),
+          legend.title = element_blank()) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("") +
+     xlab("") +
+     scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+     theme(axis.text.x = element_text(angle = 60, hjust = 1))
+   
+}
+
+
+
+

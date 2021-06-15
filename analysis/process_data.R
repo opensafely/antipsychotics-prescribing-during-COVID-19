@@ -28,7 +28,7 @@ dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recu
 # Process data ----
 filenames <- list.files(path = here::here("output", "data"), pattern = "input_2")
 
-# Totals dataset
+# Totals dataset by groups
 data_totals <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bind_rows(),
                          lapply(filenames, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
                          lapply(filenames, cohort = "autism", calculate_totals) %>% bind_rows(),
@@ -36,7 +36,16 @@ data_totals <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bin
                          lapply(filenames, cohort = "care_home", calculate_totals) %>% bind_rows(),
                          lapply(filenames, cohort = "dementia", calculate_totals) %>% bind_rows())
 
-# Totals (incident) dataset(s)
+# Totals dataset by demographic
+sex <- lapply(filenames, cohort = "sex", calculate_totals) %>% bind_rows()
+imd <- lapply(filenames, cohort = "imd", calculate_totals) %>% bind_rows()
+ethnicity <- lapply(filenames, cohort = "ethnicity", calculate_totals) %>% bind_rows()
+stp <- lapply(filenames, cohort = "stp", calculate_totals) %>% bind_rows()
+region <- lapply(filenames, cohort = "region", calculate_totals) %>% bind_rows()
+age <- lapply(filenames, cohort = "age", calculate_totals) %>% bind_rows()
+
+
+# Totals (incident) dataset(s) by group
 data_incident_1yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_1yr) %>% bind_rows(),
                      lapply(filenames, cohort = "learning_disability", calculate_incident_1yr) %>% bind_rows(),
                      lapply(filenames, cohort = "autism", calculate_incident_1yr) %>% bind_rows(),
@@ -63,11 +72,11 @@ measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) 
 # Save datasets ----
 
 ## Totals data as .rds files
-write_rds(data_totals, here::here("output", "data", "data_totals.rds"), compress="gz")
+write_rds(data_totals, here::here("output", "data", "data_totals_groups.rds"), compress="gz")
+write_rds(sex,imd,ethnicity, stp, region, age, here::here("output", "data", "data_totals_demographics.rds"), compress="gz")
 
 ## Totals (incident) data as .rds files
-write_rds(data_incident_1yr, here::here("output", "data", "data_incident_1yr.rds"), compress="gz")
-write_rds(data_incident_2yr, here::here("output", "data", "data_incident_2yr.rds"), compress="gz")
+write_rds(data_incident_1yr, data_incident_2yr, here::here("output", "data", "data_incident_groups.rds"), compress="gz")
 
 ## Measures data as csvs
 write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))

@@ -20,6 +20,9 @@ dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE
 
 ## Import processed data
 data_processed <- readRDS(here::here("output", "data", "data_totals.rds"))
+data_processed_1yr <- readRDS(here::here("output", "data", "data_incident_1y.rds"))
+data_processed_2y <- readRDS(here::here("output", "data", "data_incident_2y.rds"))
+
 
 # Figures ----
 
@@ -31,8 +34,8 @@ antipsychotics_first_gen <- ggplot(data_processed, aes(x = date, y = antipsychot
   facet_wrap(~group, scales = "free") +
   theme_bw() +
   theme(legend.position = "none") +
-  ylab("Total number of first generation antipsychotics (excluding long acting depots) issued per month") +
-  xlab("date") +
+  ylab("Total number of patients issued first generation antipsychotics (excluding long acting depots) per month") +
+  xlab("") +
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
@@ -47,8 +50,8 @@ antipsychotics_second_gen <-  ggplot(data_processed, aes(x = date, y = antipsych
   facet_wrap(~group, scales = "free") +
   theme_bw() +
   theme(legend.position = "none") +
-  ylab("Total number of second generation antipsychotics (excluding long acting depots) issued per month") +
-  xlab("date") +
+  ylab("Total number of patients issued second generation antipsychotics (excluding long acting depots) per month") +
+  xlab("") +
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
@@ -63,7 +66,7 @@ antipsychotics_injectable_and_depot <-  ggplot(data_processed, aes(x = date, y =
   facet_wrap(~group, scales = "free") +
   theme_bw() +
   theme(legend.position = "none") +
-  ylab("Total number of injectable and depot antipsychotics issued per month") +
+  ylab("Total number of patients issued injectable and depot antipsychotics per month") +
   xlab("date") +
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
@@ -79,8 +82,8 @@ prochlorperazine <-  ggplot(data_processed, aes(x = date, y = prochlorperazine, 
   facet_wrap(~group, scales = "free") +
   theme_bw() +
   theme(legend.position = "none") +
-  ylab("Absolute number of prochlorperazine antipsychotics issued per month") +
-  xlab("date") +
+  ylab("Total number of patients issued prochlorperazine antipsychotics per month") +
+  xlab("") +
   scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 

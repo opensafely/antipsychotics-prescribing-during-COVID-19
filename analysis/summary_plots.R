@@ -14,7 +14,7 @@ library('tidyverse')
 library('lubridate')
 library('reshape2')
 library('here')
-library('egg')
+#library('egg')
 
 ## Create output directory
 dir.create(here::here("output", "figures"), showWarnings = FALSE, recursive=TRUE)
@@ -105,67 +105,67 @@ ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine_by_
 )
 
 
-## Total number of patients issued antipsychotics by demographic
-
-### First generation antipsychotics, excluding long acting depots
-antipsychotics_first_gen <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "sex"),
-                                           antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "ethnicity"),
-                                           antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "region"),
-                                           antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "age"),
-                                           antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "imd"),
-                                           antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "stp"),
-                                           ncol=3,
-                                           left = "Total number of patients issued first generation antipsychotics \n (excluding long acting depots), per month")
-
-ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_first_gen_by_demographic.svg"),
-       antipsychotics_first_gen,
-       units = "cm", width = 40, height = 20
-)
-
-### Second generation antipsychotics, excluding long acting depots
-antipsychotics_second_gen <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "sex"),
-                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "ethnicity"),
-                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "region"),
-                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "age"),
-                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "imd"),
-                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "stp"),
-                                            ncol=3,
-                                            left = "Total number of patients issued second generation antipsychotics \n (excluding long acting depots), per month")
-
-ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_second_gen_by_demographic.svg"),
-       antipsychotics_second_gen,
-       units = "cm", width = 40, height = 20
-)
-
-### Long acting injectable and depot antipsychotics
-antipsychotics_injectable_and_depot <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "sex"),
-                                                      antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "ethnicity"),
-                                                      antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "region"),
-                                                      antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "age"),
-                                                      antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "imd"),
-                                                      antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "stp"),
-                                                      ncol=3,
-                                                      left = "Total number of patients issued injectable and depot antipsychotics, per month")
-
-ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_injectable_and_depot_by_demographic.svg"),
-       antipsychotics_second_gen,
-       units = "cm", width = 40, height = 20
-)
-
-### Prochlorperazine
-prochlorperazine <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "sex"),
-                                   antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "ethnicity"),
-                                   antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "region"),
-                                   antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "age"),
-                                   antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "imd"),
-                                   antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "stp"),
-                                   ncol=3,
-                                   left = "Total number of patients issued prochlorperazine antipsychotics, per month")
-
-ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine_by_demographic.svg"),
-       antipsychotics_second_gen,
-       units = "cm", width = 40, height = 20
-)
+# ## Total number of patients issued antipsychotics by demographic
+# 
+# ### First generation antipsychotics, excluding long acting depots
+# antipsychotics_first_gen <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "sex"),
+#                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "ethnicity"),
+#                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "region"),
+#                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "age"),
+#                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "imd"),
+#                                            antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_first_gen", cohort = "stp"),
+#                                            ncol=3,
+#                                            left = "Total number of patients issued first generation antipsychotics \n (excluding long acting depots), per month")
+# 
+# ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_first_gen_by_demographic.svg"),
+#        antipsychotics_first_gen,
+#        units = "cm", width = 40, height = 20
+# )
+# 
+# ### Second generation antipsychotics, excluding long acting depots
+# antipsychotics_second_gen <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "sex"),
+#                                             antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "ethnicity"),
+#                                             antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "region"),
+#                                             antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "age"),
+#                                             antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "imd"),
+#                                             antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_second_gen", cohort = "stp"),
+#                                             ncol=3,
+#                                             left = "Total number of patients issued second generation antipsychotics \n (excluding long acting depots), per month")
+# 
+# ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_second_gen_by_demographic.svg"),
+#        antipsychotics_second_gen,
+#        units = "cm", width = 40, height = 20
+# )
+# 
+# ### Long acting injectable and depot antipsychotics
+# antipsychotics_injectable_and_depot <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "sex"),
+#                                                       antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "ethnicity"),
+#                                                       antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "region"),
+#                                                       antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "age"),
+#                                                       antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "imd"),
+#                                                       antipsychotic_plot_by_demographic(antipsychotic = "antipsychotics_injectable_and_depot", cohort = "stp"),
+#                                                       ncol=3,
+#                                                       left = "Total number of patients issued injectable and depot antipsychotics, per month")
+# 
+# ggsave(filename=here::here("output", "figures", "plot_total_antipsychotics_injectable_and_depot_by_demographic.svg"),
+#        antipsychotics_second_gen,
+#        units = "cm", width = 40, height = 20
+# )
+# 
+# ### Prochlorperazine
+# prochlorperazine <- egg::ggarrange(antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "sex"),
+#                                    antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "ethnicity"),
+#                                    antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "region"),
+#                                    antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "age"),
+#                                    antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "imd"),
+#                                    antipsychotic_plot_by_demographic(antipsychotic = "prochlorperazine", cohort = "stp"),
+#                                    ncol=3,
+#                                    left = "Total number of patients issued prochlorperazine antipsychotics, per month")
+# 
+# ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine_by_demographic.svg"),
+#        antipsychotics_second_gen,
+#        units = "cm", width = 40, height = 20
+# )
 
 
 ## Total number of patients with newly issued antipsychotics 

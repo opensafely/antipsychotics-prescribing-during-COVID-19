@@ -36,7 +36,20 @@ data_totals <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bin
                          lapply(filenames, cohort = "care_home", calculate_totals) %>% bind_rows(),
                          lapply(filenames, cohort = "dementia", calculate_totals) %>% bind_rows())
 
+# Totals (incident) dataset(s)
+data_incident_1y <- rbind(lapply(filenames, cohort = "all", calculate_incident_1y) %>% bind_rows(),
+                     lapply(filenames, cohort = "learning_disability", calculate_incident_1y) %>% bind_rows(),
+                     lapply(filenames, cohort = "autism", calculate_incident_1y) %>% bind_rows(),
+                     lapply(filenames, cohort = "serious_mental_illness", calculate_incident_1y) %>% bind_rows(),
+                     lapply(filenames, cohort = "care_home", calculate_incident_1y) %>% bind_rows(),
+                     lapply(filenames, cohort = "dementia", calculate_incident_1y) %>% bind_rows())
 
+data_incident_2y <- rbind(lapply(filenames, cohort = "all", calculate_incident_2y) %>% bind_rows(),
+                          lapply(filenames, cohort = "learning_disability", calculate_incident_2y) %>% bind_rows(),
+                          lapply(filenames, cohort = "autism", calculate_incident_2y) %>% bind_rows(),
+                          lapply(filenames, cohort = "serious_mental_illness", calculate_incident_2y) %>% bind_rows(),
+                          lapply(filenames, cohort = "care_home", calculate_incident_2y) %>% bind_rows(),
+                          lapply(filenames, cohort = "dementia", calculate_incident_2y) %>% bind_rows())
 
 # Measures datasets
 measures_all <- lapply(filenames, cohort = "all", calculate_measures) %>% bind_rows()
@@ -51,6 +64,10 @@ measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) 
 
 ## Totals data as .rds files
 write_rds(data_totals, here::here("output", "data", "data_totals.rds"), compress="gz")
+
+## Totals (incident) data as .rds files
+write_rds(data_incident_1y, here::here("output", "data", "data_incident_1y.rds"), compress="gz")
+write_rds(data_incident_2y, here::here("output", "data", "data_incident_2y.rds"), compress="gz")
 
 ## Measures data as csvs
 write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))

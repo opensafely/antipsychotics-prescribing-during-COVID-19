@@ -171,7 +171,7 @@ ggsave(filename=here::here("output", "figures", "plot_total_prochlorperazine_by_
 ## Total number of patients with newly issued antipsychotics 
 
 ### First generation antipsychotics, excluding long acting depots
-antipsychotics_first_gen <- ggplot(data_process_incident, aes(x = date, y = antipsychotics_first_gen, colour = group, linetype = `Number of patients with first prescriptions`)) +
+antipsychotics_first_gen <- ggplot(data_incident_groups, aes(x = date, y = antipsychotics_first_gen, colour = group, linetype = `Number of patients with first prescriptions`)) +
   geom_line() +
   facet_wrap(~group, scales = "free") +
   theme_bw() +
@@ -188,7 +188,7 @@ ggsave(filename=here::here("output", "figures", "plot_first_antipsychotics_first
 )
 
 ### Second generation antipsychotics, excluding long acting depots
-antipsychotics_second_gen <-  ggplot(data_processed, aes(x = date, y = antipsychotics_second_gen, colour = group, linetype = `Number of patients with first prescriptions`)) +
+antipsychotics_second_gen <-  ggplot(data_incident_groups, aes(x = date, y = antipsychotics_second_gen, colour = group, linetype = `Number of patients with first prescriptions`)) +
   geom_line() +
   facet_wrap(~group, scales = "free") +
   theme_bw() +
@@ -205,7 +205,7 @@ ggsave(filename=here::here("output", "figures", "plot_first_antipsychotics_secon
 )
 
 ### Long acting injectable and depot antipsychotics
-antipsychotics_injectable_and_depot <-  ggplot(data_processed, aes(x = date, y = antipsychotics_injectable_and_depot, colour = group, linetype = `Number of patients with first prescriptions`)) +
+antipsychotics_injectable_and_depot <-  ggplot(data_incident_groups, aes(x = date, y = antipsychotics_injectable_and_depot, colour = group, linetype = `Number of patients with first prescriptions`)) +
   geom_line() +
   facet_wrap(~group, scales = "free") +
   theme_bw() +
@@ -222,7 +222,7 @@ ggsave(filename=here::here("output", "figures", "plot_first_antipsychotics_injec
 )
 
 ### Prochlorperazine
-prochlorperazine <-  ggplot(data_processed, aes(x = date, y = prochlorperazine, colour = group, linetype = `Number of patients with first prescriptions`)) +
+prochlorperazine <-  ggplot(data_incident_groups, aes(x = date, y = prochlorperazine, colour = group, linetype = `Number of patients with first prescriptions`)) +
   geom_line() +
   facet_wrap(~group, scales = "free") +
   theme_bw() +

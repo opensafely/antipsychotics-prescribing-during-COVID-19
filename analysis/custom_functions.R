@@ -147,8 +147,7 @@ calculate_totals <- function(x, cohort = "learning_disability") {
     
   } else if(cohort == "ethnicity"){
     
-    data_extract_ethnicity <- arrow::read_feather(
-      here::here("output", "data", "input_ethnicity.feather")) %>%
+    data_processed <-  data_extract %>%
       mutate(ethnicity_long =  ifelse(is.na(eth) & ethnicity_other == 1, 17, 
                                       ifelse(is.na(eth) & ethnicity_not_given == 1, 18,
                                              ifelse(is.na(eth) & ethnicity_not_stated == 1, 19,
@@ -161,55 +160,50 @@ calculate_totals <- function(x, cohort = "learning_disability") {
              ethnicity_short = ifelse(ethnicity_long %in% c(12,13,14), 4, ethnicity_short),
              ethnicity_short = ifelse(ethnicity_long %in% c(15,16), 5, ethnicity_short),
              ethnicity_short = ifelse(ethnicity_short %in% c(1:16), ethnicity_short, 6)) %>%
-      select(patient_id, ethnicity_long, ethnicity_short)
-    
-    data_processed <-  data_extract %>%
       select(patient_id, date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, age) %>%
-      left_join(data_extract_ethnicity, by = "patient_id") %>%
+             antipsychotics_injectable_and_depot, prochlorperazine, ethnicity = ethnicity_short) %>%
       mutate(
-        # 16 categories
-        ethnicity_long = fct_case_when(
-        ethnicity_long == "1" ~ "White - British",
-        ethnicity_long == "2" ~ "White - Irish",
-        ethnicity_long == "3" ~ "White - Any other White background",
-        ethnicity_long == "4" ~ "Mixed - White and Black Caribbean",
-        ethnicity_long == "5" ~ "Mixed - White and Black African",
-        ethnicity_long == "6" ~ "Mixed - White and Asian",
-        ethnicity_long == "7" ~ "Mixed - Any other mixed background",
-        ethnicity_long == "8" ~ "Asian or Asian British - Indian",
-        ethnicity_long == "9" ~ "Asian or Asian British - Pakistani",
-        ethnicity_long == "10" ~ "Asian or Asian British - Bangladeshi",
-        ethnicity_long == "11" ~ "Asian or Asian British - Any other Asian background",
-        ethnicity_long == "12" ~ "Black or Black British - Caribbean",
-        ethnicity_long == "13" ~ "Black or Black British - African",
-        ethnicity_long == "14" ~ "Black or Black British - Any other Black background",
-        ethnicity_long == "15" ~ "Other ethnic groups - Chinese",
-        ethnicity_long == "16" ~ "Other ethnic groups - Any other ethnic group",
-        ethnicity_long == "17" ~ "Patients with any other ethnicity code",
-        ethnicity_long == "18" ~ "Ethnicity not given - patient refused",
-        ethnicity_long == "19" ~ "Ethnicity not stated",
-        ethnicity_long == "20" ~ "Ethnicity not recorded",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_
-      ),
+      #   # 16 categories
+      #   ethnicity_long = fct_case_when(
+      #   ethnicity_long == "1" ~ "White - British",
+      #   ethnicity_long == "2" ~ "White - Irish",
+      #   ethnicity_long == "3" ~ "White - Any other White background",
+      #   ethnicity_long == "4" ~ "Mixed - White and Black Caribbean",
+      #   ethnicity_long == "5" ~ "Mixed - White and Black African",
+      #   ethnicity_long == "6" ~ "Mixed - White and Asian",
+      #   ethnicity_long == "7" ~ "Mixed - Any other mixed background",
+      #   ethnicity_long == "8" ~ "Asian or Asian British - Indian",
+      #   ethnicity_long == "9" ~ "Asian or Asian British - Pakistani",
+      #   ethnicity_long == "10" ~ "Asian or Asian British - Bangladeshi",
+      #   ethnicity_long == "11" ~ "Asian or Asian British - Any other Asian background",
+      #   ethnicity_long == "12" ~ "Black or Black British - Caribbean",
+      #   ethnicity_long == "13" ~ "Black or Black British - African",
+      #   ethnicity_long == "14" ~ "Black or Black British - Any other Black background",
+      #   ethnicity_long == "15" ~ "Other ethnic groups - Chinese",
+      #   ethnicity_long == "16" ~ "Other ethnic groups - Any other ethnic group",
+      #   ethnicity_long == "17" ~ "Patients with any other ethnicity code",
+      #   ethnicity_long == "18" ~ "Ethnicity not given - patient refused",
+      #   ethnicity_long == "19" ~ "Ethnicity not stated",
+      #   ethnicity_long == "20" ~ "Ethnicity not recorded",
+      #   #TRUE ~ "Unknown",
+      #   TRUE ~ NA_character_
+      # ),
       
       # 6 categories
-      ethnicity_short = fct_case_when(
-        ethnicity_short == "1" ~ "White",
-        ethnicity_short == "2" ~ "Mixed",
-        ethnicity_short == "3" ~ "Asian or Asian British",
-        ethnicity_short == "4" ~ "Black or Black British",
-        ethnicity_short == "5" ~ "Other ethnic groups",
-        ethnicity_short == "6" ~ "Unknown",
+      ethnicity = fct_case_when(
+        ethnicity == "1" ~ "White",
+        ethnicity == "2" ~ "Mixed",
+        ethnicity == "3" ~ "Asian or Asian British",
+        ethnicity == "4" ~ "Black or Black British",
+        ethnicity == "5" ~ "Other ethnic groups",
+        ethnicity == "6" ~ "Unknown",
         #TRUE ~ "Unknown"
         TRUE ~ NA_character_)) %>%
-      group_by(date, ethnicity_short) %>%
+      group_by(date, ethnicity) %>%
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
                 antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
                 prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      rename(ethnicity = ethnicity_short) %>%
       mutate(group = paste0(cohort))
     
   } else {

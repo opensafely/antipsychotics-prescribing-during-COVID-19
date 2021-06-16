@@ -363,6 +363,8 @@ antipsychotic_plot_by_demographic <- function(antipsychotic = "antipsychotics_fi
     rename(y = paste0(antipsychotic),
            colour = paste0(cohort))
   
+  if(cohort %in% c("sex", "imd", "region", "age", "ethnicity")){
+  
    ggplot(data_plot, aes(x = date, y = y, colour = colour)) +
     geom_line() + facet_wrap(~group, scales = "free") +
     theme_bw() +
@@ -378,10 +380,34 @@ antipsychotic_plot_by_demographic <- function(antipsychotic = "antipsychotics_fi
      xlab("") +
      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    
+  } else {
+    
+    data_plot <- data_totals_demographics[[cohort]]  %>%
+      rename(y = paste0(antipsychotic)) %>%
+      group_by(date) %>%  
+      summarise(quantile = scales::percent(c(seq(0, 1, by = 0.1))),
+                y = quantile(y, c(seq(0, 1, by = 0.1)), na.rm = T)) %>%
+      mutate(label = ifelse(quantile == "50.0%", "median", "decile")) %>%
+      mutate(date = as.Date(date, format = "%Y-%m-%d"))
+    
+    ggplot(data_plot, aes(x = date, y = y)) +
+      geom_line(aes(group = quantile, linetype = label, size = label), colour = "blue") +
+      theme_bw() +
+      theme(legend.title = element_blank(), legend.box.background = element_rect(colour = "black")) +
+      scale_linetype_manual("Variabler",values=c("median" = 1 ,"decile" = 2)) +
+      scale_size_manual(breaks=c("median","decile"), values=c(1,0.5)) +
+      guides(size = FALSE) +
+      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+      theme(axis.text.x=element_text(angle=60, hjust=1)) +
+      ylab("") +
+      xlab("")
+    
+  }
    
 }
 
-## Global labels
+## Global labels ----
 add_global_label <- function(pwobj, Xlab = NULL, Ylab = NULL, Xgap = 0.03, Ygap = 0.03, ...) {
   ylabgrob <- patchwork::plot_spacer()
   if (!is.null(Ylab)) {

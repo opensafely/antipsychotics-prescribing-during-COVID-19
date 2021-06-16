@@ -105,6 +105,13 @@ actions:
     needs: [data_process]
     outputs:
       moderately_sensitive:
+        plots: output/figures/plot_*.svg
+  
+  summary_figures_redacted:
+    run: r:latest analysis/summary_plots_redacted.R
+    needs: [data_process]
+    outputs:
+      moderately_sensitive:
         plots: output/figures/plot*.svg
   
   # ## Whole population notebook

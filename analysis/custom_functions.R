@@ -443,6 +443,119 @@ add_global_label <- function(pwobj, Xlab = NULL, Ylab = NULL, Xgap = 0.03, Ygap 
   return(pwobj)
 }
 
+## Table 1
+table_1 <- function(x) {
+  
+  ## Table 1 shell
+  results.table <- data.frame(matrix(nrow = 35, ncol = 2))
+  colnames(results.table) <- c("Characteristic","Count (%)")
+  results.table[1:35,1] <- c("Total", 
+                           "Autism",
+                           "Care-home",
+                           "Dementia", 
+                           "LD",
+                           "SMI",
+                           "M", 
+                           "F", 
+                           "18",
+                           "18-30",
+                           "30",
+                           "40",
+                           "50", 
+                           "60",
+                           "65",
+                           "White",
+                           "Mixed",
+                           "Asian",
+                           "Black",
+                           "Other",
+                           "Unknown",
+                           "1",
+                           "2",
+                           "3",
+                           "4",
+                           "5",
+                           "London",
+                           "East of England",
+                           "East midlands",
+                           "North East",
+                           "North West",
+                           "South East",
+                           "South West",
+                           "West Midlands",
+                           "Yorkshire")
+  
+  # Fill in table ----
+  
+  ## Denominators
+  pop = nrow(data_table1)
+  autism = nrow(subset(data_table1, autism == 1))
+  care_home = nrow(subset(data_table1, care_home == 1))
+  dementia = nrow(subset(data_table1, dementia == 1))
+  learning_disability = nrow(subset(data_table1, learning_disability == 1))
+  serious_mental_illness = nrow(subset(data_table1, serious_mental_illness == 1))
+
+  ## Total
+  n = as.numeric(length(x$patient_id))
+  results.table[1,2] <- paste(n, " (", round(n/pop*100, digits = 0), ")", sep = "")
+  
+  ## Autism
+  results.table[2,2] <- paste(sum(x$autism), " (", round(sum(x$autism)/autism*100, digits = 0), ")", sep = "")
+  
+  ## Care home
+  results.table[3,2] <- paste(sum(x$care_home), " (", round(sum(x$care_home)/care_home*100, digits = 0), ")", sep = "")
+  
+  ## Dementia
+  results.table[4,2] <- paste(sum(x$dementia), " (", round(sum(x$dementia)/dementia*100, digits = 0), ")", sep = "")
+  
+  ## LD
+  results.table[5,2] <- paste(sum(x$learning_disability), " (", round(sum(x$learning_disability)/learning_disability*100, digits = 0), ")", sep = "")
+  
+  ## SMI
+  results.table[6,2] <- paste(sum(x$serious_mental_illness), " (", round(sum(x$serious_mental_illness)/serious_mental_illness*100, digits = 0), ")", sep = "")
+  
+  ## Sex
+  results.table[7,2] <- paste(nrow(subset(x, sex == "M")), " (", round(nrow(subset(x, sex == "M"))/n*100, digits = 0), ")", sep = "")
+  results.table[8,2] <- paste(nrow(subset(x, sex == "F")), " (", round(nrow(subset(x, sex == "F"))/n*100, digits = 0), ")", sep = "")
+  
+  ## Age
+  results.table[9,2] <- paste(nrow(subset(x, age < 18)), " (", round(nrow(subset(x, age < 18))/n*100, digits = 0), ")", sep = "")
+  results.table[10,2] <- paste(nrow(subset(x, age >= 18 & age < 30)), " (", round(nrow(subset(x, age >= 18 & age < 30))/n*100, digits = 0), ")", sep = "")
+  results.table[11,2] <- paste(nrow(subset(x, age >= 30 & age < 40)), " (", round(nrow(subset(x, age >= 30 & age < 40))/n*100, digits = 0), ")", sep = "")
+  results.table[12,2] <- paste(nrow(subset(x, age >= 40 & age < 50)), " (", round(nrow(subset(x, age >= 40 & age < 50))/n*100, digits = 0), ")", sep = "")
+  results.table[13,2] <- paste(nrow(subset(x, age >= 50 & age < 60)), " (", round(nrow(subset(x, age >= 50 & age < 60))/n*100, digits = 0), ")", sep = "")
+  results.table[14,2] <- paste(nrow(subset(x, age >= 60 & age < 65)), " (", round(nrow(subset(x, age >= 60 & age < 65))/n*100, digits = 0), ")", sep = "")
+  results.table[15,2] <- paste(nrow(subset(x, age >= 65)), " (", round(nrow(subset(x, age >= 65))/n*100, digits = 0), ")", sep = "")
+  
+  ## Ethnicity
+  results.table[16,2] <- paste(nrow(subset(x, ethnicity == "White")), " (", round(nrow(subset(x, ethnicity == "White"))/n*100, digits = 0), ")", sep = "")
+  results.table[17,2] <- paste(nrow(subset(x, ethnicity == "Mixed")), " (", round(nrow(subset(x, ethnicity == "Mixed"))/n*100, digits = 0), ")", sep = "")
+  results.table[18,2] <- paste(nrow(subset(x, ethnicity == "Asian or Asian British")), " (", round(nrow(subset(x, ethnicity == "Asian or Asian British"))/n*100, digits = 0), ")", sep = "")
+  results.table[19,2] <- paste(nrow(subset(x, ethnicity == "Black or Black British")), " (", round(nrow(subset(x, ethnicity == "Black or Black British"))/n*100, digits = 0), ")", sep = "")
+  results.table[20,2] <- paste(nrow(subset(x, ethnicity == "Other ethnic groups")), " (", round(nrow(subset(x, ethnicity == "Other ethnic groups"))/n*100, digits = 0), ")", sep = "")
+  results.table[21,2] <- paste(nrow(subset(x, ethnicity == "Unknown")), " (", round(nrow(subset(x, ethnicity == "Unknown"))/n*100, digits = 0), ")", sep = "")
+  
+  ## IMD
+  results.table[22,2] <- paste(nrow(subset(x, imd == 1)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
+  results.table[23,2] <- paste(nrow(subset(x, imd == 2)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
+  results.table[24,2] <- paste(nrow(subset(x, imd == 3)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
+  results.table[25,2] <- paste(nrow(subset(x, imd == 4)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
+  results.table[26,2] <- paste(nrow(subset(x, imd == 5)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
+  
+  ## Region
+  results.table[27,2] <- paste(nrow(subset(x, region == "London")), " (", round(nrow(subset(x, region == "London"))/n*100, digits = 0), ")", sep = "")
+  results.table[28,2] <- paste(nrow(subset(x, region == "East")), " (", round(nrow(subset(x, region == "East"))/n*100, digits = 0), ")", sep = "")
+  results.table[29,2] <- paste(nrow(subset(x, region == "East Midlands")), " (", round(nrow(subset(x, region == "East Midlands"))/n*100, digits = 0), ")", sep = "")
+  results.table[30,2] <- paste(nrow(subset(x, region == "North East")), " (", round(nrow(subset(x, region == "North East"))/n*100, digits = 0), ")", sep = "")
+  results.table[31,2] <- paste(nrow(subset(x, region == "North West")), " (", round(nrow(subset(x, region == "North West"))/n*100, digits = 0), ")", sep = "")
+  results.table[32,2] <- paste(nrow(subset(x, region == "South East")), " (", round(nrow(subset(x, region == "South East"))/n*100, digits = 0), ")", sep = "")
+  results.table[33,2] <- paste(nrow(subset(x, region == "South West")), " (", round(nrow(subset(x, region == "South West"))/n*100, digits = 0), ")", sep = "")
+  results.table[34,2] <- paste(nrow(subset(x, region == "West Midlands")), " (", round(nrow(subset(x, region == "West Midlands"))/n*100, digits = 0), ")", sep = "")
+  results.table[35,2] <- paste(nrow(subset(x, region == "Yorkshire and The Humber")), " (", round(nrow(subset(x, region == "Yorkshire and The Humber"))/n*100, digits = 0), ")", sep = "")
+  
+  return(results.table)
+}
+  
 
 
 

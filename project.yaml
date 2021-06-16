@@ -113,6 +113,14 @@ actions:
     outputs:
       moderately_sensitive:
         plots: output/figures/plot*.svg
+        
+  ## Table 1
+  table_1:
+    run: r:latest analysis/table_1.R
+    needs: [join_ethnicity]
+    outputs:
+      moderately_sensitive:
+        plots: output/tables/table1.html
   
   # ## Whole population notebook
   # generate_notebook:

@@ -28,31 +28,31 @@ actions:
       highly_sensitive:
         cohort: output/data/input_ethnicity.feather
         
-  ## Patient to practice lookup
-  patient_practice_lookup:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_practice_count --output-dir=output/data --output-format=feather
-    outputs:
-      highly_sensitive:
-        cohort: output/data/input_practice_count.feather
+  # ## Patient to practice lookup
+  # patient_practice_lookup:
+  #   run: cohortextractor:latest generate_cohort --study-definition study_definition_practice_count --output-dir=output/data --output-format=feather
+  #   outputs:
+  #     highly_sensitive:
+  #       cohort: output/data/input_practice_count.feather
         
   
   # Data processing ----
 
-  ## Patient counts
-  get_patient_count:
-    run: python:latest python analysis/get_patient_counts.py --output-dir=output/data
-    needs: [extract_data]
-    outputs:
-       moderately_sensitive:
-         text: output/data/patient_count.json
+  # ## Patient counts
+  # get_patient_count:
+  #   run: python:latest python analysis/get_patient_counts.py --output-dir=output/data
+  #   needs: [extract_data]
+  #   outputs:
+  #      moderately_sensitive:
+  #        text: output/data/patient_count.json
          
-  ## Practice count
-  get_practice_count:
-    run: python:latest python analysis/get_practice_count.py --output-dir=output/data
-    needs: [patient_practice_lookup]
-    outputs:
-      moderately_sensitive:
-        text: output/data/practice_count.json
+  # ## Practice count
+  # get_practice_count:
+  #   run: python:latest python analysis/get_practice_count.py --output-dir=output/data
+  #   needs: [patient_practice_lookup]
+  #   outputs:
+  #     moderately_sensitive:
+  #       text: output/data/practice_count.json
   
   ## Add ethnicity
   join_ethnicity:
@@ -71,13 +71,13 @@ actions:
         data: output/data/data_*.rds
         tables: output/data/custom_measures_*.csv
         
-  ## Generate measures
-  generate_measures:
-      run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
-      needs: [join_ethnicity]
-      outputs:
-        moderately_sensitive:
-          measure_csv: output/data/measure_*.csv
+  # ## Generate measures
+  # generate_measures:
+  #     run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
+  #     needs: [join_ethnicity]
+  #     outputs:
+  #       moderately_sensitive:
+  #         measure_csv: output/data/measure_*.csv
   
   # ### Generate measures, by group
   # generate_measures_demographics:
@@ -105,15 +105,22 @@ actions:
     needs: [data_process]
     outputs:
       moderately_sensitive:
-        plots: output/figures/plot*.svg
+        plots: output/figures/plot_*.svg
   
-  ## Whole population notebook
-  generate_notebook:
-    run: jupyter:latest jupyter nbconvert /workspace/notebooks/antipsychotic_measures.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
-    needs: [generate_measures, get_practice_count, get_patient_count]
+  summary_figures_redacted:
+    run: r:latest analysis/summary_plots_redacted.R
+    needs: [data_process]
     outputs:
       moderately_sensitive:
-        notebook: output/antipsychotic_measures.html
+        plots: output/figures/plot*.svg
+  
+  # ## Whole population notebook
+  # generate_notebook:
+  #   run: jupyter:latest jupyter nbconvert /workspace/notebooks/antipsychotic_measures.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
+  #   needs: [generate_measures, get_practice_count, get_patient_count]
+  #   outputs:
+  #     moderately_sensitive:
+  #       notebook: output/antipsychotic_measures.html
           
 
 

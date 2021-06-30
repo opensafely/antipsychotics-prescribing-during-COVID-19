@@ -36,19 +36,18 @@ april <- data_extract <- arrow::read_feather(here::here("output", "data", "input
 data_table1 <- rbind(feb, march, april) %>% 
   group_by(patient_id) %>% 
   filter(row_number()==1) %>%
-  mutate(ethnicity_long =  ifelse(is.na(eth) & ethnicity_other == 1, 17, 
-                                  ifelse(is.na(eth) & ethnicity_not_given == 1, 18,
-                                         ifelse(is.na(eth) & ethnicity_not_stated == 1, 19,
-                                                ifelse(is.na(eth) & ethnicity_no_record == 1, 20,
-                                                       eth)))),
-         ethnicity_long = ifelse(is.na(ethnicity_long), 20, ethnicity_long),
-         ethnicity_short = ifelse(ethnicity_long %in% c(1,2,3), 1, ethnicity_long),
-         ethnicity_short = ifelse(ethnicity_long %in% c(4,5,6,7), 2, ethnicity_short),
-         ethnicity_short = ifelse(ethnicity_long %in% c(8,9,10,11), 3, ethnicity_short),
-         ethnicity_short = ifelse(ethnicity_long %in% c(12,13,14), 4, ethnicity_short),
-         ethnicity_short = ifelse(ethnicity_long %in% c(15,16), 5, ethnicity_short),
-         ethnicity_short = ifelse(ethnicity_short %in% c(1:16), ethnicity_short, 6)) %>%
-  rename(ethnicity = ethnicity_short)
+  mutate(ethnicity = ifelse(is.na(ethnicity_6), ethnicity_sus, ethnicity_6),
+         ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+         
+         ethnicity = fct_case_when(
+           ethnicity == "1" ~ "White",
+           ethnicity == "2" ~ "Mixed",
+           ethnicity == "3" ~ "Asian or Asian British",
+           ethnicity == "4" ~ "Black or Black British",
+           ethnicity == "5" ~ "Other ethnic groups",
+           ethnicity == "6" ~ "Unknown",
+           #TRUE ~ "Unknown"
+           TRUE ~ NA_character_))
 
 all <- table_1(data_table1 %>% filter(antipsychotics_first_gen == 1 |
                                         antipsychotics_second_gen ==1 |

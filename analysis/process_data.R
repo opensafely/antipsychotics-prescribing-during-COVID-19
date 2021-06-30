@@ -60,13 +60,13 @@ data_incident_2yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_
                           lapply(filenames, cohort = "care_home", calculate_incident_2yr) %>% bind_rows(),
                           lapply(filenames, cohort = "dementia", calculate_incident_2yr) %>% bind_rows())
 
-# Measures datasets
-measures_all <- lapply(filenames, cohort = "all", calculate_measures) %>% bind_rows()
-measures_learning_disability <- lapply(filenames, cohort = "learning_disability", calculate_measures) %>% bind_rows()
-measures_autism <- lapply(filenames, cohort = "autism", calculate_measures) %>% bind_rows()
-measures_serious_mental_illness <- lapply(filenames, cohort = "serious_mental_illness", calculate_measures) %>% bind_rows()
-measures_care_home <- lapply(filenames, cohort = "care_home", calculate_measures) %>% bind_rows()
-measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) %>% bind_rows()
+# # Measures datasets
+# measures_all <- lapply(filenames, cohort = "all", calculate_measures) %>% bind_rows()
+# measures_learning_disability <- lapply(filenames, cohort = "learning_disability", calculate_measures) %>% bind_rows()
+# measures_autism <- lapply(filenames, cohort = "autism", calculate_measures) %>% bind_rows()
+# measures_serious_mental_illness <- lapply(filenames, cohort = "serious_mental_illness", calculate_measures) %>% bind_rows()
+# measures_care_home <- lapply(filenames, cohort = "care_home", calculate_measures) %>% bind_rows()
+# measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) %>% bind_rows()
 
 
 # Save datasets ----
@@ -84,12 +84,12 @@ saveRDS(list(sex = sex,
 ## Totals (incident) data as .rds files
 saveRDS(list(data_incident_1yr, data_incident_2yr), here::here("output", "data", "data_incident_groups.rds"))
 
-## Measures data as csvs
-write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
-write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
-write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
-write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
-write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
-write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
-
+# ## Measures data as csvs
+# write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
+# write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
+# write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
+# write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
+# write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
+# write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
+# 
 

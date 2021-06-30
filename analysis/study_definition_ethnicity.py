@@ -27,7 +27,7 @@ from codelists import *
 from datetime import date
 
 start_date = "2019-01-01"
-end_date = date.today().isoformat()
+end_date = "2021-04-01"
 
 ## Define study population and variables
 study = StudyDefinition(
@@ -42,9 +42,7 @@ study = StudyDefinition(
   index_date = end_date,
   
   # Define the study population
-  population = patients.all(
-    "index_date", "index_date"
-  ),
+  population = patients.all(),
   
   # Define ethnicity variables
   
@@ -73,6 +71,17 @@ study = StudyDefinition(
         "15": 0.05, 
         "16": 0.05}},
       "incidence": 0.75,},
+  ),
+  
+  ethnicity_6 = patients.with_these_clinical_events(
+    ethnicity_6_codes,
+    returning = "category",
+    find_last_match_in_period = True,
+    include_date_of_match = False,
+    return_expectations = {
+      "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
+      "incidence": 0.75,
+    },
   ),
   
   ## Any other ethnicity code
@@ -111,56 +120,14 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.1}
   ), 
   
-  
-  # # Combine into single ethnicity variable
-  # ethnicity = patients.categorised_as(
-  #   {"0": "DEFAULT",
-  #     "1": "eth='1'", 
-  #     "2": "eth='2'", 
-  #     "3": "eth='3'", 
-  #     "4": "eth='4'", 
-  #     "5": "eth='5'", 
-  #     "6": "eth='6'", 
-  #     "7": "eth='7'", 
-  #     "8": "eth='8'", 
-  #     "9": "eth='9'", 
-  #     "10": "eth='10'", 
-  #     "11": "eth='11'", 
-  #     "12": "eth='12'", 
-  #     "13": "eth='13'", 
-  #     "14": "eth='14'", 
-  #     "15": "eth='15'", 
-  #     "16": "eth='16'", 
-  #     "17": "NOT eth AND ethnicity_other", 
-  #     "18": "NOT eth AND ethnicity_not_given",  
-  #     "19": "NOT eth AND ethnicity_not_stated",  
-  #     "20": "NOT eth AND ethnicity_no_record",  
-  #   }, 
-  #   return_expectations = {
-  #     "category": {"ratios": {
-  #       "0": 0.01,
-  #       "1": 0.24,
-  #       "2": 0.05,
-  #       "3": 0.05,
-  #       "4": 0.05,
-  #       "5": 0.05,
-  #       "6": 0.05,
-  #       "7": 0.05,
-  #       "8": 0.05,
-  #       "9": 0.05,
-  #       "10": 0.05,
-  #       "11": 0.05,
-  #       "12": 0.05,
-  #       "13": 0.05,
-  #       "14": 0.05,
-  #       "15": 0.05,
-  #       "16": 0.01,
-  #       "17": 0.01,
-  #       "18": 0.01,
-  #       "19": 0.01,
-  #       "20": 0.01,}},
-  #     "incidence": 0.4,
-  #   },
-  # ),
+  ## Ethnicity from SUS
+    ethnicity_sus = patients.with_ethnicity_from_sus(
+        returning = "group_6",  
+        use_most_frequent_code = True,
+        return_expectations = {
+            "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
+            "incidence": 0.4,
+            },
+    ),
   
 )

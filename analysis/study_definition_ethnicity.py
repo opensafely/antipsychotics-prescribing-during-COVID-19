@@ -42,7 +42,7 @@ study = StudyDefinition(
   index_date = end_date,
   
   # Define the study population
-  population = patients.registered_with_one_practice_between(
+  population = patients.all(
     "index_date", "index_date"
   ),
   

@@ -528,12 +528,12 @@ table_1 <- function(x) {
   results.table[15,2] <- paste(nrow(subset(x, age >= 65)), " (", round(nrow(subset(x, age >= 65))/n*100, digits = 0), ")", sep = "")
   
   ## Ethnicity
-  results.table[16,2] <- paste(nrow(subset(x, ethnicity == "White")), " (", round(nrow(subset(x, ethnicity == "White"))/n*100, digits = 0), ")", sep = "")
-  results.table[17,2] <- paste(nrow(subset(x, ethnicity == "Mixed")), " (", round(nrow(subset(x, ethnicity == "Mixed"))/n*100, digits = 0), ")", sep = "")
-  results.table[18,2] <- paste(nrow(subset(x, ethnicity == "Asian or Asian British")), " (", round(nrow(subset(x, ethnicity == "Asian or Asian British"))/n*100, digits = 0), ")", sep = "")
-  results.table[19,2] <- paste(nrow(subset(x, ethnicity == "Black or Black British")), " (", round(nrow(subset(x, ethnicity == "Black or Black British"))/n*100, digits = 0), ")", sep = "")
-  results.table[20,2] <- paste(nrow(subset(x, ethnicity == "Other ethnic groups")), " (", round(nrow(subset(x, ethnicity == "Other ethnic groups"))/n*100, digits = 0), ")", sep = "")
-  results.table[21,2] <- paste(nrow(subset(x, ethnicity == "Unknown")), " (", round(nrow(subset(x, ethnicity == "Unknown"))/n*100, digits = 0), ")", sep = "")
+  results.table[16,2] <- paste(nrow(subset(x, ethnicity == 1)), " (", round(nrow(subset(x, ethnicity == 1))/n*100, digits = 0), ")", sep = "")
+  results.table[17,2] <- paste(nrow(subset(x, ethnicity == 2)), " (", round(nrow(subset(x, ethnicity == 2))/n*100, digits = 0), ")", sep = "")
+  results.table[18,2] <- paste(nrow(subset(x, ethnicity == 3)), " (", round(nrow(subset(x, ethnicity == 3))/n*100, digits = 0), ")", sep = "")
+  results.table[19,2] <- paste(nrow(subset(x, ethnicity == 4)), " (", round(nrow(subset(x, ethnicity == 4))/n*100, digits = 0), ")", sep = "")
+  results.table[20,2] <- paste(nrow(subset(x, ethnicity == 5)), " (", round(nrow(subset(x, ethnicity == 5))/n*100, digits = 0), ")", sep = "")
+  results.table[21,2] <- paste(nrow(subset(x, ethnicity == 6)), " (", round(nrow(subset(x, ethnicity == 6))/n*100, digits = 0), ")", sep = "")
   
   ## IMD
   results.table[22,2] <- paste(nrow(subset(x, imd == 1)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")

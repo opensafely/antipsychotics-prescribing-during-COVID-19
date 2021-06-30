@@ -15,11 +15,35 @@ actions:
   # Extract data ----
   
   ## Cohort data
-  extract_data:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+  generate_cohort_1:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2019-06-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
         cohort: output/data/input_*.feather
+        
+  generate_cohort_2:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-07-01 to 2019-12-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input*.feather
+  
+  generate_cohort_3:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-01-01 to 2020-06-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/inpu*.feather
+        
+  generate_cohort_4:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-07-01 to 2020-12-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/inp*.feather
+        
+  generate_cohort_5:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/in*.feather
   
   ## Ethnicity      
   extract_ethnicity:
@@ -57,19 +81,19 @@ actions:
   ## Add ethnicity
   join_ethnicity:
     run: python:latest python analysis/join_ethnicity.py
-    needs: [extract_data, extract_ethnicity]
+    needs: [generate_cohort_1, generate_cohort_2, generate_cohort_3, generate_cohort_4, generate_cohort_5, extract_ethnicity]
     outputs:
       highly_sensitive:
-        cohort: output/data/input*.feather
+        cohort: output/data/i*.feather
   
   ## Process data
   data_process:
     run: r:latest analysis/process_data.R
-    needs: [extract_ethnicity, join_ethnicity]
+    needs: [join_ethnicity]
     outputs:
       moderately_sensitive:
         data: output/data/data_*.rds
-        tables: output/data/custom_measures_*.csv
+        # tables: output/data/custom_measures_*.csv
         
   # ## Generate measures
   # generate_measures:

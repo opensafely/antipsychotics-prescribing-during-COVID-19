@@ -14,6 +14,13 @@ actions:
 
   # Extract data ----
   
+  ## study population flow chart
+  generate_study_population_flow_chart_data:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_flow_chart --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    outputs:
+      highly_sensitive:
+        cohort: output/data/input_flow_chart_*.feather
+  
   ## Cohort data
   generate_cohort_1:
     run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2019-06-01 by month" --output-dir=output/data --output-format=feather
@@ -89,7 +96,7 @@ actions:
   ## Process data
   data_process:
     run: r:latest analysis/process_data.R
-    needs: [join_ethnicity]
+    needs: [generate_study_population_flow_chart_data, join_ethnicity]
     outputs:
       moderately_sensitive:
         data: output/data/data_*.rds
@@ -122,6 +129,14 @@ actions:
   
 
   # Results ----
+  
+  ## Calculate numbers for study population flow chart
+  flow_chart:
+    run: r:latest -e 'rmarkdown::render("analysis/study_definition_flow_chart.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    needs: [data_process]
+    outputs:
+      moderately_sensitive:
+        html: output/data/study_definition_flow_chart.html
   
   ## Figures
   summary_figures:

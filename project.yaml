@@ -132,11 +132,11 @@ actions:
   
   ## Calculate numbers for study population flow chart
   flow_chart:
-    run: r:latest -e 'rmarkdown::render("analysis/study_definition_flow_chart.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    run: r:latest -e 'rmarkdown::render("analysis/study_definition_flow_chart.rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
     needs: [data_process]
     outputs:
       moderately_sensitive:
-        html: output/data/study_definition_flow_chart.html
+        html: output/study_definition_flow_chart.html
   
   ## Figures
   summary_figures:

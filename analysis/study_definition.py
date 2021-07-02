@@ -6,7 +6,7 @@
 ######################################
 
 
-# --- IMPORT STATEMENTS ---
+# IMPORT STATEMENTS ----
 
 ## Import code building blocks from cohort extractor package
 from cohortextractor import (
@@ -23,12 +23,10 @@ from cohortextractor import (
 from codelists import *
   
   
-# --- DEFINE STUDY POPULATION ---
+# DEFINE STUDY POPULATION ----
   
 ## Define study time variables
 from datetime import datetime
-
-start_date = "2019-01-01"
 end_date = datetime.today().strftime('%Y-%m-%d')
 
 ## Define study population and variables
@@ -36,13 +34,13 @@ study = StudyDefinition(
   
   # Configure the expectations framework
   default_expectations={
-    "date": {"earliest": start_date, "latest": end_date},
+    "date": {"earliest": "2019-01-01", "latest": end_date},
     "rate": "uniform",
     "incidence": 0.1,
   },
   
-  # Set index date to start date
-  index_date = start_date,
+  # Set index date
+  index_date = "2019-01-01",
   
   # Define the study population
   population = patients.satisfying(

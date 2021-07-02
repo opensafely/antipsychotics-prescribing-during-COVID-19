@@ -68,6 +68,23 @@ data_incident_2yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_
 # measures_care_home <- lapply(filenames, cohort = "care_home", calculate_measures) %>% bind_rows()
 # measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) %>% bind_rows()
 
+# Flow chart
+filenames_flow_chart <- list.files(path = here::here("output", "data"), pattern = "input_flow_chart_")[-1]
+
+flow_chart_cohort <- arrow::read_feather(here::here("output", "data", "input_flow_chart_2019-02-01.feather"))  %>%
+  mutate(date = as.Date("2019-01-01", format = "%Y-%m-%d"))
+
+for (i in 1:length(filenames_flow_chart)){
+  
+  data_extract <- arrow::read_feather(
+    here::here("output", "data", filenames_flow_chart[i])) %>%
+    mutate(date = as.Date(substr(filenames_flow_chart[i], 18, 27), format = "%Y-%m-%d")) %>%
+    filter(!patient_id %in% flow_chart_cohort$patient_id)
+  
+  flow_chart_cohort <- rbind(flow_chart_cohort, data_extract)
+  
+}
+
 
 # Save datasets ----
 
@@ -91,5 +108,9 @@ saveRDS(list(data_incident_1yr, data_incident_2yr), here::here("output", "data",
 # write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
 # write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
 # write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
-# 
+
+
+## Flow chart data as .rds file
+write_rds(flow_chart_cohort, here::here("output", "data", "data_flow_chart.rds"), compress="gz")
+
 

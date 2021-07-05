@@ -23,6 +23,10 @@ data_flow_chart <- readRDS(here::here("output", "data", "data_flow_chart.rds"))
 ### Monthly counts of patients
 ```{r, echo = FALSE}
 table(data_flow_chart$date)
+list.files(path = here::here("output", "data"), pattern = "input_flow_chart_")[-1]
+names(data_flow_chart)
+table(data_flow_chart$antipsychotic)
+head(data_flow_chart)
 ```
 
 

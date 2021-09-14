@@ -16,7 +16,7 @@ actions:
   
   ## Cohort data
   extract_data:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-07-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
         cohort: output/data/input_*.feather

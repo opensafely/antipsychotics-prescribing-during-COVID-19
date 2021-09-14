@@ -19,7 +19,7 @@ library('arrow')
 library('here')
 
 ## Custom functions
-source(here("analysis", "custom_functions.R"))
+source(here("analysis", "lib", "custom_functions.R"))
 
 ## Output processed data to rds
 dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recursive=TRUE)

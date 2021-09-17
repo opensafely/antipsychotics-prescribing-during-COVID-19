@@ -61,7 +61,7 @@ actions:
         
   ## Table 1
   table_1:
-    run: r:latest analysis/table_1.R
+    run: r:latest analysis/descriptive/table_1.R
     needs: [join_ethnicity]
     outputs:
       moderately_sensitive:

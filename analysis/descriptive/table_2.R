@@ -15,6 +15,7 @@ library('lubridate')
 library('reshape2')
 library('here')
 library('gt')
+library('gtsummary')
 
 ## Create output directory
 dir.create(here::here("output", "tables"), showWarnings = FALSE, recursive=TRUE)

@@ -1,0 +1,108 @@
+<!-- This rmd imports the population flow chart data (`input_flow_chart.csv`) then sequentially drops each of the variables that appears in the population definition logic and counts the remaining population to provide numbers for a flowchart to show inclusion/exclusion of patients in the study. -->
+  
+---
+title: "Study definition flow chart" 
+output: 
+  html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_knit$set(echo = FALSE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries ----
+library(tidyverse)
+
+## Import data ----
+data_flow_chart <- readRDS(here::here("output", "data", "data_flow_chart.rds"))
+```
+
+### Monthly counts of patients
+```{r, echo = FALSE}
+table(data_flow_chart$date)
+list.files(path = here::here("output", "data"), pattern = "input_flow_chart_")[-1]
+names(data_flow_chart)
+table(data_flow_chart$antipsychotic)
+head(data_flow_chart)
+```
+
+
+### Inclusion/exclusion numbers
+
+#### Population alive and registered with a general practice using TPP/EMIS software
+```{r, echo = FALSE}
+criteria_1 <- data_flow_chart %>%
+  filter(registered == TRUE,
+         has_died == FALSE)
+criteria_1 %>%
+  nrow()
+```
+
+#### At least 1 year of follow-up
+```{r, echo = FALSE}
+criteria_2 <- data_flow_chart %>%
+  filter(registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE) 
+```
+
+Excluded = `r nrow(criteria_1) - nrow(criteria_2)`
+
+```{r, echo = FALSE}
+criteria_2 %>%
+  nrow()
+```
+
+#### Missing data
+```{r, echo = FALSE}
+criteria_3 <- data_flow_chart %>%
+  filter(registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         age >= 0 & age < 121,
+         sex %in% c("M", "F")) 
+```
+
+Excluded = `r nrow(criteria_2) - nrow(criteria_3)`
+
+```{r, echo = FALSE}
+criteria_3 %>%
+  nrow()
+```
+
+#### Sub populations
+```{r, echo = FALSE}
+criteria_3 %>%
+  select(learning_disability, autism, serious_mental_illness, care_home, dementia) %>%
+  summarise_all(list(sum))
+```
+
+#### Antipsychotic prescription
+```{r, echo = FALSE}
+criteria_4 <- data_flow_chart %>%
+  filter(registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         age >= 0 & age < 121,
+         sex %in% c("M", "F"),
+         antipsychotic == 1) 
+```
+
+Excluded = `r nrow(criteria_3) - nrow(criteria_4)`
+
+```{r, echo = FALSE}
+criteria_4 %>%
+  nrow()
+```
+
+
+#### Sub populations
+```{r, echo = FALSE}
+criteria_4 %>%
+  select(learning_disability, autism, serious_mental_illness, care_home, dementia) %>%
+  summarise_all(list(sum))
+```
+

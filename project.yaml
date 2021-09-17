@@ -16,7 +16,7 @@ actions:
   
   ## Cohort data
   extract_data:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-07-01 by month" --output-dir=output/data --output-format=feather
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-03-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
         cohort: output/data/input_*.feather
@@ -52,18 +52,12 @@ actions:
   
   ## Figures
   summary_figures:
-    run: r:latest analysis/summary_plots.R
+    run: r:latest analysis/descriptive/summary_plots.R
     needs: [data_process]
     outputs:
       moderately_sensitive:
-        plots: output/figures/plot_*.svg
-  
-  summary_figures_redacted:
-    run: r:latest analysis/summary_plots_redacted.R
-    needs: [data_process]
-    outputs:
-      moderately_sensitive:
-        plots: output/figures/plot*.svg
+        plot1: output/figures/total_*.png
+        plot2: output/figures/new_*.png
         
   ## Table 1
   table_1:
@@ -71,7 +65,7 @@ actions:
     needs: [join_ethnicity]
     outputs:
       moderately_sensitive:
-        plots: output/tables/table1.html
+        plots: output/tables/table1.csv
   
 
 

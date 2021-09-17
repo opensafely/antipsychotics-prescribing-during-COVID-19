@@ -27,14 +27,13 @@ from codelists import *
   
 ## Define study time variables
 from datetime import datetime
-end_date = datetime.today().strftime('%Y-%m-%d')
 
 ## Define study population and variables
 study = StudyDefinition(
   
   # Configure the expectations framework
   default_expectations={
-    "date": {"earliest": "2019-01-01", "latest": end_date},
+    "date": {"earliest": "2019-01-01", "latest": "2021-04-30"},
     "rate": "uniform",
     "incidence": 0.1,
   },
@@ -48,12 +47,6 @@ study = StudyDefinition(
         NOT has_died
         AND
         registered
-        AND
-        age
-        AND
-        has_follow_up_previous_year
-        AND
-        (sex = "M" OR sex = "F")
         """,
     
     has_died = patients.died_from_any_cause(
@@ -64,12 +57,6 @@ study = StudyDefinition(
     registered = patients.satisfying(
       "registered_at_start",
       registered_at_start = patients.registered_as_of("index_date"),
-    ),
-    
-    has_follow_up_previous_year = patients.registered_with_one_practice_between(
-      start_date = "index_date - 1 year",
-      end_date = "index_date",
-      return_expectations = {"incidence": 0.95},
     ),
     
   ),

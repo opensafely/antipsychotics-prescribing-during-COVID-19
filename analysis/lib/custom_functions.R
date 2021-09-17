@@ -148,20 +148,18 @@ calculate_totals <- function(x, cohort = "learning_disability") {
   } else if(cohort == "ethnicity"){
     
     data_processed <-  data_extract %>%
-      mutate(ethnicity = ifelse(is.na(ethnicity_6), ethnicity_sus, ethnicity_6),
-             ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
-             
-             ethnicity = fct_case_when(
-               ethnicity == "1" ~ "White",
-               ethnicity == "2" ~ "Mixed",
-               ethnicity == "3" ~ "Asian or Asian British",
-               ethnicity == "4" ~ "Black or Black British",
-               ethnicity == "5" ~ "Other ethnic groups",
-               ethnicity == "6" ~ "Unknown",
-               #TRUE ~ "Unknown"
-               TRUE ~ NA_character_)) %>%
+      mutate(ethnicity = ifelse(is.na(ethnicity), 6, ethnicity)) %>%
       select(patient_id, date, antipsychotics_first_gen, antipsychotics_second_gen, 
              antipsychotics_injectable_and_depot, prochlorperazine, ethnicity) %>%
+      mutate(ethnicity = fct_case_when(
+        ethnicity == "1" ~ "White",
+        ethnicity == "2" ~ "Mixed",
+        ethnicity == "3" ~ "Asian or Asian British",
+        ethnicity == "4" ~ "Black or Black British",
+        ethnicity == "5" ~ "Other ethnic groups",
+        ethnicity == "6" ~ "Unknown",
+        #TRUE ~ "Unknown"
+        TRUE ~ NA_character_)) %>%
       group_by(date, ethnicity) %>%
       summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
                 antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
@@ -313,55 +311,84 @@ calculate_measures <- function(x, cohort = "learning_disability") {
   
 }
 
-# Plot totals by demographic ----
-antipsychotic_plot_by_demographic <- function(antipsychotic = "antipsychotics_first_gen", cohort = "sex") {
-  
-  data_plot <- data_totals_demographics[[cohort]] %>%
-    rename(y = paste0(antipsychotic),
-           colour = paste0(cohort))
-  
-  if(cohort %in% c("sex", "imd", "region", "age", "ethnicity")){
-  
-   ggplot(data_plot, aes(x = date, y = y, colour = colour)) +
-    geom_line() + facet_wrap(~group, scales = "free") +
+# Plot totals by group ----
+plot_prevalent_antipsychotics_by_group <- function(group = "all"){
+  total_antipsychotics <- data_totals_groups %>%
+    filter(group == group) %>%
+    select(-group) %>%
+    melt(id.vars = c("date")) %>%
+    mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                  "Second generation antipsychotics, excluding long acting depots",
+                                                  "Long acting injectable and depot antipsychotics",
+                                                  "Prochlorperazine")),
+           value = ifelse(value < 8, 7, value)) %>%
+    ggplot(aes(x = date, y = value, colour = variable)) +
+    geom_line() +
+    facet_wrap(~variable, scales = "free") +
     theme_bw() +
-    theme(legend.position = "right",
-          legend.box.background = element_rect(color = "black"),
-          legend.key.size = unit(0.5, 'cm'),
-          legend.key.height = unit(0.5, 'cm'),
-          legend.key.width = unit(0.2, 'cm'),
-          legend.text = element_text(size=6),
-          legend.title = element_blank()) +
-    guides(colour = guide_legend(ncol = 1)) +
-    ylab("") +
-     xlab("") +
-     scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
-     theme(axis.text.x = element_text(angle = 60, hjust = 1))
-    
-  } else {
-    
-    data_plot <- data_totals_demographics[[cohort]]  %>%
-      rename(y = paste0(antipsychotic)) %>%
-      group_by(date) %>%  
-      summarise(quantile = scales::percent(c(seq(0, 1, by = 0.1))),
-                y = quantile(y, c(seq(0, 1, by = 0.1)), na.rm = T)) %>%
-      mutate(label = ifelse(quantile == "50.0%", "median", "decile")) %>%
-      mutate(date = as.Date(date, format = "%Y-%m-%d"))
-    
-    ggplot(data_plot, aes(x = date, y = y)) +
-      geom_line(aes(group = quantile, linetype = label, size = label), colour = "blue") +
-      theme_bw() +
-      theme(legend.title = element_blank(), legend.box.background = element_rect(colour = "black")) +
-      scale_linetype_manual("Variabler",values=c("median" = 1 ,"decile" = 2)) +
-      scale_size_manual(breaks=c("median","decile"), values=c(1,0.5)) +
-      guides(size = FALSE) +
-      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
-      theme(axis.text.x=element_text(angle=60, hjust=1)) +
-      ylab("") +
-      xlab("")
-    
-  }
-   
+    theme(legend.position = "none") +
+    ylab("Total number of patients issued antipsychotics, per month") +
+    xlab("") +
+    scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  
+  ggsave(filename = here::here(paste("output/figures/total_antipsychotics_group_", group, ".png", sep = "")),
+         total_antipsychotics,
+         units = "cm", width = 40, height = 20
+  )
+}
+
+plot_incident_antipsychotics_by_group <- function(group = "all"){
+  total_antipsychotics <- data_processed_1yr %>%
+    filter(group == group) %>%
+    select(-group, -`Number of patients with first prescriptions`) %>%
+    melt(id.vars = c("date")) %>%
+    mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                  "Second generation antipsychotics, excluding long acting depots",
+                                                  "Long acting injectable and depot antipsychotics",
+                                                  "Prochlorperazine")),
+           value = ifelse(value < 8, 7, value)) %>%
+    ggplot(aes(x = date, y = value, colour = variable)) +
+    geom_line() +
+    facet_wrap(~variable, scales = "free") +
+    theme_bw() +
+    theme(legend.position = "none") +
+    ylab("Total number of patients with newly issued antipsychotics, per month") +
+    xlab("") +
+    scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  
+  ggsave(filename = here::here(paste("output/figures/new_antipsychotics_group_", group, ".png", sep = "")),
+         total_antipsychotics,
+         units = "cm", width = 40, height = 20
+  )
+}
+
+# Plot totals by demographic ----
+plot_antipsychotics_by_demographic <- function(group = "age"){
+  total_antipsychotics <- data_totals_demographics[[group]] %>%
+    select(-group, groups = paste0(group)) %>%
+    melt(id.vars = c("date", "groups")) %>%
+    mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                  "Second generation antipsychotics, excluding long acting depots",
+                                                  "Long acting injectable and depot antipsychotics",
+                                                  "Prochlorperazine")),
+           value = ifelse(value < 8, 7, value)) %>%
+    ggplot(aes(x = date, y = value, colour = groups)) +
+    geom_line() +
+    facet_wrap(~variable, scales = "free") +
+    theme_bw() +
+    theme(legend.position = "bottom") +
+    guides(colour=guide_legend(title=" ")) +
+    ylab("Total number of patients issued antipsychotics, per month") +
+    xlab("") +
+    scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  
+  ggsave(filename = here::here(paste("output/figures/total_antipsychotics_demographic_", group, ".png", sep = "")),
+         total_antipsychotics,
+         units = "cm", width = 40, height = 20
+  )
 }
 
 ## Global labels ----
@@ -406,117 +433,149 @@ add_global_label <- function(pwobj, Xlab = NULL, Ylab = NULL, Xgap = 0.03, Ygap 
   return(pwobj)
 }
 
-## Table 1
-table_1 <- function(x) {
-  
-  ## Table 1 shell
-  results.table <- data.frame(matrix(nrow = 35, ncol = 2))
-  colnames(results.table) <- c("Characteristic","Count (%)")
-  results.table[1:35,1] <- c("Total", 
-                           "Autism",
-                           "Care-home",
-                           "Dementia", 
-                           "LD",
-                           "SMI",
-                           "M", 
-                           "F", 
-                           "18",
-                           "18-30",
-                           "30",
-                           "40",
-                           "50", 
-                           "60",
-                           "65",
-                           "White",
-                           "Mixed",
-                           "Asian",
-                           "Black",
-                           "Other",
-                           "Unknown",
-                           "1",
-                           "2",
-                           "3",
-                           "4",
-                           "5",
-                           "London",
-                           "East of England",
-                           "East midlands",
-                           "North East",
-                           "North West",
-                           "South East",
-                           "South West",
-                           "West Midlands",
-                           "Yorkshire")
-  
-  # Fill in table ----
-  
-  ## Denominators
-  pop = nrow(data_table1)
-  autism = nrow(subset(data_table1, autism == 1))
-  care_home = nrow(subset(data_table1, care_home == 1))
-  dementia = nrow(subset(data_table1, dementia == 1))
-  learning_disability = nrow(subset(data_table1, learning_disability == 1))
-  serious_mental_illness = nrow(subset(data_table1, serious_mental_illness == 1))
+## Total number of patients issued antipsychotics by group
+plot_antipsychotics_by_group <- function(group = "all"){
+  data_totals_groups %>%
+    filter(group == group) %>%
+    select(-group) %>%
+    melt(id.vars = c("date")) %>%
+    mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                  "Second generation antipsychotics, excluding long acting depots",
+                                                  "Long acting injectable and depot antipsychotics",
+                                                  "Prochlorperazine"))) %>%
+    ggplot(aes(x = date, y = value, colour = variable)) +
+    geom_line() +
+    facet_wrap(~variable, scales = "free") +
+    theme_bw() +
+    theme(legend.position = "none") +
+    ylab("Total number of patients issued antipsychotics, per month") +
+    xlab("") +
+    scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    ggtitle()
+}
 
-  ## Total
-  n = as.numeric(length(x$patient_id))
-  results.table[1,2] <- paste(n, " (", round(n/pop*100, digits = 0), ")", sep = "")
+## Whole cohort
+calculate_data_cohort <- function(x) {
   
-  ## Autism
-  results.table[2,2] <- paste(sum(x$autism), " (", round(sum(x$autism)/autism*100, digits = 0), ")", sep = "")
+  # Read in and format data
+  data_base <- arrow::read_feather(
+    here::here("output", "data", x[1])) %>%
+    mutate(date = as.Date(substr(x[1], 7, 16), format = "%Y-%m-%d"),
+           ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+           ethnicity = fct_case_when(
+             ethnicity == "1" ~ "White",
+             ethnicity == "2" ~ "Mixed",
+             ethnicity == "3" ~ "Asian or Asian British",
+             ethnicity == "4" ~ "Black or Black British",
+             ethnicity == "5" ~ "Other ethnic groups",
+             ethnicity == "6" ~ "Unknown",
+             #TRUE ~ "Unknown"
+             TRUE ~ NA_character_),
+           antipsychotic = ifelse((antipsychotics_first_gen == 1 |
+                                     antipsychotics_second_gen ==1 |
+                                     antipsychotics_injectable_and_depot == 1 |
+                                     prochlorperazine == 1), 1, 0)) %>%
+    select(patient_id, date, antipsychotic, 
+           autism, care_home, dementia, learning_disability, serious_mental_illness,
+           age, sex, region, imd, ethnicity)
   
-  ## Care home
-  results.table[3,2] <- paste(sum(x$care_home), " (", round(sum(x$care_home)/care_home*100, digits = 0), ")", sep = "")
+  for(i in 2:length(filenames)) {
+    
+    data_add <- arrow::read_feather(
+      here::here("output", "data", x[i])) %>%
+      filter(!(patient_id %in% data_base$patient_id)) %>%
+      mutate(date = as.Date(substr(x[i], 7, 16), format = "%Y-%m-%d"),
+             ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+             ethnicity = fct_case_when(
+               ethnicity == "1" ~ "White",
+               ethnicity == "2" ~ "Mixed",
+               ethnicity == "3" ~ "Asian or Asian British",
+               ethnicity == "4" ~ "Black or Black British",
+               ethnicity == "5" ~ "Other ethnic groups",
+               ethnicity == "6" ~ "Unknown",
+               #TRUE ~ "Unknown"
+               TRUE ~ NA_character_),
+             antipsychotic = ifelse((antipsychotics_first_gen == 1 |
+                                       antipsychotics_second_gen ==1 |
+                                       antipsychotics_injectable_and_depot == 1 |
+                                       prochlorperazine == 1), 1, 0)) %>%
+      select(patient_id, date, antipsychotic, 
+             autism, care_home, dementia, learning_disability, serious_mental_illness,
+             age, sex, region, imd, ethnicity)
+    
+    data_base <- rbind(data_base, data_add)
+    
+  }
   
-  ## Dementia
-  results.table[4,2] <- paste(sum(x$dementia), " (", round(sum(x$dementia)/dementia*100, digits = 0), ")", sep = "")
+  data_base
+
+}
+
+## Table 2
+calculate_table2 <-function(population = "autism", Y = 10000){
   
-  ## LD
-  results.table[5,2] <- paste(sum(x$learning_disability), " (", round(sum(x$learning_disability)/learning_disability*100, digits = 0), ")", sep = "")
+  table_2_all <- data_cohort %>% 
+    mutate(ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+           ethnicity = fct_case_when(
+             ethnicity == "1" ~ "White",
+             ethnicity == "2" ~ "Mixed",
+             ethnicity == "3" ~ "Asian or Asian British",
+             ethnicity == "4" ~ "Black or Black British",
+             ethnicity == "5" ~ "Other ethnic groups",
+             ethnicity == "6" ~ "Unknown",
+             #TRUE ~ "Unknown"
+             TRUE ~ NA_character_),
+           imd = na_if(imd, "0"),
+           imd = fct_case_when(
+             imd == 1 ~ "1 most deprived",
+             imd == 2 ~ "2",
+             imd == 3 ~ "3",
+             imd == 4 ~ "4",
+             imd == 5 ~ "5 least deprived",
+             #TRUE ~ "Unknown",
+             TRUE ~ NA_character_
+           ),
+           region = fct_case_when(
+             region == "London" ~ "London",
+             region == "East" ~ "East of England",
+             region == "East Midlands" ~ "East Midlands",
+             region == "North East" ~ "North East",
+             region == "North West" ~ "North West",
+             region == "South East" ~ "South East",
+             region == "South West" ~ "South West",
+             region == "West Midlands" ~ "West Midlands",
+             region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+             #TRUE ~ "Unknown",
+             TRUE ~ NA_character_)) %>%
+    mutate(ageband = cut(age,
+                         breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
+                         labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
+                         right = FALSE)) %>%
+    select(group = paste0(population),
+           antipsychotic,
+           ageband, 
+           sex,
+           region,
+           imd,
+           ethnicity) %>%
+    filter(group == 1) %>%
+    select(-group) %>%
+    tbl_summary(by = antipsychotic) %>%
+    add_overall() 
   
-  ## SMI
-  results.table[6,2] <- paste(sum(x$serious_mental_illness), " (", round(sum(x$serious_mental_illness)/serious_mental_illness*100, digits = 0), ")", sep = "")
-  
-  ## Sex
-  results.table[7,2] <- paste(nrow(subset(x, sex == "M")), " (", round(nrow(subset(x, sex == "M"))/n*100, digits = 0), ")", sep = "")
-  results.table[8,2] <- paste(nrow(subset(x, sex == "F")), " (", round(nrow(subset(x, sex == "F"))/n*100, digits = 0), ")", sep = "")
-  
-  ## Age
-  results.table[9,2] <- paste(nrow(subset(x, age < 18)), " (", round(nrow(subset(x, age < 18))/n*100, digits = 0), ")", sep = "")
-  results.table[10,2] <- paste(nrow(subset(x, age >= 18 & age < 30)), " (", round(nrow(subset(x, age >= 18 & age < 30))/n*100, digits = 0), ")", sep = "")
-  results.table[11,2] <- paste(nrow(subset(x, age >= 30 & age < 40)), " (", round(nrow(subset(x, age >= 30 & age < 40))/n*100, digits = 0), ")", sep = "")
-  results.table[12,2] <- paste(nrow(subset(x, age >= 40 & age < 50)), " (", round(nrow(subset(x, age >= 40 & age < 50))/n*100, digits = 0), ")", sep = "")
-  results.table[13,2] <- paste(nrow(subset(x, age >= 50 & age < 60)), " (", round(nrow(subset(x, age >= 50 & age < 60))/n*100, digits = 0), ")", sep = "")
-  results.table[14,2] <- paste(nrow(subset(x, age >= 60 & age < 65)), " (", round(nrow(subset(x, age >= 60 & age < 65))/n*100, digits = 0), ")", sep = "")
-  results.table[15,2] <- paste(nrow(subset(x, age >= 65)), " (", round(nrow(subset(x, age >= 65))/n*100, digits = 0), ")", sep = "")
-  
-  ## Ethnicity
-  results.table[16,2] <- paste(nrow(subset(x, ethnicity == "White")), " (", round(nrow(subset(x, ethnicity == "White"))/n*100, digits = 0), ")", sep = "")
-  results.table[17,2] <- paste(nrow(subset(x, ethnicity == "Mixed")), " (", round(nrow(subset(x, ethnicity == "Mixed"))/n*100, digits = 0), ")", sep = "")
-  results.table[18,2] <- paste(nrow(subset(x, ethnicity == "Asian or Asian British")), " (", round(nrow(subset(x, ethnicity == "Asian or Asian British"))/n*100, digits = 0), ")", sep = "")
-  results.table[19,2] <- paste(nrow(subset(x, ethnicity == "Black or Black British")), " (", round(nrow(subset(x, ethnicity == "Black or Black British"))/n*100, digits = 0), ")", sep = "")
-  results.table[20,2] <- paste(nrow(subset(x, ethnicity == "Other ethnic groups")), " (", round(nrow(subset(x, ethnicity == "Other ethnic groups"))/n*100, digits = 0), ")", sep = "")
-  results.table[21,2] <- paste(nrow(subset(x, ethnicity == "Unknown")), " (", round(nrow(subset(x, ethnicity == "Unknown"))/n*100, digits = 0), ")", sep = "")
-  
-  ## IMD
-  results.table[22,2] <- paste(nrow(subset(x, imd == 1)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
-  results.table[23,2] <- paste(nrow(subset(x, imd == 2)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
-  results.table[24,2] <- paste(nrow(subset(x, imd == 3)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
-  results.table[25,2] <- paste(nrow(subset(x, imd == 4)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
-  results.table[26,2] <- paste(nrow(subset(x, imd == 5)), " (", round(nrow(subset(x, imd == 1))/n*100, digits = 0), ")", sep = "")
-  
-  ## Region
-  results.table[27,2] <- paste(nrow(subset(x, region == "London")), " (", round(nrow(subset(x, region == "London"))/n*100, digits = 0), ")", sep = "")
-  results.table[28,2] <- paste(nrow(subset(x, region == "East")), " (", round(nrow(subset(x, region == "East"))/n*100, digits = 0), ")", sep = "")
-  results.table[29,2] <- paste(nrow(subset(x, region == "East Midlands")), " (", round(nrow(subset(x, region == "East Midlands"))/n*100, digits = 0), ")", sep = "")
-  results.table[30,2] <- paste(nrow(subset(x, region == "North East")), " (", round(nrow(subset(x, region == "North East"))/n*100, digits = 0), ")", sep = "")
-  results.table[31,2] <- paste(nrow(subset(x, region == "North West")), " (", round(nrow(subset(x, region == "North West"))/n*100, digits = 0), ")", sep = "")
-  results.table[32,2] <- paste(nrow(subset(x, region == "South East")), " (", round(nrow(subset(x, region == "South East"))/n*100, digits = 0), ")", sep = "")
-  results.table[33,2] <- paste(nrow(subset(x, region == "South West")), " (", round(nrow(subset(x, region == "South West"))/n*100, digits = 0), ")", sep = "")
-  results.table[34,2] <- paste(nrow(subset(x, region == "West Midlands")), " (", round(nrow(subset(x, region == "West Midlands"))/n*100, digits = 0), ")", sep = "")
-  results.table[35,2] <- paste(nrow(subset(x, region == "Yorkshire and The Humber")), " (", round(nrow(subset(x, region == "Yorkshire and The Humber"))/n*100, digits = 0), ")", sep = "")
-  
-  return(results.table)
+  table_2_all <- table_2_all$table_body %>%
+    select(group = variable, variable = label, population = stat_0, antipsychotic = stat_2) %>%
+    separate(population, c("population","perc"), sep = "([(])") %>%
+    separate(antipsychotic, c("antipsychotic","perc2"), sep = "([(])") %>%
+    mutate(population = gsub(" ", "", population),
+           population = as.numeric(gsub(",", "", population)),
+           antipsychotic = gsub(" ", "", antipsychotic),
+           antipsychotic = as.numeric(gsub(",", "", antipsychotic))) %>%
+    filter(!(is.na(population)),
+           !(is.na(antipsychotic))) %>%
+    select(-perc, - perc2) %>%
+    mutate(rate = antipsychotic/population*Y)
 }
   
 

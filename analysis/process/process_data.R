@@ -71,6 +71,9 @@ measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) 
 
 ## Whole cohort
 data_cohort <- calculate_data_cohort(filenames)
+data_processed <- data_cohort %>%
+  filter(age < 110,
+         sex %in% c("M", "F")) 
 
 
 # Save datasets ----
@@ -88,14 +91,8 @@ saveRDS(list(sex = sex,
 ## Totals (incident) data as .rds files
 saveRDS(list(data_incident_1yr, data_incident_2yr), here::here("output", "data", "data_incident_groups.rds"))
 
-## Measures data as csvs
-write_csv(measures_all, here::here("output", "data", "custom_measures_all.csv"))
-write_csv(measures_learning_disability, here::here("output", "data", "custom_measures_learning_disability.csv"))
-write_csv(measures_autism , here::here("output", "data", "custom_measures_autism.csv"))
-write_csv(measures_serious_mental_illness, here::here("output", "data", "custom_measures_serious_mental_illness.csv"))
-write_csv(measures_care_home, here::here("output", "data", "custom_measures_care_home.csv"))
-write_csv(measures_dementia, here::here("output", "data", "custom_measures_dementia.csv"))
+## Whole cohort
+write_rds(data_processed, here::here("output", "data", "data_processed.rds"), compress="gz")
 
-# Whole cohort
-write_rds(data_cohort, here::here("output", "data", "data_cohort.rds"), compress="gz")
-
+## Flow chart data
+write_rds(data_cohort, here::here("output", "data", "data_flow_chart.rds"), compress="gz")

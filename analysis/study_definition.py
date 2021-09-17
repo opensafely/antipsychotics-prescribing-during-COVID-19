@@ -33,7 +33,7 @@ study = StudyDefinition(
   
   # Configure the expectations framework
   default_expectations={
-    "date": {"earliest": "2019-01-01", "latest": end_date},
+    "date": {"earliest": "2019-01-01", "latest": "2021-04-31"},
     "rate": "uniform",
     "incidence": 0.1,
   },

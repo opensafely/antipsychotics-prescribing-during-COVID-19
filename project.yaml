@@ -45,8 +45,6 @@ actions:
     outputs:
       moderately_sensitive:
         data: output/data/data_*.rds
-        tables: output/data/custom_measures_*.csv
-        
  
   # Results ----
   

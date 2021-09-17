@@ -25,7 +25,7 @@ source(here("analysis", "lib", "custom_functions.R"))
 
 
 # Read in and format data ----
-data_cohort <- read_rds(here::here("output", "data", "data_cohort.rds"))
+data_cohort <- read_rds(here::here("output", "data", "data_processed.rds"))
 
 ## Counts
 counts_table1 <- data_cohort %>% 

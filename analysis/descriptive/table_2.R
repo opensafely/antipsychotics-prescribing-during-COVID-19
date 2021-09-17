@@ -24,7 +24,7 @@ dir.create(here::here("output", "tables"), showWarnings = FALSE, recursive=TRUE)
 source(here("analysis", "lib", "custom_functions.R"))
 
 ## Read in data
-data_cohort <- read_rds(here::here("output", "data", "data_cohort.rds"))
+data_cohort <- read_rds(here::here("output", "data", "data_processed.rds"))
 
 
 # Table 2 ----

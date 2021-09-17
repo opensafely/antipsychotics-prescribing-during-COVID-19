@@ -62,10 +62,18 @@ actions:
   ## Table 1
   table_1:
     run: r:latest analysis/descriptive/table_1.R
-    needs: [join_ethnicity]
+    needs: [data_process]
     outputs:
       moderately_sensitive:
         plots: output/tables/table1.csv
+  
+  ## Table 2
+  table_2:
+    run: r:latest analysis/descriptive/table_2.R
+    needs: [data_process]
+    outputs:
+      moderately_sensitive:
+        plots: output/tables/table2*.csv
   
 
 

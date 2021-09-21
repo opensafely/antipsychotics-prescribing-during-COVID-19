@@ -11,52 +11,86 @@ from datetime import date
 start_date = "2019-01-01"
 end_date = "2021-04-01"
 
-from codelists import ethnicity_codes
+from codelists import *
 
 study = StudyDefinition(
+    
     default_expectations={
         "date": {"earliest": "1900-01-01", "latest": "today"},
         "rate": "uniform",
+        "incidence": 0.5,
     },
     index_date=end_date,
+
     population=patients.all(),
 
-    # ETHNICITY IN 6 CATEGORIES
-    eth=patients.with_these_clinical_events(
-        ethnicity_codes,
-        returning="category",
-        find_last_match_in_period=True,
-        include_date_of_match=False,
-        return_expectations={
-            "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
-            "incidence": 0.75,
-        },
-    ),
-
-    # fill missing ethnicity from SUS
-    ethnicity_sus = patients.with_ethnicity_from_sus(
-        returning="group_6",  
-        use_most_frequent_code=True,
-        return_expectations={
-            "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
-            "incidence": 0.4,
-            },
-    ),
-    
-
     ethnicity = patients.categorised_as(
-            {"0": "DEFAULT",
-            "1": "eth='1' OR (NOT eth AND ethnicity_sus='1')", 
-            "2": "eth='2' OR (NOT eth AND ethnicity_sus='2')", 
-            "3": "eth='3' OR (NOT eth AND ethnicity_sus='3')", 
-            "4": "eth='4' OR (NOT eth AND ethnicity_sus='4')",  
-            "5": "eth='5' OR (NOT eth AND ethnicity_sus='5')",
-            }, 
-            return_expectations={
-            "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
-            "incidence": 0.4,
+        {
+            "Missing": "DEFAULT",
+            "White": """ eth2001=1 """,
+            "Mixed": """ eth2001=2 """,
+            "South Asian": """ eth2001=3 """, 
+            "Black": """ eth2001=4 """,
+            "Other": """ eth2001=5 """,
+            "Unknown": """ non_eth2001_dat OR eth_notgiptref_dat OR eth_notstated_dat OR eth_norecord_dat"""
+        },
+        return_expectations = {
+            "rate": "universal",
+            "category": {
+                        "ratios": {
+                            "Missing": 0.4,
+                            "White": 0.1,
+                            "Mixed": 0.1,
+                            "South Asian": 0.1,
+                            "Black": 0.1,
+                            "Other": 0.1,
+                            "Unknown": 0.1,
+                                }
+                        },
             },
+
+        eth2001=patients.with_these_clinical_events(
+            ethnicity_codes,
+            returning="category",
+            find_last_match_in_period=True,
+            on_or_before="last_day_of_month(index_date)",
+            return_expectations={
+                "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
+                "incidence": 0.75,
+            },
+        ),
+
+        # Any other ethnicity code
+        non_eth2001_dat=patients.with_these_clinical_events(
+            ethnicity_other_codes,
+            returning="date",
+            find_last_match_in_period=True,
+            on_or_before="last_day_of_month(index_date)",
+            date_format="YYYY-MM-DD",
+        ),
+        # Ethnicity not given - patient refused
+        eth_notgiptref_dat=patients.with_these_clinical_events(
+            ethnicity_not_given_codes,
+            returning="date",
+            find_last_match_in_period=True,
+            on_or_before="last_day_of_month(index_date)",
+            date_format="YYYY-MM-DD",
+        ),
+        # Ethnicity not stated
+        eth_notstated_dat=patients.with_these_clinical_events(
+            ethnicity_not_stated_codes,
+            returning="date",
+            find_last_match_in_period=True,
+            on_or_before="last_day_of_month(index_date)",
+            date_format="YYYY-MM-DD",
+        ),
+        # Ethnicity no record
+        eth_norecord_dat=patients.with_these_clinical_events(
+            ethnicity_no_record_codes,
+            returning="date",
+            find_last_match_in_period=True,
+            on_or_before="last_day_of_month(index_date)",
+            date_format="YYYY-MM-DD",
+        ),
     ),
-
-
 )

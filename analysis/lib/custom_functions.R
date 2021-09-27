@@ -148,16 +148,18 @@ calculate_totals <- function(x, cohort = "learning_disability") {
   } else if(cohort == "ethnicity"){
     
     data_processed <-  data_extract %>%
-      mutate(ethnicity = ifelse(is.na(ethnicity), 6, ethnicity)) %>%
       select(patient_id, date, antipsychotics_first_gen, antipsychotics_second_gen, 
              antipsychotics_injectable_and_depot, prochlorperazine, ethnicity) %>%
-      mutate(ethnicity = fct_case_when(
-        ethnicity == "1" ~ "White",
-        ethnicity == "2" ~ "Mixed",
-        ethnicity == "3" ~ "Asian or Asian British",
-        ethnicity == "4" ~ "Black or Black British",
-        ethnicity == "5" ~ "Other ethnic groups",
-        ethnicity == "6" ~ "Unknown",
+      mutate(ethnicity = as.character(ethnicity),
+             ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
+             ethnicity = fct_case_when(
+        ethnicity == "White" ~ "White",
+        ethnicity == "Mixed" ~ "Mixed",
+        ethnicity == "South Asian" ~ "Asian or Asian British",
+        ethnicity == "Black" ~ "Black or Black British",
+        ethnicity == "Other" ~ "Other ethnic groups",
+        ethnicity == "Unknown" ~ "Unknown",
+        ethnicity == "Missing" ~ "Missing",
         #TRUE ~ "Unknown"
         TRUE ~ NA_character_)) %>%
       group_by(date, ethnicity) %>%
@@ -462,14 +464,16 @@ calculate_data_cohort <- function(x) {
   data_base <- arrow::read_feather(
     here::here("output", "data", x[1])) %>%
     mutate(date = as.Date(substr(x[1], 7, 16), format = "%Y-%m-%d"),
-           ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+           ethnicity = as.character(ethnicity),
+           ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
            ethnicity = fct_case_when(
-             ethnicity == "1" ~ "White",
-             ethnicity == "2" ~ "Mixed",
-             ethnicity == "3" ~ "Asian or Asian British",
-             ethnicity == "4" ~ "Black or Black British",
-             ethnicity == "5" ~ "Other ethnic groups",
-             ethnicity == "6" ~ "Unknown",
+             ethnicity == "White" ~ "White",
+             ethnicity == "Mixed" ~ "Mixed",
+             ethnicity == "South Asian" ~ "Asian or Asian British",
+             ethnicity == "Black" ~ "Black or Black British",
+             ethnicity == "Other" ~ "Other ethnic groups",
+             ethnicity == "Unknown" ~ "Unknown",
+             ethnicity == "Missing" ~ "Missing",
              #TRUE ~ "Unknown"
              TRUE ~ NA_character_),
            antipsychotic = ifelse((antipsychotics_first_gen == 1 |
@@ -486,14 +490,16 @@ calculate_data_cohort <- function(x) {
       here::here("output", "data", x[i])) %>%
       filter(!(patient_id %in% data_base$patient_id)) %>%
       mutate(date = as.Date(substr(x[i], 7, 16), format = "%Y-%m-%d"),
-             ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+             ethnicity = as.character(ethnicity),
+             ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
              ethnicity = fct_case_when(
-               ethnicity == "1" ~ "White",
-               ethnicity == "2" ~ "Mixed",
-               ethnicity == "3" ~ "Asian or Asian British",
-               ethnicity == "4" ~ "Black or Black British",
-               ethnicity == "5" ~ "Other ethnic groups",
-               ethnicity == "6" ~ "Unknown",
+               ethnicity == "White" ~ "White",
+               ethnicity == "Mixed" ~ "Mixed",
+               ethnicity == "South Asian" ~ "Asian or Asian British",
+               ethnicity == "Black" ~ "Black or Black British",
+               ethnicity == "Other" ~ "Other ethnic groups",
+               ethnicity == "Unknown" ~ "Unknown",
+               ethnicity == "Missing" ~ "Missing",
                #TRUE ~ "Unknown"
                TRUE ~ NA_character_),
              antipsychotic = ifelse((antipsychotics_first_gen == 1 |
@@ -516,14 +522,14 @@ calculate_data_cohort <- function(x) {
 calculate_table2 <-function(population = "autism", Y = 10000){
   
   table_2_all <- data_cohort %>% 
-    mutate(ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
-           ethnicity = fct_case_when(
-             ethnicity == "1" ~ "White",
-             ethnicity == "2" ~ "Mixed",
-             ethnicity == "3" ~ "Asian or Asian British",
-             ethnicity == "4" ~ "Black or Black British",
-             ethnicity == "5" ~ "Other ethnic groups",
-             ethnicity == "6" ~ "Unknown",
+    mutate(ethnicity = fct_case_when(
+             ethnicity == "White" ~ "White",
+             ethnicity == "Mixed" ~ "Mixed",
+             ethnicity == "South Asian" ~ "Asian or Asian British",
+             ethnicity == "Black" ~ "Black or Black British",
+             ethnicity == "Other" ~ "Other ethnic groups",
+             ethnicity == "Unknown" ~ "Unknown",
+             ethnicity == "Missing" ~ "Missing",
              #TRUE ~ "Unknown"
              TRUE ~ NA_character_),
            imd = na_if(imd, "0"),
@@ -577,7 +583,28 @@ calculate_table2 <-function(population = "autism", Y = 10000){
     select(-perc, - perc2) %>%
     mutate(rate = antipsychotic/population*Y)
 }
+
+# Redaction
+redact_table <- function(table = data_totals_groups, threshold = 8){
   
-
-
+  ## Redact values < threshold
+  threshold = threshold
+  
+  table_redacted <- table %>%
+    mutate(antipsychotics_first_gen = ifelse(antipsychotics_first_gen < threshold, NA, antipsychotics_first_gen),
+           antipsychotics_second_gen = ifelse(antipsychotics_second_gen < threshold, NA, antipsychotics_second_gen),
+           antipsychotics_injectable_and_depot = ifelse(antipsychotics_injectable_and_depot < threshold, NA, antipsychotics_injectable_and_depot),
+           prochlorperazine = ifelse(prochlorperazine < threshold, NA, prochlorperazine))
+  
+  ## Round to nearest 5
+  table_redacted <- table_redacted %>%
+    mutate(antipsychotics_first_gen = plyr::round_any(antipsychotics_first_gen, 5),
+           antipsychotics_second_gen = plyr::round_any(antipsychotics_second_gen, 5),
+           antipsychotics_injectable_and_depot = plyr::round_any(antipsychotics_injectable_and_depot, 5),
+           prochlorperazine = plyr::round_any(prochlorperazine, 5))
+  
+  ## Replace na with [REDACTED]
+  table_redacted <- table_redacted %>%
+    replace(is.na(.), "[REDACTED]")
+}
 

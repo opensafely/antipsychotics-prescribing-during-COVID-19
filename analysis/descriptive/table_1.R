@@ -29,14 +29,16 @@ data_cohort <- read_rds(here::here("output", "data", "data_processed.rds"))
 
 ## Counts
 counts_table1 <- data_cohort %>% 
-  mutate(ethnicity = ifelse(is.na(ethnicity), 6, ethnicity),
+  mutate(ethnicity = as.character(ethnicity),
+         ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
          ethnicity = fct_case_when(
-           ethnicity == "1" ~ "White",
-           ethnicity == "2" ~ "Mixed",
-           ethnicity == "3" ~ "Asian or Asian British",
-           ethnicity == "4" ~ "Black or Black British",
-           ethnicity == "5" ~ "Other ethnic groups",
-           ethnicity == "6" ~ "Unknown",
+           ethnicity == "White" ~ "White",
+           ethnicity == "Mixed" ~ "Mixed",
+           ethnicity == "Asian or Asian British" ~ "Asian or Asian British",
+           ethnicity == "Black or Black British" ~ "Black or Black British",
+           ethnicity == "Other ethnic groups" ~ "Other ethnic groups",
+           ethnicity == "Unknown" ~ "Unknown",
+           ethnicity == "Missing" ~ "Missing",
            #TRUE ~ "Unknown"
            TRUE ~ NA_character_),
          imd = na_if(imd, "0"),

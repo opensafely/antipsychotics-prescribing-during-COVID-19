@@ -40,7 +40,6 @@ data_totals <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bin
 sex <- lapply(filenames, cohort = "sex", calculate_totals) %>% bind_rows()
 imd <- lapply(filenames, cohort = "imd", calculate_totals) %>% bind_rows()
 ethnicity <- lapply(filenames, cohort = "ethnicity", calculate_totals) %>% bind_rows()
-stp <- lapply(filenames, cohort = "stp", calculate_totals) %>% bind_rows()
 region <- lapply(filenames, cohort = "region", calculate_totals) %>% bind_rows()
 age <- lapply(filenames, cohort = "age", calculate_totals) %>% bind_rows()
 
@@ -60,15 +59,6 @@ data_incident_2yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_
                           lapply(filenames, cohort = "care_home", calculate_incident_2yr) %>% bind_rows(),
                           lapply(filenames, cohort = "dementia", calculate_incident_2yr) %>% bind_rows())
 
-## Measures datasets
-measures_all <- lapply(filenames, cohort = "all", calculate_measures) %>% bind_rows()
-measures_learning_disability <- lapply(filenames, cohort = "learning_disability", calculate_measures) %>% bind_rows()
-measures_autism <- lapply(filenames, cohort = "autism", calculate_measures) %>% bind_rows()
-measures_serious_mental_illness <- lapply(filenames, cohort = "serious_mental_illness", calculate_measures) %>% bind_rows()
-measures_care_home <- lapply(filenames, cohort = "care_home", calculate_measures) %>% bind_rows()
-measures_dementia <- lapply(filenames, cohort = "dementia", calculate_measures) %>% bind_rows()
-
-
 ## Whole cohort
 data_cohort <- calculate_data_cohort(filenames)
 data_processed <- data_cohort %>%
@@ -83,7 +73,6 @@ write_rds(data_totals, here::here("output", "data", "data_totals_groups.rds"), c
 saveRDS(list(sex = sex, 
              imd = imd, 
              ethnicity = ethnicity, 
-             stp = stp, 
              region = region, 
              age = age),
         here::here("output", "data", "data_totals_demographics.rds"))

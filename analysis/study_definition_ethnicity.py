@@ -20,7 +20,24 @@ study = StudyDefinition(
     
     index_date=end_date,
     
-    population=patients.all(),
+    population = patients.satisfying(
+    """
+        NOT has_died
+        AND
+        registered
+        """,
+    
+    has_died = patients.died_from_any_cause(
+      on_or_before = "index_date",
+      returning = "binary_flag",
+    ),
+    
+    registered = patients.satisfying(
+      "registered_at_start",
+      registered_at_start = patients.registered_as_of("index_date"),
+    ),
+    
+  ),
     
     # Ethnicity
     eth2001=patients.with_these_clinical_events(

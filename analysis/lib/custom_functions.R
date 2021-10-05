@@ -26,292 +26,109 @@ my_read_feather <- function(x) {
 
 }
 
-# Totals datasets ----
-calculate_totals <- function(x, cohort = "learning_disability") {
+# Combine measures ----
+combine_measures <- function(group = "all", incident = TRUE) {
   
-  data_extract <- arrow::read_feather(
-    here::here("output", "data", x)) %>%
-    mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
+  if(incident == TRUE){
+    
+    data_antipsychotic_any_incident <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_any_incident.csv")) %>%
+    select(cohort = group, date, antipsychotic_any_incident, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotic_any_incident = sum(antipsychotic_any_incident, na.rm = T),
+              population = sum(population, na.rm = T))
   
-  if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
+  data_antipsychotic_first_gen_incident <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_first_gen_incident.csv")) %>%
+    select(cohort = group, date, antipsychotics_first_gen_incident, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_first_gen_incident = sum(antipsychotics_first_gen_incident, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_antipsychotic_second_gen_incident <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_second_gen_incident.csv")) %>%
+    select(cohort = group, date, antipsychotics_second_gen_incident, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_second_gen_incident = sum(antipsychotics_second_gen_incident, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_antipsychotic_injectable_and_depot_incident <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_injectable_and_depot_incident.csv")) %>%
+    select(cohort = group, date, antipsychotics_injectable_and_depot_incident, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_injectable_and_depot_incident = sum(antipsychotics_injectable_and_depot_incident, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_prochlorperazine_incident <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_prochlorperazine_incident.csv")) %>%
+    select(cohort = group, date, prochlorperazine_incident, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(prochlorperazine_incident = sum(prochlorperazine_incident, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_measures <- left_join(data_antipsychotic_any_incident, data_antipsychotic_first_gen_incident, by = c("date", "population")) %>%
+    left_join(data_antipsychotic_second_gen_incident, by = c("date", "population")) %>%
+    left_join(data_antipsychotic_injectable_and_depot_incident, by = c("date", "population")) %>%
+    left_join(data_prochlorperazine_incident, by = c("date", "population")) %>%
+    select(date, antipsychotic_any_incident, antipsychotics_first_gen_incident, antipsychotics_second_gen_incident, antipsychotics_injectable_and_depot_incident,
+           prochlorperazine_incident, population) %>%
+    mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+           group = group)
+  
+  data_measures
+  
+  }else{
     
-    data_processed <-  data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
-      rename(cohort = paste0(cohort)) %>%
-      filter(cohort == 1) %>%
-      select(-cohort) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  } else if(cohort == "sex"){
-      
-      data_processed <-  data_extract %>%
-        select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-               antipsychotics_injectable_and_depot, prochlorperazine, sex) %>%
-        filter(sex %in% c("M", "F")) %>%
-        mutate(sex = fct_case_when(sex == "F" ~ "Female",
-                                   sex == "M" ~ "Male",
-                                   #sex == "I" ~ "Inter-sex",
-                                   #sex == "U" ~ "Unknown",
-                                   TRUE ~ NA_character_)) %>%
-        group_by(date, sex) %>%
-        summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                  antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                  antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                  prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-        mutate(group = paste0(cohort))
-      
-  } else if(cohort == "imd"){
-    
-    data_processed <-  data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, imd) %>%
-      mutate(imd = na_if(imd, "0"),
-             imd = as.numeric(as.character(imd)),
-             imd = fct_case_when( imd ==1 ~ "1 most deprived",
-                                  imd ==2 ~ "2",
-                                  imd ==3 ~ "3",
-                                  imd == 4 ~ "4",
-                                  imd == 5 ~ "5 least deprived",
-                                  TRUE ~ NA_character_)) %>%
-      drop_na(imd) %>%
-      group_by(date, imd) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  } else if(cohort == "region"){
-    
-    data_processed <-  data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, region) %>%
-      mutate(region = fct_case_when(
-        region == "London" ~ "London",
-        region == "East" ~ "East of England",
-        region == "East Midlands" ~ "East Midlands",
-        region == "North East" ~ "North East",
-        region == "North West" ~ "North West",
-        region == "South East" ~ "South East",
-        region == "South West" ~ "South West",
-        region == "West Midlands" ~ "West Midlands",
-        region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_)) %>%
-      drop_na(region) %>%
-      group_by(date, region) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  } else if(cohort == "stp"){
-    
-    data_processed <-  data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, stp) %>%
-      mutate(stp = as.factor(stp)) %>%
-      drop_na(stp) %>%
-      group_by(date, stp) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  } else if(cohort == "age"){
-    
-    data_processed <-  data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, age) %>%
-      mutate(ageband = cut(age, 
-                           breaks = c(-Inf, 18, 30, 40, 50, 60, 65, Inf),
-                           labels = c("under 18", "18-30", "30s", "40s", "50s", "60-64", "65+"),
-                           right = FALSE
-                           )) %>%
-      drop_na(ageband) %>%
-      group_by(date, ageband) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort)) %>%
-      rename(age = ageband)
-    
-  } else if(cohort == "ethnicity"){
-    
-    data_processed <-  data_extract %>%
-      select(patient_id, date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, ethnicity) %>%
-      mutate(ethnicity = as.character(ethnicity),
-             ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
-             ethnicity = fct_case_when(
-        ethnicity == "White" ~ "White",
-        ethnicity == "Mixed" ~ "Mixed",
-        ethnicity == "South Asian" ~ "Asian or Asian British",
-        ethnicity == "Black" ~ "Black or Black British",
-        ethnicity == "Other" ~ "Other ethnic groups",
-        ethnicity == "Unknown" ~ "Unknown",
-        ethnicity == "Missing" ~ "Missing",
-        #TRUE ~ "Unknown"
-        TRUE ~ NA_character_)) %>%
-      group_by(date, ethnicity) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  } else {
-    
-    data_processed <- data_extract %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = "all")
+    data_antipsychotic_any <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_any.csv")) %>%
+    select(cohort = group, date, antipsychotic_any, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotic_any = sum(antipsychotic_any, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_antipsychotic_first_gen <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_first_gen.csv")) %>%
+    select(cohort = group, date, antipsychotics_first_gen, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_antipsychotic_second_gen <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_second_gen.csv")) %>%
+    select(cohort = group, date, antipsychotics_second_gen, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_antipsychotic_injectable_and_depot <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_injectable_and_depot.csv")) %>%
+    select(cohort = group, date, antipsychotics_injectable_and_depot, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_prochlorperazine <- read.csv(here::here("output", "data", "measure_antipsychotic_groups_prochlorperazine.csv")) %>%
+    select(cohort = group, date, prochlorperazine, population) %>%
+    filter(cohort == "True") %>%
+    group_by(date) %>%
+    summarise(prochlorperazine = sum(prochlorperazine, na.rm = T),
+              population = sum(population, na.rm = T))
+  
+  data_measures <- left_join(data_antipsychotic_any, data_antipsychotic_first_gen, by = c("date", "population")) %>%
+    left_join(data_antipsychotic_second_gen, by = c("date", "population")) %>%
+    left_join(data_antipsychotic_injectable_and_depot, by = c("date", "population")) %>%
+    left_join(data_prochlorperazine, by = c("date", "population")) %>%
+    select(date, antipsychotic_any, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot,
+           prochlorperazine, population) %>%
+    mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+           group = group)
+  
+  data_measures
+  
   }
-  
+
 }
 
-# Totals (incident) datasets ----
-calculate_incident_1yr <- function(x, cohort = "learning_disability") {
-  
-  data_extract <- arrow::read_feather(
-    here::here("output", "data", x)) %>%
-    mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
-  
-  if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
-    
-    data_processed_1yr <-  data_extract %>%
-      filter(antipsychotics_first_gen_incident_1yr == 1) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
-      rename(cohort = paste0(cohort)) %>%
-      filter(cohort == 1) %>%
-      select(-cohort) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  }else {
-    
-    data_processed_1y <- data_extract %>%
-      filter(antipsychotics_first_gen_incident_1yr == 1) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = "all")
-  }
-}
-
-calculate_incident_2yr <- function(x, cohort = "learning_disability") {
-  
-  data_extract <- arrow::read_feather(
-    here::here("output", "data", x)) %>%
-    mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
-  
-  if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
-    
-    data_processed_2yr <-  data_extract %>%
-      filter(antipsychotics_first_gen_incident_2yr == 1) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
-      rename(cohort = paste0(cohort)) %>%
-      filter(cohort == 1) %>%
-      select(-cohort) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = paste0(cohort))
-    
-  }else {
-    
-    data_processed_2y <- data_extract %>%
-      filter(antipsychotics_first_gen_incident_2yr == 1) %>%
-      select(date, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine) %>%
-      group_by(date) %>%
-      summarise(antipsychotics_first_gen = sum(antipsychotics_first_gen, na.rm = T),
-                antipsychotics_second_gen = sum(antipsychotics_second_gen, na.rm = T),
-                antipsychotics_injectable_and_depot = sum(antipsychotics_injectable_and_depot, na.rm = T),
-                prochlorperazine = sum(prochlorperazine, na.rm = T)) %>%
-      mutate(group = "all")
-  }
-}
-
-# Calculate measures datasets ----
-calculate_measures <- function(x, cohort = "learning_disability") {
-  
-  data_extract <- arrow::read_feather(
-    here::here("output", "data", x)) %>%
-    mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"))
-  
-  if(cohort %in% c("learning_disability", "autism", "serious_mental_illness", "care_home", "dementia")){
-    
-    ## Read in data
-    measures_data <- data_extract %>%
-      select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine, paste0(cohort)) %>%
-      rename(cohort = paste0(cohort)) %>%
-      filter(cohort == 1) %>%
-      select(-cohort) %>%
-      group_by(date, practice) %>%
-      summarise(antipsychotics_first_gen_event = sum(antipsychotics_first_gen == 1),
-                antipsychotics_first_gen_population = sum(antipsychotics_first_gen %in% c(0,1)),
-                antipsychotics_second_gen_event = sum(antipsychotics_second_gen == 1),
-                antipsychotics_second_gen_population = sum(antipsychotics_second_gen %in% c(0,1)),
-                antipsychotics_injectable_and_depot_event = sum(antipsychotics_injectable_and_depot == 1),
-                antipsychotics_injectable_and_depot_population = sum(antipsychotics_injectable_and_depot %in% c(0,1)),
-                prochlorperazine_event = sum(prochlorperazine == 1),
-                prochlorperazine_population = sum(prochlorperazine %in% c(0,1))) %>%
-      mutate(antipsychotics_first_gen = antipsychotics_first_gen_event/antipsychotics_first_gen_population*1000,
-             antipsychotics_second_gen = antipsychotics_second_gen_event/antipsychotics_second_gen_population*1000,
-             antipsychotics_injectable_and_depot = antipsychotics_injectable_and_depot_event/antipsychotics_injectable_and_depot_population*1000,
-             prochlorperazine = prochlorperazine_event/prochlorperazine_population*1000) %>%
-      select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen,
-             antipsychotics_injectable_and_depot, prochlorperazine)
-    
-  } else {
-    
-    ## Read in data
-    measures_data <- data_extract %>%
-      select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen, 
-             antipsychotics_injectable_and_depot, prochlorperazine) %>%
-      group_by(date, practice) %>%
-      summarise(antipsychotics_first_gen_event = sum(antipsychotics_first_gen == 1),
-                antipsychotics_first_gen_population = sum(antipsychotics_first_gen %in% c(0,1)),
-                antipsychotics_second_gen_event = sum(antipsychotics_second_gen == 1),
-                antipsychotics_second_gen_population = sum(antipsychotics_second_gen %in% c(0,1)),
-                antipsychotics_injectable_and_depot_event = sum(antipsychotics_injectable_and_depot == 1),
-                antipsychotics_injectable_and_depot_population = sum(antipsychotics_injectable_and_depot %in% c(0,1)),
-                prochlorperazine_event = sum(prochlorperazine == 1),
-                prochlorperazine_population = sum(prochlorperazine %in% c(0,1))) %>%
-      mutate(antipsychotics_first_gen = antipsychotics_first_gen_event/antipsychotics_first_gen_population*1000,
-             antipsychotics_second_gen = antipsychotics_second_gen_event/antipsychotics_second_gen_population*1000,
-             antipsychotics_injectable_and_depot = antipsychotics_injectable_and_depot_event/antipsychotics_injectable_and_depot_population*1000,
-             prochlorperazine = prochlorperazine_event/prochlorperazine_population*1000) %>%
-      select(date, practice, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot, prochlorperazine)
-    
-  }
-  
-}
 
 # Plot totals by group ----
 plot_prevalent_antipsychotics_by_group <- function(group = "all"){

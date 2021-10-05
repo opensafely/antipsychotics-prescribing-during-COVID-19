@@ -23,8 +23,8 @@ from cohortextractor import (
 from codelists import *
   
   
-# DEFINE STUDY POPULATION ----
-  
+  # DEFINE STUDY POPULATION ----
+
 ## Define study time variables
 from datetime import datetime
 
@@ -72,12 +72,12 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.5}
   ),
   
-  antipsychotics_first_gen_incident_1yr = patients.satisfying(
+  antipsychotics_first_gen_incident = patients.satisfying(
     
     """
     antipsychotics_first_gen_current_date
     AND 
-    NOT antipsychotics_first_gen_1yr_date
+    NOT antipsychotics_first_gen_last_date
     """, 
     
     return_expectations = {
@@ -93,44 +93,14 @@ study = StudyDefinition(
       return_expectations = {"incidence": 0.1}
     ),
     
-    antipsychotics_first_gen_1yr_date = patients.with_these_medications(
+    antipsychotics_first_gen_last_date = patients.with_these_medications(
       antipsychotics_first_gen_codes,
       returning = "date",
       find_first_match_in_period = True,
-      between = ["antipsychotics_first_gen_current_date - 1 year", "antipsychotics_first_gen_current_date - 1 day"],
+      between = ["antipsychotics_first_gen_current_date - 2 year", "antipsychotics_first_gen_current_date - 1 day"],
       date_format = "YYYY-MM-DD",
       return_expectations = {"incidence": 0.5}
     ),
-  ),
-  
-  antipsychotics_first_gen_incident_2yr = patients.satisfying(
-    
-    """
-    antipsychotics_first_gen_current_date
-    AND 
-    NOT antipsychotics_first_gen_2yr_date
-    """, 
-    
-    return_expectations = {
-      "incidence": 0.01,
-    },
-    
-    antipsychotics_first_gen_2yr_date = patients.with_these_medications(
-      antipsychotics_first_gen_codes,
-      returning = "date",
-      find_first_match_in_period = True,
-      between = ["antipsychotics_first_gen_current_date - 2 years", "antipsychotics_first_gen_current_date - 1 day"],
-      date_format = "YYYY-MM-DD",
-      return_expectations = {"incidence": 0.5}
-    ),
-  ),
-  
-  antipsychotics_first_gen_event_code = patients.with_these_clinical_events(
-    codelist = antipsychotics_first_gen_codes,
-    on_or_before = "index_date",
-    returning = "code",
-    return_expectations = {"category": {
-      "ratios": {str(36152011000001103): 0.8, str(321393004): 0.2}}, }
   ),
   
   ## Second generation antipsychotics excluding long acting injections
@@ -172,14 +142,6 @@ study = StudyDefinition(
     ),
   ),
   
-  antipsychotics_second_gen_event_code = patients.with_these_medications(
-    antipsychotics_second_gen_codes,
-    on_or_before = "index_date",
-    returning = "code",
-    return_expectations = {"category": {
-      "ratios": {str(321589009): 0.8, str(321590000): 0.2}}, }
-  ),
-  
   ## Long acting injectable and depot antipsychotics
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
@@ -217,14 +179,6 @@ study = StudyDefinition(
       date_format = "YYYY-MM-DD",
       return_expectations = {"incidence": 0.5}
     ),
-  ),
-  
-  antipsychotics_injectable_and_depot_event_code = patients.with_these_medications(
-    antipsychotics_injectable_and_depot_codes,
-    on_or_before = "index_date",
-    returning = "code",
-    return_expectations = {"category": {
-      "ratios": {str(4559111000001109): 0.8, str(4177011000001109): 0.2}}, }
   ),
   
   ## Prochlorperazine
@@ -266,12 +220,39 @@ study = StudyDefinition(
     ),
   ),
   
-  prochlorperazine_event_code = patients.with_these_medications(
-    prochlorperazine_codes,
-    on_or_before = "index_date",
-    returning = "code",
-    return_expectations = {"category": {
-      "ratios": {str(322149009): 0.8, str(322144004): 0.2}}, }
+  ### Any antipsychotic
+  antipsychotic_any = patients.satisfying(
+    
+    """
+    antipsychotics_first_gen
+    OR 
+    antipsychotics_second_gen
+    OR
+    antipsychotics_injectable_and_depot
+    OR
+    prochlorperazine
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.4,
+    },
+  ),
+  
+  antipsychotic_any_incident = patients.satisfying(
+    
+    """
+    antipsychotics_first_gen_incident
+    OR 
+    antipsychotics_second_gen_incident
+    OR
+    antipsychotics_injectable_and_depot_incident
+    OR
+    prochlorperazine_incident
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.05,
+    },
   ),
   
   
@@ -282,7 +263,7 @@ study = StudyDefinition(
     learning_disability_codes,
     on_or_before = "index_date",
     returning = "binary_flag",
-    return_expectations = {"incidence": 0.5}
+    return_expectations = {"incidence": 0.2}
   ),
   
   ### Autism
@@ -290,7 +271,7 @@ study = StudyDefinition(
     autism_codes,
     on_or_before = "index_date",
     returning = "binary_flag",
-    return_expectations = {"incidence": 0.5}
+    return_expectations = {"incidence": 0.3}
   ),
   
   ### Serious Mental Illness
@@ -298,7 +279,7 @@ study = StudyDefinition(
     serious_mental_illness_codes,
     on_or_before = "index_date",
     returning = "binary_flag",
-    return_expectations = {"incidence": 0.5}
+    return_expectations = {"incidence": 0.1}
   ),
   
   ### Care home
@@ -306,7 +287,7 @@ study = StudyDefinition(
     carehome_primis_codes,
     on_or_before = "index_date",
     returning = "binary_flag",
-    return_expectations = {"incidence": 0.5}
+    return_expectations = {"incidence": 0.2}
   ),
   
   ### Dementia
@@ -314,7 +295,7 @@ study = StudyDefinition(
     dementia_codes,
     on_or_before = "index_date",
     returning = "binary_flag",
-    return_expectations = {"incidence": 0.5}
+    return_expectations = {"incidence": 0.05}
   ),
   
   
@@ -393,30 +374,6 @@ study = StudyDefinition(
     },
   ),
   
-  ### STP (regional grouping of practices)
-  stp = patients.registered_practice_as_of("index_date",
-                                           returning = "stp_code",
-                                           return_expectations = {
-                                             "rate": "universal",
-                                             "category": {
-                                               "ratios": {
-                                                 "STP1": 0.1,
-                                                 "STP2": 0.1,
-                                                 "STP3": 0.1,
-                                                 "STP4": 0.1,
-                                                 "STP5": 0.1,
-                                                 "STP6": 0.1,
-                                                 "STP7": 0.1,
-                                                 "STP8": 0.1,
-                                                 "STP9": 0.1,
-                                                 "STP10": 0.1,}},
-                                           },
-  ),
-  
-  ### Depression (Codelists TBC)
-  
-  ### People without a diagnosis of clinical groups above  LD, SMI
-  
 )
 
 
@@ -424,36 +381,189 @@ study = StudyDefinition(
 
 measures = [
   
-  ### First generation antipsychotics, excluding long acting depots
+  # Prevalence - whole population
+  ## Any antipsychotic
   Measure(
-    id = "antipsychotics_first_gen",
+    id = "antipsychotic_all_any",
+    numerator = "antipsychotic_any",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ## First generation
+  Measure(
+    id = "antipsychotic_all_first_gen",
     numerator = "antipsychotics_first_gen",
     denominator = "population",
-    group_by = ["practice", "antipsychotics_first_gen_event_code"]
+    group_by = ["population"],
+    small_number_suppression = True,
   ),
   
-  ### Second generation antipsychotics excluding long acting injections
+  ## Second generation
   Measure(
-    id = "antipsychotics_second_gen",
+    id = "antipsychotic_all_second_gen",
     numerator = "antipsychotics_second_gen",
     denominator = "population",
-    group_by = ["practice", "antipsychotics_second_gen_event_code"]
+    group_by = ["population"],
+    small_number_suppression = True,
   ),
   
-  ## Long acting injectable and depot antipsychotics
+  ## Injectable and depot
   Measure(
-    id = "antipsychotics_injectable_and_depot",
+    id = "antipsychotic_all_injectable_and_depot",
     numerator = "antipsychotics_injectable_and_depot",
     denominator = "population",
-    group_by = ["practice", "antipsychotics_injectable_and_depot_event_code"]
+    group_by = ["population"],
+    small_number_suppression = True,
   ),
   
   ## Prochlorperazine
   Measure(
-    id = "prochlorperazine",
+    id = "antipsychotic_all_prochlorperazine",
     numerator = "prochlorperazine",
     denominator = "population",
-    group_by = ["practice", "prochlorperazine_event_code"]
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  
+  # Prevalence - sub population
+  ## Populations
+  Measure(
+    id = "populations",
+    numerator = "population",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Any antipsychotic
+  Measure(
+    id = "antipsychotic_groups_any",
+    numerator = "antipsychotic_any",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## First generation
+  Measure(
+    id = "antipsychotic_groups_first_gen",
+    numerator = "antipsychotics_first_gen",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Second generation
+  Measure(
+    id = "antipsychotic_groups_second_gen",
+    numerator = "antipsychotics_second_gen",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Injectable and depot
+  Measure(
+    id = "antipsychotic_groups_injectable_and_depot",
+    numerator = "antipsychotics_injectable_and_depot",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Prochlorperazine
+  Measure(
+    id = "antipsychotic_groups_prochlorperazine",
+    numerator = "prochlorperazine",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  
+  # Incidence - whole population
+  ## Any antipsychotic
+  Measure(
+    id = "antipsychotic_all_any_incident",
+    numerator = "antipsychotic_any_incident",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ## First generation
+  Measure(
+    id = "antipsychotic_all_first_gen_incident",
+    numerator = "antipsychotics_first_gen_incident",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ## Second generation
+  Measure(
+    id = "antipsychotic_all_second_gen_incident",
+    numerator = "antipsychotics_second_gen_incident",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ## Injectable and depot
+  Measure(
+    id = "antipsychotic_all_injectable_and_depot_incident",
+    numerator = "antipsychotics_injectable_and_depot_incident",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ## Prochlorperazine
+  Measure(
+    id = "antipsychotic_all_prochlorperazine_incident",
+    numerator = "prochlorperazine_incident",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  
+  # Incidence - sub population
+  ## Any antipsychotic
+  Measure(
+    id = "antipsychotic_groups_any_incident",
+    numerator = "antipsychotic_any_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## First generation
+  Measure(
+    id = "antipsychotic_groups_first_gen_incident",
+    numerator = "antipsychotics_first_gen_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Second generation
+  Measure(
+    id = "antipsychotic_groups_second_gen_incident",
+    numerator = "antipsychotics_second_gen_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Injectable and depot
+  Measure(
+    id = "antipsychotic_groups_injectable_and_depot_incident",
+    numerator = "antipsychotics_injectable_and_depot_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Prochlorperazine
+  Measure(
+    id = "antipsychotic_groups_prochlorperazine_incident",
+    numerator = "prochlorperazine_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
   ),
   
 ]

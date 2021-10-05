@@ -21,67 +21,86 @@ library('here')
 ## Custom functions
 source(here("analysis", "lib", "custom_functions.R"))
 
-## Output processed data to rds
-dir.create(here::here("output", "data", "processed"), showWarnings = FALSE, recursive=TRUE)
-
 
 # Process data ----
-filenames <- list.files(path = here::here("output", "data"), pattern = "input_2")
 
-## Totals dataset by groups
-data_totals <- rbind(lapply(filenames, cohort = "all", calculate_totals) %>% bind_rows(),
-                         lapply(filenames, cohort = "learning_disability", calculate_totals) %>% bind_rows(),
-                         lapply(filenames, cohort = "autism", calculate_totals) %>% bind_rows(),
-                         lapply(filenames, cohort = "serious_mental_illness", calculate_totals) %>% bind_rows(),
-                         lapply(filenames, cohort = "care_home", calculate_totals) %>% bind_rows(),
-                         lapply(filenames, cohort = "dementia", calculate_totals) %>% bind_rows())
+## Prevalence datasets
+data_prevalence <- full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_any.csv"))[,c("antipsychotic_any", "population", "value", "date")],
+                               read.csv(here::here("output", "data", "measure_antipsychotic_all_first_gen.csv"))[,c("antipsychotics_first_gen", "date")], 
+                               by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_second_gen.csv"))[,c("antipsychotics_second_gen", "date")],  
+            by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_injectable_and_depot.csv"))[,c("antipsychotics_injectable_and_depot", "date")],  
+            by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_prochlorperazine.csv"))[,c("prochlorperazine", "date")],  
+            by = "date") %>%
+  select(date, antipsychotic_any, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot,
+         prochlorperazine, population) %>%
+  mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+         group = "All") %>%
+  rbind(combine_measures(group = "dementia", incident = FALSE),
+        combine_measures(group = "care_home", incident = FALSE),
+        combine_measures(group = "learning_disability", incident = FALSE),
+        combine_measures(group = "autism", incident = FALSE),
+        combine_measures(group = "serious_mental_illness", incident = FALSE))
 
-## Totals dataset by demographic
-sex <- lapply(filenames, cohort = "sex", calculate_totals) %>% bind_rows()
-imd <- lapply(filenames, cohort = "imd", calculate_totals) %>% bind_rows()
-ethnicity <- lapply(filenames, cohort = "ethnicity", calculate_totals) %>% bind_rows()
-region <- lapply(filenames, cohort = "region", calculate_totals) %>% bind_rows()
-age <- lapply(filenames, cohort = "age", calculate_totals) %>% bind_rows()
+## Incident datasets
+data_incident <- full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_any_incident.csv"))[,c("antipsychotic_any_incident", "population", "value", "date")],
+                                 read.csv(here::here("output", "data", "measure_antipsychotic_all_first_gen_incident.csv"))[,c("antipsychotics_first_gen_incident", "date")], 
+                                 by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_second_gen_incident.csv"))[,c("antipsychotics_second_gen_incident", "date")],  
+            by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_injectable_and_depot_incident.csv"))[,c("antipsychotics_injectable_and_depot_incident", "date")],  
+            by = "date") %>%
+  full_join(read.csv(here::here("output", "data", "measure_antipsychotic_all_prochlorperazine_incident.csv"))[,c("prochlorperazine_incident", "date")],  
+            by = "date") %>%
+  select(date, antipsychotic_any_incident, antipsychotics_first_gen_incident, antipsychotics_second_gen_incident, antipsychotics_injectable_and_depot_incident,
+         prochlorperazine_incident, population) %>%
+  mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+         group = "All") %>%
+  rbind(combine_measures(group = "dementia", incident = TRUE),
+        combine_measures(group = "care_home", incident = TRUE),
+        combine_measures(group = "learning_disability", incident = TRUE),
+        combine_measures(group = "autism", incident = TRUE),
+        combine_measures(group = "serious_mental_illness", incident = TRUE))
 
 
-## Totals (incident) dataset(s) by group
-data_incident_1yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_1yr) %>% bind_rows(),
-                     lapply(filenames, cohort = "learning_disability", calculate_incident_1yr) %>% bind_rows(),
-                     lapply(filenames, cohort = "autism", calculate_incident_1yr) %>% bind_rows(),
-                     lapply(filenames, cohort = "serious_mental_illness", calculate_incident_1yr) %>% bind_rows(),
-                     lapply(filenames, cohort = "care_home", calculate_incident_1yr) %>% bind_rows(),
-                     lapply(filenames, cohort = "dementia", calculate_incident_1yr) %>% bind_rows())
+# Redaction ----
 
-data_incident_2yr <- rbind(lapply(filenames, cohort = "all", calculate_incident_2yr) %>% bind_rows(),
-                          lapply(filenames, cohort = "learning_disability", calculate_incident_2yr) %>% bind_rows(),
-                          lapply(filenames, cohort = "autism", calculate_incident_2yr) %>% bind_rows(),
-                          lapply(filenames, cohort = "serious_mental_illness", calculate_incident_2yr) %>% bind_rows(),
-                          lapply(filenames, cohort = "care_home", calculate_incident_2yr) %>% bind_rows(),
-                          lapply(filenames, cohort = "dementia", calculate_incident_2yr) %>% bind_rows())
+## Redact values < 8
+threshold = 8
 
-## Whole cohort
-data_cohort <- calculate_data_cohort(filenames)
-data_processed <- data_cohort %>%
-  filter(age < 110,
-         sex %in% c("M", "F")) 
+data_prevalence_redacted <- data_prevalence %>%
+  mutate(antipsychotic_any = ifelse(antipsychotic_any < threshold, NA, as.numeric(antipsychotic_any)),
+         antipsychotics_first_gen = ifelse(antipsychotics_first_gen < threshold, NA, as.numeric(antipsychotics_first_gen)),
+         antipsychotics_second_gen = ifelse(antipsychotics_second_gen < threshold, NA, as.numeric(antipsychotics_second_gen)),
+         antipsychotics_injectable_and_depot = ifelse(antipsychotics_injectable_and_depot < threshold, NA, as.numeric(antipsychotics_injectable_and_depot)),
+         prochlorperazine = ifelse(prochlorperazine < threshold, NA, as.numeric(prochlorperazine)))
+
+data_incident_redacted <- data_incident %>%
+  mutate(antipsychotic_any_incident = ifelse(antipsychotic_any_incident < threshold, NA, as.numeric(antipsychotic_any_incident)),
+         antipsychotics_first_gen_incident = ifelse(antipsychotics_first_gen_incident < threshold, NA, as.numeric(antipsychotics_first_gen_incident)),
+         antipsychotics_second_gen_incident = ifelse(antipsychotics_second_gen_incident < threshold, NA, as.numeric(antipsychotics_second_gen_incident)),
+         antipsychotics_injectable_and_depot_incident = ifelse(antipsychotics_injectable_and_depot_incident < threshold, NA, as.numeric(antipsychotics_injectable_and_depot_incident)),
+         prochlorperazine_incident = ifelse(prochlorperazine_incident < threshold, NA, as.numeric(prochlorperazine_incident)))
+         
+## Recalculate totals
+data_prevalence_redacted$antipsychotic_any = rowSums(data_prevalence_redacted[,c("antipsychotics_first_gen",
+                                                                                "antipsychotics_second_gen",
+                                                                                "antipsychotics_injectable_and_depot",
+                                                                                "prochlorperazine")], 
+                                                     na.rm = T)
+
+data_incident_redacted$antipsychotic_any = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
+                                                                                 "antipsychotics_second_gen_incident",
+                                                                                 "antipsychotics_injectable_and_depot_incident",
+                                                                                 "prochlorperazine_incident")], 
+                                                     na.rm = T)
 
 
 # Save datasets ----
 
-## Totals data as .rds files
-write_rds(data_totals, here::here("output", "data", "data_totals_groups.rds"), compress="gz")
-saveRDS(list(sex = sex, 
-             imd = imd, 
-             ethnicity = ethnicity, 
-             region = region, 
-             age = age),
-        here::here("output", "data", "data_totals_demographics.rds"))
+## Save as .csv
+write.csv(data_prevalence_redacted, file = here::here("output", "data", "data_prevalence_redacted.csv"))
+write.csv(data_incident_redacted, file = here::here("output", "data", "data_incident_redacted.csv"))
 
-## Totals (incident) data as .rds files
-saveRDS(list(data_incident_1yr, data_incident_2yr), here::here("output", "data", "data_incident_groups.rds"))
-
-## Whole cohort
-write_rds(data_processed, here::here("output", "data", "data_processed.rds"), compress="gz")
-
-## Flow chart data
-write_rds(data_cohort, here::here("output", "data", "data_flow_chart.rds"), compress="gz")

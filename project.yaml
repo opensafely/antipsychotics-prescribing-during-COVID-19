@@ -16,7 +16,7 @@ actions:
   
   ## Cohort data
   extract_data:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-03-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
         cohort: output/data/input_*.feather
@@ -37,41 +37,49 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/data/input*.feather
+        
+  ## Generate measures
+  generate_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition --output-dir=output/data
+    needs: [join_ethnicity]
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/data/measure_*.csv
   
   ## Process data
   data_process:
     run: r:latest analysis/process/process_data.R
-    needs: [extract_ethnicity, join_ethnicity]
+    needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        data: output/data/data_*.rds
+        data: output/data/data_*.csv
  
   # Results ----
-  
-  ## Figures
-  summary_figures:
-    run: r:latest analysis/descriptive/summary_plots.R
-    needs: [data_process]
-    outputs:
-      moderately_sensitive:
-        plot1: output/figures/total_*.png
-        plot2: output/figures/new_*.png
         
-  ## Table 1
-  table_1:
-    run: r:latest analysis/descriptive/table_1.R
-    needs: [data_process]
-    outputs:
-      moderately_sensitive:
-        plots: output/tables/table1.csv
-  
-  ## Table 2
-  table_2:
-    run: r:latest analysis/descriptive/table_2.R
-    needs: [data_process]
-    outputs:
-      moderately_sensitive:
-        plots: output/tables/table2*.csv
+  # ## Table 1
+  # table_1:
+  #   run: r:latest analysis/descriptive/table_1.R
+  #   needs: [data_process]
+  #   outputs:
+  #     moderately_sensitive:
+  #       plots: output/tables/table1.csv
+  # 
+  # ## Table 2
+  # table_2:
+  #   run: r:latest analysis/descriptive/table_2.R
+  #   needs: [data_process]
+  #   outputs:
+  #     moderately_sensitive:
+  #       plots: output/tables/table2*.csv
+        
+  # ## Figures
+  # summary_figures:
+  #   run: r:latest analysis/descriptive/summary_plots.R
+  #   needs: [data_process]
+  #   outputs:
+  #     moderately_sensitive:
+  #       plot1: output/figures/total_*.png
+  #       plot2: output/figures/new_*.png
   
 
 

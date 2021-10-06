@@ -56,30 +56,22 @@ actions:
  
   # Results ----
         
-  # ## Table 1
-  # table_1:
-  #   run: r:latest analysis/descriptive/table_1.R
-  #   needs: [data_process]
-  #   outputs:
-  #     moderately_sensitive:
-  #       plots: output/tables/table1.csv
-  # 
-  # ## Table 2
-  # table_2:
-  #   run: r:latest analysis/descriptive/table_2.R
-  #   needs: [data_process]
-  #   outputs:
-  #     moderately_sensitive:
-  #       plots: output/tables/table2*.csv
-        
-  # ## Figures
-  # summary_figures:
-  #   run: r:latest analysis/descriptive/summary_plots.R
-  #   needs: [data_process]
-  #   outputs:
-  #     moderately_sensitive:
-  #       plot1: output/figures/total_*.png
-  #       plot2: output/figures/new_*.png
+  ## Table 1
+  table_1:
+    run: r:latest analysis/descriptive/table_1.R
+    needs: [join_ethnicity]
+    outputs:
+      moderately_sensitive:
+        table: output/tables/table1.csv
+
+  ## Table 2
+  table_2:
+    run: r:latest analysis/descriptive/table_2.R
+    needs: [join_ethnicity]
+    outputs:
+      moderately_sensitive:
+        tables: output/tables/table2*.csv
+
   
 
 

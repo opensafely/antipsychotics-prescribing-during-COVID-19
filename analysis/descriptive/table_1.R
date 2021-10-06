@@ -23,21 +23,23 @@ dir.create(here::here("output", "tables"), showWarnings = FALSE, recursive=TRUE)
 ## Custom functions
 source(here("analysis", "lib", "custom_functions.R"))
 
+## Read in data
+data_cohort <- arrow::read_feather(here::here("output", "data", "input_2021-04-01.feather"))
 
-# Read in and format data ----
-data_cohort <- read_rds(here::here("output", "data", "data_processed.rds"))
+
+## Table 1 ----
 
 ## Counts
 counts_table1 <- data_cohort %>% 
-  mutate(ethnicity = as.character(ethnicity),
-         ethnicity = ifelse(is.na(ethnicity), "Missing", ethnicity),
+  mutate(ethnicity = as.character(eth2001),
+         ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
          ethnicity = fct_case_when(
-           ethnicity == "White" ~ "White",
-           ethnicity == "Mixed" ~ "Mixed",
-           ethnicity == "Asian or Asian British" ~ "Asian or Asian British",
-           ethnicity == "Black or Black British" ~ "Black or Black British",
-           ethnicity == "Other ethnic groups" ~ "Other ethnic groups",
-           ethnicity == "Unknown" ~ "Unknown",
+           ethnicity == "1" ~ "White",
+           ethnicity == "2" ~ "Mixed",
+           ethnicity == "3" ~ "Asian or Asian British",
+           ethnicity == "4" ~ "Black or Black British",
+           ethnicity == "4" ~ "Other ethnic groups",
+           ethnicity == "5" ~ "Unknown",
            ethnicity == "Missing" ~ "Missing",
            #TRUE ~ "Unknown"
            TRUE ~ NA_character_),
@@ -67,7 +69,7 @@ counts_table1 <- data_cohort %>%
                        breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
                        labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
                        right = FALSE)) %>%
-  select(antipsychotic,
+  select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,
          region,

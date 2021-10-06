@@ -59,7 +59,7 @@ actions:
   ## Table 1
   table_1:
     run: r:latest analysis/descriptive/table_1.R
-    needs: [data_process]
+    needs: [join_ethnicity]
     outputs:
       moderately_sensitive:
         table: output/tables/table1.csv
@@ -67,7 +67,7 @@ actions:
   ## Table 2
   table_2:
     run: r:latest analysis/descriptive/table_2.R
-    needs: [data_process]
+    needs: [join_ethnicity]
     outputs:
       moderately_sensitive:
         tables: output/tables/table2*.csv

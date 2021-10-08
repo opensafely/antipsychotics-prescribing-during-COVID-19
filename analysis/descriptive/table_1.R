@@ -29,6 +29,9 @@ data_cohort <- arrow::read_feather(here::here("output", "data", "input_2021-04-0
 
 ## Table 1 ----
 
+dim(data_cohort)
+table(data_cohort$eth2001)
+
 ## Counts
 counts_table1 <- data_cohort %>% 
   mutate(ethnicity = as.character(eth2001),

@@ -137,12 +137,11 @@ calculate_table2 <-function(population = "autism", Y = 10000){
     mutate(ethnicity = as.character(eth2001),
            ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
            ethnicity = fct_case_when(
-             ethnicity == "White" ~ "White",
-             ethnicity == "Mixed" ~ "Mixed",
-             ethnicity == "South Asian" ~ "Asian or Asian British",
-             ethnicity == "Black" ~ "Black or Black British",
-             ethnicity == "Other" ~ "Other ethnic groups",
-             ethnicity == "Unknown" ~ "Unknown",
+             ethnicity == "1" ~ "White",
+             ethnicity == "2" ~ "Mixed",
+             ethnicity == "3" ~ "Asian or Asian British",
+             ethnicity == "4" ~ "Black or Black British",
+             ethnicity == "5" ~ "Other ethnic groups",
              ethnicity == "Missing" ~ "Missing",
              #TRUE ~ "Unknown"
              TRUE ~ NA_character_),
@@ -205,20 +204,20 @@ redact_table <- function(table = data_totals_groups, threshold = 8){
   threshold = threshold
   
   table_redacted <- table %>%
-    mutate(antipsychotics_first_gen = ifelse(antipsychotics_first_gen < threshold, NA, antipsychotics_first_gen),
-           antipsychotics_second_gen = ifelse(antipsychotics_second_gen < threshold, NA, antipsychotics_second_gen),
-           antipsychotics_injectable_and_depot = ifelse(antipsychotics_injectable_and_depot < threshold, NA, antipsychotics_injectable_and_depot),
-           prochlorperazine = ifelse(prochlorperazine < threshold, NA, prochlorperazine))
+    mutate(population = ifelse(population < threshold, NA, population),
+           antipsychotic = ifelse(antipsychotic < threshold | is.na(population), NA, antipsychotic),
+           diff = (population - antipsychotic),
+           antipsychotic = ifelse(diff < threshold, NA, antipsychotic)) %>%
+    select(-diff, - rate)
   
   ## Round to nearest 5
   table_redacted <- table_redacted %>%
-    mutate(antipsychotics_first_gen = plyr::round_any(antipsychotics_first_gen, 5),
-           antipsychotics_second_gen = plyr::round_any(antipsychotics_second_gen, 5),
-           antipsychotics_injectable_and_depot = plyr::round_any(antipsychotics_injectable_and_depot, 5),
-           prochlorperazine = plyr::round_any(prochlorperazine, 5))
+    mutate(population = plyr::round_any(population, 5),
+           antipsychotic = plyr::round_any(antipsychotic, 5))
   
   ## Replace na with [REDACTED]
   table_redacted <- table_redacted %>%
-    replace(is.na(.), "[REDACTED]")
+    mutate(population = ifelse(is.na(population), "[REDACTED]", population),
+           antipsychotic = ifelse(is.na(antipsychotic), "[REDACTED]", antipsychotic))
 }
 

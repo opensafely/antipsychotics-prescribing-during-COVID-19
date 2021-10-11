@@ -36,8 +36,8 @@ data_prevalence <- full_join(read.csv(here::here("output", "data", "measure_anti
             by = "date") %>%
   select(date, antipsychotic_any, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot,
          prochlorperazine, population) %>%
-  mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
-         group = "All") %>%
+  mutate(group = "All",
+         date = as.Date(as.character(date), format = "%Y-%m-%d")) %>%
   rbind(combine_measures(group = "dementia", incident = FALSE),
         combine_measures(group = "care_home", incident = FALSE),
         combine_measures(group = "learning_disability", incident = FALSE),
@@ -56,7 +56,7 @@ data_incident <- full_join(read.csv(here::here("output", "data", "measure_antips
             by = "date") %>%
   select(date, antipsychotic_any_incident, antipsychotics_first_gen_incident, antipsychotics_second_gen_incident, antipsychotics_injectable_and_depot_incident,
          prochlorperazine_incident, population) %>%
-  mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+  mutate(date = as.Date(as.character(date), format = "%Y-%m-%d"),
          group = "All") %>%
   rbind(combine_measures(group = "dementia", incident = TRUE),
         combine_measures(group = "care_home", incident = TRUE),
@@ -91,7 +91,7 @@ data_prevalence_redacted$antipsychotic_any = rowSums(data_prevalence_redacted[,c
                                                                                 "prochlorperazine")], 
                                                      na.rm = T)
 
-data_incident_redacted$antipsychotic_any = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
+data_incident_redacted$antipsychotic_any_incident = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
                                                                                  "antipsychotics_second_gen_incident",
                                                                                  "antipsychotics_injectable_and_depot_incident",
                                                                                  "prochlorperazine_incident")], 

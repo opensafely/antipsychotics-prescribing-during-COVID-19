@@ -28,11 +28,6 @@ data_cohort <- arrow::read_feather(here::here("output", "data", "input_2021-04-0
 
 
 ## Table 1 ----
-
-dim(data_cohort)
-table(data_cohort$eth2001)
-
-## Counts
 counts_table1 <- data_cohort %>% 
   mutate(ethnicity = as.character(eth2001),
          ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
@@ -41,8 +36,7 @@ counts_table1 <- data_cohort %>%
            ethnicity == "2" ~ "Mixed",
            ethnicity == "3" ~ "Asian or Asian British",
            ethnicity == "4" ~ "Black or Black British",
-           ethnicity == "4" ~ "Other ethnic groups",
-           ethnicity == "5" ~ "Unknown",
+           ethnicity == "5" ~ "Other ethnic groups",
            ethnicity == "Missing" ~ "Missing",
            #TRUE ~ "Unknown"
            TRUE ~ NA_character_),

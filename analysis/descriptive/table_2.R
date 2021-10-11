@@ -38,8 +38,7 @@ table_2_all <- data_cohort %>%
            ethnicity == "2" ~ "Mixed",
            ethnicity == "3" ~ "Asian or Asian British",
            ethnicity == "4" ~ "Black or Black British",
-           ethnicity == "4" ~ "Other ethnic groups",
-           ethnicity == "5" ~ "Unknown",
+           ethnicity == "5" ~ "Other ethnic groups",
            ethnicity == "Missing" ~ "Missing",
            #TRUE ~ "Unknown"
            TRUE ~ NA_character_),
@@ -99,10 +98,19 @@ table2_ld <- calculate_table2(population = "learning_disability", Y = 1000)
 table2_smi <- calculate_table2(population = "serious_mental_illness", Y = 1000)
 
 
+# Redaction ----
+table_2_all_redacted <- redact_table(table = table_2_all, threshold = 8)
+table2_autism_redacted <- redact_table(table = table2_autism, threshold = 8)
+table2_dementia_redacted <- redact_table(table = table2_dementia, threshold = 8)
+table2_care_home_redacted <- redact_table(table = table2_care_home, threshold = 8)
+table2_ld_redacted <- redact_table(table = table2_ld, threshold = 8)
+table2_smi_redacted <- redact_table(table = table2_smi, threshold = 8)
+table_2_all_redacted <- redact_table(table = table_2_all, threshold = 8)
+
 # Save tables ----
-write_csv(table_2_all, here::here("output",  "tables", "table_2_all.csv"))
-write_csv(table2_autism, here::here("output",  "tables", "table2_autism.csv"))
-write_csv(table2_dementia, here::here("output",  "tables", "table2_dementia.csv"))
-write_csv(table2_care_home, here::here("output",  "tables", "table2_care_home.csv"))
-write_csv(table2_ld, here::here("output",  "tables", "table2_ld.csv"))
-write_csv(table2_smi, here::here("output",  "tables", "table2_smi.csv"))
+write_csv(table_2_all, here::here("output",  "tables", "table_2_all_redacted.csv"))
+write_csv(table2_autism_redacted, here::here("output",  "tables", "table2_autism_redacted.csv"))
+write_csv(table2_dementia_redacted, here::here("output",  "tables", "table2_dementia_redacted.csv"))
+write_csv(table2_care_home_redacted, here::here("output",  "tables", "table2_care_home_redacted.csv"))
+write_csv(table2_ld_redacted, here::here("output",  "tables", "table2_ld_redacted.csv"))
+write_csv(table2_smi_redacted, here::here("output",  "tables", "table2_smi_redacted.csv"))

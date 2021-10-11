@@ -91,7 +91,7 @@ data_prevalence_redacted$antipsychotic_any = rowSums(data_prevalence_redacted[,c
                                                                                 "prochlorperazine")], 
                                                      na.rm = T)
 
-data_incident_redacted$antipsychotic_any = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
+data_incident_redacted$antipsychotic_any_incident = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
                                                                                  "antipsychotics_second_gen_incident",
                                                                                  "antipsychotics_injectable_and_depot_incident",
                                                                                  "prochlorperazine_incident")], 

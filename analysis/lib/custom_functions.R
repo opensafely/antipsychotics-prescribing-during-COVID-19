@@ -134,43 +134,63 @@ combine_measures <- function(group = "all", incident = TRUE) {
 calculate_table2 <-function(population = "autism", Y = 10000){
   
   table_2_all <- data_cohort %>% 
-    mutate(ethnicity = as.character(eth2001),
-           ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
-           ethnicity = fct_case_when(
-             ethnicity == "1" ~ "White",
-             ethnicity == "2" ~ "Mixed",
-             ethnicity == "3" ~ "Asian or Asian British",
-             ethnicity == "4" ~ "Black or Black British",
-             ethnicity == "5" ~ "Other ethnic groups",
-             ethnicity == "Missing" ~ "Missing",
-             #TRUE ~ "Unknown"
-             TRUE ~ NA_character_),
-           imd = na_if(imd, "0"),
-           imd = fct_case_when(
-             imd == 1 ~ "1 most deprived",
-             imd == 2 ~ "2",
-             imd == 3 ~ "3",
-             imd == 4 ~ "4",
-             imd == 5 ~ "5 least deprived",
-             #TRUE ~ "Unknown",
-             TRUE ~ NA_character_
-           ),
-           region = fct_case_when(
-             region == "London" ~ "London",
-             region == "East" ~ "East of England",
-             region == "East Midlands" ~ "East Midlands",
-             region == "North East" ~ "North East",
-             region == "North West" ~ "North West",
-             region == "South East" ~ "South East",
-             region == "South West" ~ "South West",
-             region == "West Midlands" ~ "West Midlands",
-             region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-             #TRUE ~ "Unknown",
-             TRUE ~ NA_character_)) %>%
-    mutate(ageband = cut(age,
-                         breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
-                         labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
-                         right = FALSE)) %>%
+    mutate(
+      
+      # Sex
+      sex = as.character(sex),
+      sex = ifelse(sex %in% c("F", "M"), sex, "Other/Unknown"),
+      
+      sex = fct_case_when(
+        sex == "F" ~ "Female",
+        sex == "M" ~ "Male",
+        sex == "Other/Unknown" ~ "Other/Unknown",
+        TRUE ~ NA_character_
+      ),
+      
+      # Ethnicity
+      ethnicity = as.character(eth2001),
+      ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
+      ethnicity = fct_case_when(
+        ethnicity == "1" ~ "White",
+        ethnicity == "2" ~ "Mixed",
+        ethnicity == "3" ~ "Asian or Asian British",
+        ethnicity == "4" ~ "Black or Black British",
+        ethnicity == "5" ~ "Other ethnic groups",
+        ethnicity == "Missing" ~ "Missing",
+        #TRUE ~ "Unknown"
+        TRUE ~ NA_character_),
+      
+      # IMD
+      imd = na_if(imd, "0"),
+      imd = fct_case_when(
+        imd == 1 ~ "1 most deprived",
+        imd == 2 ~ "2",
+        imd == 3 ~ "3",
+        imd == 4 ~ "4",
+        imd == 5 ~ "5 least deprived",
+        #TRUE ~ "Unknown",
+        TRUE ~ NA_character_
+      ),
+      
+      # Region
+      region = fct_case_when(
+        region == "London" ~ "London",
+        region == "East" ~ "East of England",
+        region == "East Midlands" ~ "East Midlands",
+        region == "North East" ~ "North East",
+        region == "North West" ~ "North West",
+        region == "South East" ~ "South East",
+        region == "South West" ~ "South West",
+        region == "West Midlands" ~ "West Midlands",
+        region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+        #TRUE ~ "Unknown",
+        TRUE ~ NA_character_),
+      
+      # Age
+      ageband = cut(age,
+                    breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
+                    labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
+                    right = FALSE)) %>%
     select(group = paste0(population),
            antipsychotic = antipsychotic_any,
            ageband, 

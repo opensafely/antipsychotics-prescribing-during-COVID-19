@@ -72,7 +72,7 @@ combine_measures <- function(group = "all", incident = TRUE) {
     left_join(data_prochlorperazine_incident, by = c("date", "population")) %>%
     select(date, antipsychotic_any_incident, antipsychotics_first_gen_incident, antipsychotics_second_gen_incident, antipsychotics_injectable_and_depot_incident,
            prochlorperazine_incident, population) %>%
-    mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+    mutate(date = as.Date(as.character(date), format = "%Y-%m-%d"),
            group = group)
   
   data_measures
@@ -120,7 +120,7 @@ combine_measures <- function(group = "all", incident = TRUE) {
     left_join(data_prochlorperazine, by = c("date", "population")) %>%
     select(date, antipsychotic_any, antipsychotics_first_gen, antipsychotics_second_gen, antipsychotics_injectable_and_depot,
            prochlorperazine, population) %>%
-    mutate(date = as.Date(as.character(date), format = "%Y-%M-%d"),
+    mutate(date = as.Date(as.character(date), format = "%Y-%m-%d"),
            group = group)
   
   data_measures

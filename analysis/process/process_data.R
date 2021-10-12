@@ -83,19 +83,6 @@ data_incident_redacted <- data_incident %>%
          antipsychotics_second_gen_incident = ifelse(antipsychotics_second_gen_incident < threshold, NA, as.numeric(antipsychotics_second_gen_incident)),
          antipsychotics_injectable_and_depot_incident = ifelse(antipsychotics_injectable_and_depot_incident < threshold, NA, as.numeric(antipsychotics_injectable_and_depot_incident)),
          prochlorperazine_incident = ifelse(prochlorperazine_incident < threshold, NA, as.numeric(prochlorperazine_incident)))
-         
-## Recalculate totals
-data_prevalence_redacted$antipsychotic_any = rowSums(data_prevalence_redacted[,c("antipsychotics_first_gen",
-                                                                                "antipsychotics_second_gen",
-                                                                                "antipsychotics_injectable_and_depot",
-                                                                                "prochlorperazine")], 
-                                                     na.rm = T)
-
-data_incident_redacted$antipsychotic_any_incident = rowSums(data_incident_redacted[,c("antipsychotics_first_gen_incident",
-                                                                                 "antipsychotics_second_gen_incident",
-                                                                                 "antipsychotics_injectable_and_depot_incident",
-                                                                                 "prochlorperazine_incident")], 
-                                                     na.rm = T)
 
 
 # Save datasets ----

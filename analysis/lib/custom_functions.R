@@ -153,7 +153,7 @@ calculate_table2 <-function(population = "autism", Y = 10000){
         ethnicity == "3" ~ "Asian or Asian British",
         ethnicity == "4" ~ "Black or Black British",
         ethnicity == "5" ~ "Other ethnic groups",
-        ethnicity == "Missing" ~ "Missing",
+        ethnicity == "Missing" ~ "Unknown",
         #TRUE ~ "Unknown"
         TRUE ~ NA_character_),
       

@@ -50,7 +50,7 @@ table_2_all <- data_cohort %>%
       ethnicity == "3" ~ "Asian or Asian British",
       ethnicity == "4" ~ "Black or Black British",
       ethnicity == "5" ~ "Other ethnic groups",
-      ethnicity == "Missing" ~ "Missing",
+      ethnicity == "Missing" ~ "Unknown",
       #TRUE ~ "Unknown"
       TRUE ~ NA_character_),
     

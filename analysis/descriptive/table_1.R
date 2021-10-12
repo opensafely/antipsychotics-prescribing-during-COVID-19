@@ -33,12 +33,9 @@ counts_table1 <- data_cohort %>%
     
     # Sex
     sex = as.character(sex),
-    sex = ifelse(sex %in% c("F", "M"), sex, "Other/Unknown"),
-    
     sex = fct_case_when(
       sex == "F" ~ "Female",
       sex == "M" ~ "Male",
-      sex == "Other/Unknown" ~ "Other/Unknown",
       TRUE ~ NA_character_
     ),
     
@@ -51,7 +48,7 @@ counts_table1 <- data_cohort %>%
       ethnicity == "3" ~ "Asian or Asian British",
       ethnicity == "4" ~ "Black or Black British",
       ethnicity == "5" ~ "Other ethnic groups",
-      ethnicity == "Missing" ~ "Missing",
+      ethnicity == "Missing" ~ "Unknown",
       #TRUE ~ "Unknown"
       TRUE ~ NA_character_),
     
@@ -86,9 +83,6 @@ counts_table1 <- data_cohort %>%
                   breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
                   labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
                   right = FALSE)) %>%
-  filter(age >= 0,
-         age < 110,
-         sex %in% c("M", "F")) %>%
   select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,

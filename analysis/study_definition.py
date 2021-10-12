@@ -23,7 +23,7 @@ from cohortextractor import (
 from codelists import *
   
   
-  # DEFINE STUDY POPULATION ----
+# DEFINE STUDY POPULATION ----
 
 ## Define study time variables
 from datetime import datetime
@@ -47,6 +47,10 @@ study = StudyDefinition(
         NOT has_died
         AND
         registered
+        AND 
+        (sex = "M" OR sex = "F")
+        AND
+        (age >=0 AND age < 110)
         """,
     
     has_died = patients.died_from_any_cause(
@@ -256,49 +260,6 @@ study = StudyDefinition(
   ),
   
   
-  ## Groups
-  
-  ### Learning disabilities
-  learning_disability = patients.with_these_clinical_events(
-    learning_disability_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.2}
-  ),
-  
-  ### Autism
-  autism = patients.with_these_clinical_events(
-    autism_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.3}
-  ),
-  
-  ### Serious Mental Illness
-  serious_mental_illness = patients.with_these_clinical_events(
-    serious_mental_illness_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.1}
-  ),
-  
-  ### Care home
-  care_home = patients.with_these_clinical_events(
-    carehome_primis_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.2}
-  ),
-  
-  ### Dementia
-  dementia = patients.with_these_clinical_events(
-    dementia_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.05}
-  ),
-  
-  
   ## Variables
   
   ### Practice
@@ -374,7 +335,65 @@ study = StudyDefinition(
     },
   ),
   
+  
+  ## Groups
+  
+  ### Learning disabilities
+  learning_disability = patients.with_these_clinical_events(
+    learning_disability_codes,
+    on_or_before = "index_date",
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.2}
+  ),
+  
+  ### Autism
+  autism = patients.with_these_clinical_events(
+    autism_codes,
+    on_or_before = "index_date",
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.3}
+  ),
+  
+  ### Serious Mental Illness
+  serious_mental_illness = patients.with_these_clinical_events(
+    serious_mental_illness_codes,
+    on_or_before = "index_date",
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.1}
+  ),
+  
+  ### Care home
+  care_home = patients.with_these_clinical_events(
+    carehome_primis_codes,
+    on_or_before = "index_date",
+    returning = "binary_flag",
+    return_expectations = {"incidence": 0.2}
+  ),
+  
+  ### Dementia
+  dementia = patients.satisfying(
+    
+    """
+    dementia_all
+    AND
+    age > 39
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    dementia_all = patients.with_these_clinical_events(
+      dementia_codes,
+      on_or_before = "index_date",
+      returning = "binary_flag",
+      return_expectations = {"incidence": 0.05}
+    ),
+    
+  ),
+  
 )
+
 
 
 # --- DEFINE MEASURES ---

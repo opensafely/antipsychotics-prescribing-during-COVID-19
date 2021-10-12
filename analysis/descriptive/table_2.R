@@ -128,7 +128,7 @@ table2_smi_redacted <- redact_table(table = table2_smi, threshold = 8)
 table_2_all_redacted <- redact_table(table = table_2_all, threshold = 8)
 
 # Save tables ----
-write_csv(table2_all, here::here("output",  "tables", "table_2_all_redacted.csv"))
+write_csv(table_2_all, here::here("output",  "tables", "table2_all_redacted.csv"))
 write_csv(table2_autism_redacted, here::here("output",  "tables", "table2_autism_redacted.csv"))
 write_csv(table2_dementia_redacted, here::here("output",  "tables", "table2_dementia_redacted.csv"))
 write_csv(table2_care_home_redacted, here::here("output",  "tables", "table2_care_home_redacted.csv"))

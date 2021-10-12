@@ -86,8 +86,9 @@ counts_table1 <- data_cohort %>%
                   breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
                   labels = c("0-17", "18-24", "25-34", "35-44", "45-54", "55-69", "70-79", "80+"),
                   right = FALSE)) %>%
-  filter(age >=0,
-         age < 110) %>%
+  filter(age >= 0,
+         age < 110,
+         sex %in% c("M", "F")) %>%
   select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,

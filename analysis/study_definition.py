@@ -376,7 +376,7 @@ study = StudyDefinition(
     """
     dementia_all
     AND
-    age > 24
+    age > 39
     """, 
     
     return_expectations = {

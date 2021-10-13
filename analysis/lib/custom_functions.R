@@ -238,3 +238,135 @@ redact_table <- function(table = data_totals_groups, threshold = 8){
            antipsychotic = ifelse(is.na(antipsychotic), "[REDACTED]", antipsychotic))
 }
 
+# Plot totals by group ----
+plot_antipsychotics_by_group <- function(Group = "All", 
+                                         data = data_prevalence_TPP, 
+                                         type = "total",
+                                         Y = 1000,
+                                         folder = "TPP"){
+  
+  if (type == "total"){
+    
+    total_antipsychotics <- data %>%
+      filter(group == Group) %>%
+      select(-antipsychotic_any, -group, -population) %>%
+      melt(id.vars = c("date")) %>%
+      mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                    "Second generation antipsychotics, excluding long acting depots",
+                                                    "Long acting injectable and depot antipsychotics",
+                                                    "Prochlorperazine"))) %>%
+      ggplot(aes(x = date, y = value, colour = variable)) +
+      geom_line() +
+      facet_wrap(~variable, scales = "free") +
+      theme_bw() +
+      theme(legend.position = "none") +
+      ylab("Total number of patients issued antipsychotics, per month") +
+      xlab("") +
+      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    
+    ggsave(filename = here::here(paste("released_outputs/", folder, "/figures/total_antipsychotics_group_", Group, ".png", sep = "")),
+           total_antipsychotics,
+           units = "cm", width = 40, height = 20
+    )
+    
+  } else if(type == "rate"){
+    
+    rate_antipsychotics <- data %>%
+      filter(group == Group) %>%
+      select(-group) %>%
+      melt(id.vars = c("date", "population")) %>%
+      mutate(est = mapply(function(x,y) glm(y ~ 1 + offset(log(x)), family = "poisson")$coefficients, 
+                                      .[,2], .[,4]),
+             se = mapply(function(x,y) coef(summary(glm(y ~ 1 + offset(log(x)), family = "poisson")))[, "Std. Error"], 
+                                          .[,2], .[,4]),
+             rate = exp(est)*Y,
+             lci = exp(est - se)*Y,
+             uci = exp(est + se)*Y) %>%
+      mutate(variable = factor(variable, labels = c("Any antipsychotic", 
+                                                    "First generation antipsychotics (excluding long acting depots)",
+                                                    "Second generation antipsychotics, excluding long acting depots",
+                                                    "Long acting injectable and depot antipsychotics",
+                                                    "Prochlorperazine"))) %>%
+      filter(variable != "Any antipsychotic") %>%
+      ggplot(aes(x = date, y = rate, colour = variable, group = 1)) +
+      geom_line() +
+      geom_ribbon(aes(ymin = lci, ymax = uci, fill = variable), alpha=0.2, colour = "transparent", show.legend = F) +
+      facet_wrap(~variable, scales = "free") +
+      theme_bw() +
+      theme(legend.position = "none") +
+      guides(colour = guide_legend(ncol=2)) +
+      scale_colour_discrete(name = "") +
+      ylab("Rate of patients issued antipsychotics, per 1000 registered patients") +
+      xlab("") +
+      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    
+    ggsave(filename = here::here(paste("released_outputs/", folder, "/figures/rate_antipsychotics_group_",Group, ".png", sep = "")),
+           rate_antipsychotics,
+           units = "cm", width = 40, height = 20)
+    
+  } else if (type == "total new") {
+    
+    total_antipsychotics <- data %>%
+      filter(group == Group) %>%
+      select(-antipsychotic_any, -group, -population) %>%
+      melt(id.vars = c("date")) %>%
+      mutate(variable = factor(variable, labels = c("First generation antipsychotics (excluding long acting depots)",
+                                                    "Second generation antipsychotics, excluding long acting depots",
+                                                    "Long acting injectable and depot antipsychotics",
+                                                    "Prochlorperazine"))) %>%
+      ggplot(aes(x = date, y = value, colour = variable)) +
+      geom_line() +
+      facet_wrap(~variable, scales = "free") +
+      theme_bw() +
+      theme(legend.position = "none") +
+      ylab("Total number of patients newly prescribed antipsychotics, per month") +
+      xlab("") +
+      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    
+    ggsave(filename = here::here(paste("released_outputs/", folder, "/figures/new_total_antipsychotics_group_", Group, ".png", sep = "")),
+           total_antipsychotics,
+           units = "cm", width = 40, height = 20
+    )
+    
+  } else {
+    
+    rate_antipsychotics <- data %>%
+      filter(group == Group) %>%
+      select(-group) %>%
+      melt(id.vars = c("date", "population")) %>%
+      mutate(est = mapply(function(x,y) glm(y ~ 1 + offset(log(x)), family = "poisson")$coefficients, 
+                          .[,2], .[,4]),
+             se = mapply(function(x,y) coef(summary(glm(y ~ 1 + offset(log(x)), family = "poisson")))[, "Std. Error"], 
+                         .[,2], .[,4]),
+             rate = exp(est)*Y,
+             lci = exp(est - se)*Y,
+             uci = exp(est + se)*Y) %>%
+      mutate(variable = factor(variable, labels = c("Any antipsychotic", 
+                                                    "First generation antipsychotics (excluding long acting depots)",
+                                                    "Second generation antipsychotics, excluding long acting depots",
+                                                    "Long acting injectable and depot antipsychotics",
+                                                    "Prochlorperazine"))) %>%
+      filter(variable != "Any antipsychotic") %>%
+      ggplot(aes(x = date, y = rate, colour = variable, group = 1)) +
+      geom_line() +
+      geom_ribbon(aes(ymin = lci, ymax = uci, fill = variable), alpha=0.2, colour = "transparent", show.legend = F) +
+      facet_wrap(~variable, scales = "free") +
+      theme_bw() +
+      theme(legend.position = "none") +
+      guides(colour = guide_legend(ncol=2)) +
+      scale_colour_discrete(name = "") +
+      ylab("Rate of patients newly issued antipsychotics, per 1000 registered patients") +
+      xlab("") +
+      scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    
+    ggsave(filename = here::here(paste("released_outputs/", folder, "/figures/new_rate_antipsychotics_group_",Group, ".png", sep = "")),
+           rate_antipsychotics,
+           units = "cm", width = 40, height = 20)
+    
+  }
+  
+}

@@ -84,6 +84,22 @@ data_incident_redacted <- data_incident %>%
          antipsychotics_injectable_and_depot_incident = ifelse(antipsychotics_injectable_and_depot_incident < threshold, NA, as.numeric(antipsychotics_injectable_and_depot_incident)),
          prochlorperazine_incident = ifelse(prochlorperazine_incident < threshold, NA, as.numeric(prochlorperazine_incident)))
 
+## Round to nearest 5
+data_prevalence_redacted <- data_prevalence_redacted %>%
+  mutate(population = plyr::round_any(population, 5),
+         antipsychotic_any = plyr::round_any(antipsychotic_any, 5),
+         antipsychotics_first_gen = plyr::round_any(antipsychotics_first_gen, 5),
+         antipsychotics_second_gen = plyr::round_any(antipsychotics_second_gen, 5),
+         antipsychotics_injectable_and_depot = plyr::round_any(antipsychotics_injectable_and_depot, 5),
+         prochlorperazine = plyr::round_any(prochlorperazine, 5))
+
+data_incident_redacted <- data_incident_redacted %>%
+  mutate(population = plyr::round_any(population, 5),
+         antipsychotic_any_incident = plyr::round_any(antipsychotic_any_incident, 5),
+         antipsychotics_first_gen_incident = plyr::round_any(antipsychotics_first_gen_incident, 5),
+         antipsychotics_second_gen_incident = plyr::round_any(antipsychotics_second_gen_incident, 5),
+         antipsychotics_injectable_and_depot_incident = plyr::round_any(antipsychotics_injectable_and_depot_incident, 5),
+         prochlorperazine_incident = plyr::round_any(prochlorperazine_incident, 5))
 
 # Save datasets ----
 

@@ -93,6 +93,38 @@ counts_table1 <- data_cohort %>%
   add_overall()
 
 
+# Redaction ----
+
+## Suppress cells that are less than a threshold (tbd as well as the next smallest value in a group if there is only one)
+threshold = 8
+
+table1_redacted <- counts_table1$table_body %>%
+  select(group = variable, variable = label, total = stat_0, nonantipsychotic = stat_1,	antipsychotic =stat_2) %>%
+  separate(total, c("total","perc"), sep = "([(])") %>%
+  separate(nonantipsychotic, c("nonantipsychotic","perc2"), sep = "([(])") %>%
+  separate(antipsychotic, c("antipsychotic","perc3"), sep = "([(])") %>%
+  mutate(total = as.numeric(gsub(",", "", total)),
+         nonantipsychotic = as.numeric(gsub(",", "", nonantipsychotic)),
+         antipsychotic = as.numeric(gsub(",", "", antipsychotic))) %>%
+  filter(!(is.na(total))) %>%
+  select(-perc, -perc2, -perc3) %>%
+  mutate(total = ifelse(total < threshold, NA, total),
+         nonantipsychotic = ifelse(nonantipsychotic < threshold | is.na(total), NA, nonantipsychotic),
+         antipsychotic = ifelse(antipsychotic < threshold | is.na(nonantipsychotic) | is.na(total), NA, antipsychotic))
+
+## Round to nearest 5
+table1_redacted <- table1_redacted %>%
+  mutate(total = plyr::round_any(total, 5),
+         nonantipsychotic = plyr::round_any(nonantipsychotic, 5),
+         antipsychotic = plyr::round_any(antipsychotic, 5))
+
+## Replace na with [REDACTED]
+table1_redacted <- table1_redacted %>%
+  mutate(total = ifelse(is.na(total), "[REDACTED]", total),
+         nonantipsychotic = ifelse(is.na(nonantipsychotic), "[REDACTED]", nonantipsychotic),
+         antipsychotic = ifelse(is.na(antipsychotic), "[REDACTED]", antipsychotic))
+
+
 # Save table 1 ----
-write_csv(counts_table1$table_body, here::here("output",  "tables", "table1.csv"))
+write_csv(table1_redacted, here::here("output",  "tables", "table1_redacted.csv"))
 

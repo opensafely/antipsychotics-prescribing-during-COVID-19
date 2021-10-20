@@ -1,0 +1,53 @@
+# Table of contents
+
+* [.DS_Store](.DS_Store)
+* output
+  * output/data
+    * [output/data/data_incident_redacted.csv](output/data/data_incident_redacted.csv)
+    * [output/data/data_prevalence_redacted.csv](output/data/data_prevalence_redacted.csv)
+  * output/tables
+    * [output/tables/table1_redacted.csv](output/tables/table1_redacted.csv)
+    * [output/tables/table2_autism_redacted.csv](output/tables/table2_autism_redacted.csv)
+    * [output/tables/table2_care_home_redacted.csv](output/tables/table2_care_home_redacted.csv)
+    * [output/tables/table2_dementia_redacted.csv](output/tables/table2_dementia_redacted.csv)
+    * [output/tables/table2_ld_redacted.csv](output/tables/table2_ld_redacted.csv)
+    * [output/tables/table2_smi_redacted.csv](output/tables/table2_smi_redacted.csv)
+* TPP
+  * [TPP/.DS_Store](TPP/.DS_Store)
+  * TPP/data
+    * [TPP/data/data_incident_redacted.csv](TPP/data/data_incident_redacted.csv)
+    * [TPP/data/data_prevalence_redacted.csv](TPP/data/data_prevalence_redacted.csv)
+  * TPP/figures
+    * [TPP/figures/new_rate_antipsychotics_all.png](TPP/figures/new_rate_antipsychotics_all.png)
+    * [TPP/figures/new_rate_antipsychotics_group_All.png](TPP/figures/new_rate_antipsychotics_group_All.png)
+    * [TPP/figures/new_rate_antipsychotics_group_autism.png](TPP/figures/new_rate_antipsychotics_group_autism.png)
+    * [TPP/figures/new_rate_antipsychotics_group_care_home.png](TPP/figures/new_rate_antipsychotics_group_care_home.png)
+    * [TPP/figures/new_rate_antipsychotics_group_dementia.png](TPP/figures/new_rate_antipsychotics_group_dementia.png)
+    * [TPP/figures/new_rate_antipsychotics_group_learning_disability.png](TPP/figures/new_rate_antipsychotics_group_learning_disability.png)
+    * [TPP/figures/new_rate_antipsychotics_group_serious_mental_illness.png](TPP/figures/new_rate_antipsychotics_group_serious_mental_illness.png)
+    * [TPP/figures/new_total_antipsychotics_group_All.png](TPP/figures/new_total_antipsychotics_group_All.png)
+    * [TPP/figures/new_total_antipsychotics_group_autism.png](TPP/figures/new_total_antipsychotics_group_autism.png)
+    * [TPP/figures/new_total_antipsychotics_group_care_home.png](TPP/figures/new_total_antipsychotics_group_care_home.png)
+    * [TPP/figures/new_total_antipsychotics_group_dementia.png](TPP/figures/new_total_antipsychotics_group_dementia.png)
+    * [TPP/figures/new_total_antipsychotics_group_learning_disability.png](TPP/figures/new_total_antipsychotics_group_learning_disability.png)
+    * [TPP/figures/new_total_antipsychotics_group_serious_mental_illness.png](TPP/figures/new_total_antipsychotics_group_serious_mental_illness.png)
+    * [TPP/figures/rate_antipsychotics_all.png](TPP/figures/rate_antipsychotics_all.png)
+    * [TPP/figures/rate_antipsychotics_group_All.png](TPP/figures/rate_antipsychotics_group_All.png)
+    * [TPP/figures/rate_antipsychotics_group_autism.png](TPP/figures/rate_antipsychotics_group_autism.png)
+    * [TPP/figures/rate_antipsychotics_group_care_home.png](TPP/figures/rate_antipsychotics_group_care_home.png)
+    * [TPP/figures/rate_antipsychotics_group_dementia.png](TPP/figures/rate_antipsychotics_group_dementia.png)
+    * [TPP/figures/rate_antipsychotics_group_learning_disability.png](TPP/figures/rate_antipsychotics_group_learning_disability.png)
+    * [TPP/figures/rate_antipsychotics_group_serious_mental_illness.png](TPP/figures/rate_antipsychotics_group_serious_mental_illness.png)
+    * [TPP/figures/total_antipsychotics_group_All.png](TPP/figures/total_antipsychotics_group_All.png)
+    * [TPP/figures/total_antipsychotics_group_autism.png](TPP/figures/total_antipsychotics_group_autism.png)
+    * [TPP/figures/total_antipsychotics_group_care_home.png](TPP/figures/total_antipsychotics_group_care_home.png)
+    * [TPP/figures/total_antipsychotics_group_dementia.png](TPP/figures/total_antipsychotics_group_dementia.png)
+    * [TPP/figures/total_antipsychotics_group_learning_disability.png](TPP/figures/total_antipsychotics_group_learning_disability.png)
+    * [TPP/figures/total_antipsychotics_group_serious_mental_illness.png](TPP/figures/total_antipsychotics_group_serious_mental_illness.png)
+  * TPP/tables
+    * [TPP/tables/table1.csv](TPP/tables/table1.csv)
+    * [TPP/tables/table2_autism_redacted.csv](TPP/tables/table2_autism_redacted.csv)
+    * [TPP/tables/table2_care_home_redacted.csv](TPP/tables/table2_care_home_redacted.csv)
+    * [TPP/tables/table2_dementia_redacted.csv](TPP/tables/table2_dementia_redacted.csv)
+    * [TPP/tables/table2_ld_redacted.csv](TPP/tables/table2_ld_redacted.csv)
+    * [TPP/tables/table2_smi_redacted.csv](TPP/tables/table2_smi_redacted.csv)

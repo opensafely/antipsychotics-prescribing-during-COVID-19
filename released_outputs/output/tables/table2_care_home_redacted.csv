@@ -1,0 +1,33 @@
+group,variable,population,antipsychotic
+ageband,0-17,605,75
+ageband,18-24,1630,630
+ageband,25-34,4595,2045
+ageband,35-44,5105,2635
+ageband,45-54,7470,4070
+ageband,55-69,19755,10965
+ageband,70-79,26170,13465
+ageband,80+,107500,46480
+sex,Female,109915,51855
+sex,Male,62910,28510
+region,London,[REDACTED],[REDACTED]
+region,East of England,[REDACTED],[REDACTED]
+region,East Midlands,[REDACTED],[REDACTED]
+region,North East,[REDACTED],[REDACTED]
+region,North West,[REDACTED],[REDACTED]
+region,South East,[REDACTED],[REDACTED]
+region,South West,[REDACTED],[REDACTED]
+region,West Midlands,[REDACTED],[REDACTED]
+region,Yorkshire and the Humber,[REDACTED],[REDACTED]
+region,Unknown,172825,80365
+imd,1 most deprived,34315,16615
+imd,2,35810,17225
+imd,3,35110,16570
+imd,4,35305,15700
+imd,5 least deprived,31730,13985
+imd,Unknown,555,270
+ethnicity,White,122305,58380
+ethnicity,Mixed,1040,550
+ethnicity,Asian or Asian British,3105,1625
+ethnicity,Black or Black British,3495,1830
+ethnicity,Other ethnic groups,1025,470
+ethnicity,Unknown,41850,17510

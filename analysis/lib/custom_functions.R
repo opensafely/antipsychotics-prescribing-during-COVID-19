@@ -370,3 +370,183 @@ plot_antipsychotics_by_group <- function(Group = "All",
   }
   
 }
+
+
+## Combine TPP and EMIS table 1
+combine_table1 <- function(TPP_Table = table1_TPP, EMIS_Table = table1_EMIS){
+  
+  ## TPP
+  ## Calculate group totals
+  table1_TPP_totals <- TPP_Table %>%
+    group_by(group) %>%
+    summarise(g_total = sum(total, na.rm = T),
+              g_nonantipsychotic = sum(nonantipsychotic, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T)) 
+  
+  ## Add overall total
+  table1_TPP_totals <- table1_TPP_totals %>%
+    add_row(group = "All", 
+            g_total = table1_TPP_totals$g_total[1],
+            g_nonantipsychotic = table1_TPP_totals$g_nonantipsychotic[1],
+            g_antipsychotic = table1_TPP_totals$g_antipsychotic[1], .before = 1)
+  
+  ## Format TPP table
+  table1_TPP_formatted <- TPP_Table %>%
+    add_row(group = "All", variable = "", total = table1_TPP_totals$g_total[1],
+            nonantipsychotic = table1_TPP_totals$g_nonantipsychotic[1],
+            antipsychotic = table1_TPP_totals$g_antipsychotic[1], .before = 1) %>%
+    left_join(table1_TPP_totals) %>%
+    mutate(total_TPP = paste(format(total, big.mark = ",", scientific = FALSE), " (", round(total/g_total*100, digits = 0), ")", sep = ""),
+           nonantipsychotic_TPP = paste(format(nonantipsychotic, big.mark = ",", scientific = FALSE), " (", round(nonantipsychotic/g_nonantipsychotic*100, digits = 0), ")", sep = ""),
+           antipsychotic_TPP = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/g_antipsychotic*100, digits = 0), ")", sep = "")) %>%
+    select(group, variable, total_TPP, nonantipsychotic_TPP, antipsychotic_TPP)
+  
+  ## EMIS
+  ## Calculate group totals
+  table1_EMIS_totals <- EMIS_Table %>%
+    group_by(group) %>%
+    summarise(g_total = sum(total, na.rm = T),
+              g_nonantipsychotic = sum(nonantipsychotic, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T)) 
+  
+  ## Add overall total
+  table1_EMIS_totals <- table1_EMIS_totals %>%
+    add_row(group = "All", 
+            g_total = table1_EMIS_totals$g_total[1],
+            g_nonantipsychotic = table1_EMIS_totals$g_nonantipsychotic[1],
+            g_antipsychotic = table1_EMIS_totals$g_antipsychotic[1], .before = 1)
+  
+  ## Format EMIS table
+  table1_EMIS_formatted <- EMIS_Table %>%
+    add_row(group = "All", variable = "", total = table1_EMIS_totals$g_total[1],
+            nonantipsychotic = table1_EMIS_totals$g_nonantipsychotic[1],
+            antipsychotic = table1_EMIS_totals$g_antipsychotic[1], .before = 1) %>%
+    left_join(table1_EMIS_totals) %>%
+    mutate(total_EMIS = paste(format(total, big.mark = ",", scientific = FALSE), " (", round(total/g_total*100, digits = 0), ")", sep = ""),
+           nonantipsychotic_EMIS = paste(format(nonantipsychotic, big.mark = ",", scientific = FALSE), " (", round(nonantipsychotic/g_nonantipsychotic*100, digits = 0), ")", sep = ""),
+           antipsychotic_EMIS = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/g_antipsychotic*100, digits = 0), ")", sep = "")) %>%
+    select(group, variable, total_EMIS, nonantipsychotic_EMIS, antipsychotic_EMIS)
+  
+  ## Combined table
+  table1_combined <- left_join(table1_TPP, table1_EMIS, by = c("group", "variable")) %>%
+    rowwise() %>%
+    mutate(total = sum(total.x, total.y, na.rm = T),
+           nonantipsychotic = sum(nonantipsychotic.x, nonantipsychotic.y, na.rm = T),
+           antipsychotic = sum(antipsychotic.x, antipsychotic.y, na.rm = T))
+  
+  table1_combined_totals <- table1_combined %>%
+    group_by(group) %>%
+    summarise(g_total = sum(total, na.rm = T),
+              g_nonantipsychotic = sum(nonantipsychotic, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T))
+  
+  table1_combined_formatted <- table1_combined %>%
+    left_join(table1_combined_totals) %>%
+    mutate(total = paste(format(total, big.mark = ",", scientific = FALSE), " (", round(total/g_total*100, digits = 0), ")", sep = ""),
+           nonantipsychotic = paste(format(nonantipsychotic, big.mark = ",", scientific = FALSE), " (", round(nonantipsychotic/g_nonantipsychotic*100, digits = 0), ")", sep = ""),
+           antipsychotic = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/g_antipsychotic*100, digits = 0), ")", sep = "")) %>%
+    select(group, variable, total, nonantipsychotic, antipsychotic)
+  
+  ## Combine all three tables
+  table1_final <- left_join(table1_TPP_formatted, table1_EMIS_formatted, by = c("group", "variable"))  %>%
+    left_join(table1_combined_formatted, by = c("group", "variable")) 
+  
+  table1_final[1,9] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[1]
+  table1_final[1,10] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[2]
+  table1_final[1,11] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[3]
+  
+  table1_final
+}
+
+## Combine TPP and EMIS table 2
+combine_table2 <- function(TPP_Table = table2_autism_TPP, EMIS_Table = table2_autism_EMIS){
+  
+  # TPP
+  ## Calculate group totals
+  table2_TPP_totals <- TPP_Table %>%
+    mutate(population = as.numeric(population),
+           antipsychotic = as.numeric(antipsychotic)) %>%
+    group_by(group) %>%
+    summarise(g_population = sum(population, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T)) 
+  
+  ## Add overall total
+  table2_TPP_totals <- table2_TPP_totals %>%
+    add_row(group = "All", 
+            g_population = table2_TPP_totals$g_population[1],
+            g_antipsychotic = table2_TPP_totals$g_antipsychotic[1], .before = 1)
+  
+  ## Format TPP table
+  table2_TPP_formatted <- TPP_Table %>%
+    mutate(population = as.numeric(population),
+           antipsychotic = as.numeric(antipsychotic)) %>%
+    add_row(group = "All", variable = "", population = table2_TPP_totals$g_population[1],
+            antipsychotic = table2_TPP_totals$g_antipsychotic[1], .before = 1) %>%
+    mutate(total_TPP = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/population*100, digits = 0), ")", sep = ""),
+           rate = round(antipsychotic/population*1000, digits = 0)) %>%
+    select(group, variable, total_TPP, rate)
+  
+  # EMIS
+  ## Calculate group totals
+  table2_EMIS_totals <- EMIS_Table %>%
+    mutate(population = as.numeric(population),
+           antipsychotic = as.numeric(antipsychotic)) %>%
+    group_by(group) %>%
+    summarise(g_population = sum(population, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T)) 
+  
+  ## Add overall total
+  table2_EMIS_totals <- table2_EMIS_totals %>%
+    add_row(group = "All", 
+            g_population = table2_EMIS_totals$g_population[2],
+            g_antipsychotic = table2_EMIS_totals$g_antipsychotic[2], .before = 1)
+  
+  ## Format EMIS table
+  table2_EMIS_formatted <- EMIS_Table %>%
+    mutate(population = as.numeric(population),
+           antipsychotic = as.numeric(antipsychotic)) %>%
+    add_row(group = "All", variable = "", population = table2_EMIS_totals$g_population[1],
+            antipsychotic = table2_EMIS_totals$g_antipsychotic[1], .before = 1) %>%
+    mutate(total_EMIS = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/population*100, digits = 0), ")", sep = ""),
+           rate = round(antipsychotic/population*1000, digits = 0)) %>%
+    select(group, variable, total_EMIS, rate)
+  
+  ## Combined table
+  table2_combined <- left_join(TPP_Table, EMIS_Table, by = c("group", "variable")) %>%
+    mutate(population.x = as.numeric(population.x),
+           antipsychotic.x = as.numeric(antipsychotic.x),
+           population.y = as.numeric(population.y),
+           antipsychotic.y = as.numeric(antipsychotic.y)) %>%
+    rowwise() %>%
+    mutate(population = sum(population.x, population.y, na.rm = T),
+           antipsychotic = sum(antipsychotic.x, antipsychotic.y, na.rm = T))
+  
+  table2_combined_totals <- table2_combined %>%
+    group_by(group) %>%
+    summarise(g_population = sum(population, na.rm = T),
+              g_antipsychotic = sum(antipsychotic, na.rm = T))
+  
+  table2_combined_formatted <- table2_combined %>%
+    left_join(table2_combined_totals) %>%
+    mutate(total = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/population*100, digits = 0), ")", sep = ""),
+           rate = round(antipsychotic/population*1000, digits = 0),
+           lower = round((ifelse(antipsychotic/population - qnorm(0.975)*(sqrt(antipsychotic/(population^2))) < 0, 0, 
+                          antipsychotic/population - qnorm(0.975)*(sqrt(antipsychotic/(population^2)))))*1000, digits = 0),
+           upper = round((ifelse(antipsychotic/population + qnorm(0.975)*(sqrt(antipsychotic/(population^2))) < 0, 0, 
+                                 antipsychotic/population + qnorm(0.975)*(sqrt(antipsychotic/(population^2)))))*1000, digits = 0)) %>%
+    select(group, variable, total, rate, lower, upper)
+  
+  ## Combine all three tables
+  table2_final <- left_join(table2_TPP_formatted, table2_EMIS_formatted, by = c("group", "variable"))  %>%
+    left_join(table2_combined_formatted, by = c("group", "variable")) 
+  
+  all <- table2_TPP_totals[1,2:3] + table2_EMIS_totals[1,2:3]
+  
+  table2_final[1,7] <- paste(format(all$g_antipsychotic, big.mark = ",", scientific = FALSE), " (", round(all$g_antipsychotic/all$g_population*100, digits = 0), ")", sep = "")
+  table2_final[1,8] <- round(all$g_antipsychotic/all$g_population*1000, digits = 0)
+  table2_final[1,9] <- round((all$g_antipsychotic/all$g_population - qnorm(0.975)*(sqrt(all$g_antipsychotic/all$g_population^2)))*1000, digits = 0)
+  table2_final[1,10] <- round((all$g_antipsychotic/all$g_population + qnorm(0.975)*(sqrt(all$g_antipsychotic/all$g_population^2)))*1000, digits = 0)
+  
+  table2_final
+}
+

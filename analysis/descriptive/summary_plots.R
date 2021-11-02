@@ -17,6 +17,8 @@ library('lubridate')
 library('reshape2')
 library('here')
 library('patchwork')
+library('cowplot')
+library('gridExtra')
 
 ## Custom functions
 source(here("analysis", "lib", "custom_functions.R"))
@@ -56,21 +58,21 @@ colnames(data_incidence_TPP) <- colnames(data_prevalence_TPP)
 colnames(data_incidence_EMIS) <- colnames(data_prevalence_EMIS)
 
 data_prevalence_TPP <- data_prevalence_TPP %>%
-  mutate(group = factor(group, labels = c("All", "Autism", "Dementia", 
-                                          "Care Home", "Learning Disability", 
+  mutate(group = factor(group, labels = c("All", "Autism", "Care Home", 
+                                          "Dementia", "Learning Disability", 
                                           "Serious Mental Illness")))
 data_incidence_TPP <- data_incidence_TPP %>%
-  mutate(group = factor(group, labels = c("All", "Autism", "Dementia", 
-                                          "Care Home", "Learning Disability", 
+  mutate(group = factor(group, labels = c("All", "Autism", "Care Home", 
+                                          "Dementia", "Learning Disability", 
                                           "Serious Mental Illness")))
 
 data_prevalence_EMIS <- data_prevalence_EMIS %>%
-  mutate(group = factor(group, labels = c("All", "Autism", "Dementia", 
-                                          "Care Home", "Learning Disability", 
+  mutate(group = factor(group, labels = c("All", "Autism", "Care Home", 
+                                          "Dementia", "Learning Disability", 
                                           "Serious Mental Illness")))
 data_incidence_EMIS <- data_incidence_EMIS %>%
-  mutate(group = factor(group, labels = c("All", "Autism", "Dementia", 
-                                          "Care Home", "Learning Disability", 
+  mutate(group = factor(group, labels = c("All", "Autism", "Care Home", 
+                                          "Dementia", "Learning Disability", 
                                           "Serious Mental Illness")))
 
 table1_EMIS <- table1_EMIS %>%
@@ -134,7 +136,7 @@ write_csv(table2_smi, here::here("released_outputs", "Combined",  "tables", "tab
 
 
 # Figures ----
-groups <- c("All", "Dementia", "Care Home", "Learning Disability", "Autism", "Serious Mental Illness")
+groups <- c("All", "Autism", "Care Home", "Dementia", "Learning Disability", "Serious Mental Illness")
 
 ## Total number of patients issued antipsychotics, by group
 lapply(groups, data = data_prevalence_TPP, type = "total", folder = "TPP",
@@ -149,8 +151,11 @@ lapply(groups, data = data_prevalence_TPP, type = "rate", Y = 1000, folder = "TP
        FUN = plot_antipsychotics_by_group)
 lapply(groups, data = data_prevalence_EMIS, type = "rate", Y = 1000, folder = "EMIS",
        FUN = plot_antipsychotics_by_group)
+
 lapply(groups, data = data_prevalence, type = "rate", Y = 1000, folder = "Combined",
        FUN = plot_antipsychotics_by_group)
+lapply(groups, data_TPP = data_prevalence_TPP, data_EMIS = data_prevalence_EMIS, type = "rate", Y = 1000, 
+       folder = "Combined", FUN = plot_antipsychotic_combined)
 
 ## All-in-one rate plot
 ### TPP
@@ -233,7 +238,6 @@ plot_rates_all <- data_prevalence %>%
          rate = exp(est)*1000,
          lci = exp(est - se)*1000,
          uci = exp(est + se)*1000) %>%
-  filter(group == "All")
   mutate(variable = factor(variable, labels = c("Any antipsychotic", 
                                                 "First generation antipsychotics (excluding long acting depots)",
                                                 "Second generation antipsychotics, excluding long acting depots",
@@ -298,8 +302,12 @@ lapply(groups, data = data_incidence_TPP, type = "rate new", Y = 1000, folder = 
        FUN = plot_antipsychotics_by_group)
 lapply(groups, data = data_incidence_EMIS, type = "rate new", Y = 1000, folder = "EMIS",
        FUN = plot_antipsychotics_by_group)
-lapply(groups, data = data_incidence, type = "rate new", Y = 1000, folder = "Combined",
+
+lapply(groups[1:6], data = data_incidence, type = "rate new", Y = 1000, folder = "Combined",
        FUN = plot_antipsychotics_by_group)
+lapply(groups, data_TPP = data_incidence_TPP, data_EMIS = data_incidence_EMIS, type = "rate new", Y = 1000, 
+       folder = "Combined", FUN = plot_antipsychotic_combined)
+
 
 ## All-in-one new rate plot
 ### TPP

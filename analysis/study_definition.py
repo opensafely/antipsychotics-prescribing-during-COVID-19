@@ -71,7 +71,7 @@ study = StudyDefinition(
   ## First generation antipsychotics, excluding long acting depots
   antipsychotics_first_gen = patients.with_these_medications(
     antipsychotics_first_gen_codes,
-    on_or_before = "index_date",
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -110,7 +110,7 @@ study = StudyDefinition(
   ## Second generation antipsychotics excluding long acting injections
   antipsychotics_second_gen = patients.with_these_medications(
     antipsychotics_second_gen_codes,
-    on_or_before = "index_date",
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -149,7 +149,7 @@ study = StudyDefinition(
   ## Long acting injectable and depot antipsychotics
   antipsychotics_injectable_and_depot = patients.with_these_medications(
     antipsychotics_injectable_and_depot_codes,
-    on_or_before = "index_date",
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),
@@ -188,7 +188,7 @@ study = StudyDefinition(
   ## Prochlorperazine
   prochlorperazine = patients.with_these_medications(
     prochlorperazine_codes,
-    on_or_before = "index_date",
+    between = ["index_date", "last_day_of_month(index_date)"],
     returning = "binary_flag",
     return_expectations = {"incidence": 0.5}
   ),

@@ -41,14 +41,25 @@ counts_table1 <- data_cohort %>%
     
     # Ethnicity
     ethnicity = as.character(eth2001),
-    ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
+    ethnicity = ifelse(is.na(eth2001), "17", ethnicity),
     ethnicity = fct_case_when(
-      ethnicity == "1" ~ "White",
-      ethnicity == "2" ~ "Mixed",
-      ethnicity == "3" ~ "Asian or Asian British",
-      ethnicity == "4" ~ "Black or Black British",
-      ethnicity == "5" ~ "Other ethnic groups",
-      ethnicity == "Missing" ~ "Unknown",
+      ethnicity == "1" ~ "British or Mixed British",
+      ethnicity == "2" ~ "Irish",
+      ethnicity == "3" ~ "Other White",
+      ethnicity == "4" ~ "White + Black Caribbean",
+      ethnicity == "5" ~ "White + Black African",
+      ethnicity == "6" ~ "White + Asian",
+      ethnicity == "7" ~ "Other mixed",
+      ethnicity == "8" ~ "Indian or British Indian",
+      ethnicity == "9" ~ "Pakistani or British Pakistani",
+      ethnicity == "10" ~ "Bangladeshi or British Bangladeshi",
+      ethnicity == "11" ~ "Other Asian",
+      ethnicity == "12" ~ "Caribbean",
+      ethnicity == "13" ~ "African",
+      ethnicity == "14" ~ "Other Black",
+      ethnicity == "15" ~ "Chinese",
+      ethnicity == "16" ~ "Other",
+      ethnicity == "17" ~ "Unknown",
       #TRUE ~ "Unknown"
       TRUE ~ NA_character_),
     
@@ -64,20 +75,6 @@ counts_table1 <- data_cohort %>%
       TRUE ~ NA_character_
     ),
     
-    # Region
-    region = fct_case_when(
-      region == "London" ~ "London",
-      region == "East" ~ "East of England",
-      region == "East Midlands" ~ "East Midlands",
-      region == "North East" ~ "North East",
-      region == "North West" ~ "North West",
-      region == "South East" ~ "South East",
-      region == "South West" ~ "South West",
-      region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_),
-    
     # Age
     ageband = cut(age,
                   breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
@@ -86,7 +83,6 @@ counts_table1 <- data_cohort %>%
   select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,
-         region,
          imd,
          ethnicity) %>%
   tbl_summary(by = antipsychotic) %>%

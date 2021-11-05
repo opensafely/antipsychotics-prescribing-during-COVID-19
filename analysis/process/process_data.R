@@ -17,6 +17,7 @@ library('tidyverse')
 library('lubridate')
 library('arrow')
 library('here')
+library('reshape2')
 
 ## Custom functions
 source(here("analysis", "lib", "custom_functions.R"))

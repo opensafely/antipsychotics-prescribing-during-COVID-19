@@ -372,7 +372,55 @@ study = StudyDefinition(
     
   ),
   
+  
+  ## Sensitivity anlysis variables
+  
+  ### Flag for individuals who didn't died two weeks after recieving an antipsychotic
+  alive_2weeks_post_antipsychotic = patients.satisfying(
+    
+    """
+    antipsychotics_date
+    AND
+    NOT died_2weeks_post_antipsychotic
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.35,
+    },
+    
+    antipsychotics_date = patients.with_these_medications(
+      codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+                                   antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.1}
+    ),
+    
+    died_2weeks_post_antipsychotic = patients.died_from_any_cause(
+      between = ["antipsychotics_date", "antipsychotics_date + 14 days"],
+      returning = "binary_flag",
+    ),
+  ),
+  
+  ### Flag for individuals who didn't died two weeks after recieving a new antipsychotic
+  alive_2weeks_post_new_antipsychotic = patients.satisfying(
+    
+    """
+    antipsychotic_any_incident
+    AND
+    alive_2weeks_post_antipsychotic
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.005,
+    },
+    
+  ),
+  
 )
+
 
 
 
@@ -380,7 +428,7 @@ study = StudyDefinition(
 
 measures = [
   
-  # Prevalence - whole population
+  # Monthly rates - whole population
   ## Any antipsychotic
   Measure(
     id = "antipsychotic_all_any",
@@ -427,7 +475,7 @@ measures = [
   ),
   
   
-  # Prevalence - sub population
+  # Monthly rates - sub populations
   ## Populations
   Measure(
     id = "populations",
@@ -561,6 +609,45 @@ measures = [
   Measure(
     id = "antipsychotic_groups_prochlorperazine_incident",
     numerator = "prochlorperazine_incident",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  
+  # Sensitivity anlysis
+  
+  ## Individuals who didn't died two weeks after recieving an antipsychotic
+  ### Whole population
+  Measure(
+    id = "antipsychotic_all_any_alive_2weeks_post_antipsychotic",
+    numerator = "alive_2weeks_post_antipsychotic",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ### Sub populations
+  Measure(
+    id = "antipsychotic_groups_any_alive_2weeks_post_antipsychotic",
+    numerator = "alive_2weeks_post_antipsychotic",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Individuals who didn't died two weeks after recieving a new antipsychotic
+  ### Whole population
+  Measure(
+    id = "antipsychotic_all_any_alive_2weeks_post_new_antipsychotic",
+    numerator = "alive_2weeks_post_new_antipsychotic",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ### Sub populations
+  Measure(
+    id = "antipsychotic_groups_any_alive_2weeks_post_new_antipsychotic",
+    numerator = "alive_2weeks_post_new_antipsychotic",
     denominator = "population",
     group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
   ),

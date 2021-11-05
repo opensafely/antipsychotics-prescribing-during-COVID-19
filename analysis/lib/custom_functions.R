@@ -169,20 +169,6 @@ calculate_table2 <-function(population = "autism", Y = 10000){
         TRUE ~ NA_character_
       ),
       
-      # Region
-      region = fct_case_when(
-        region == "London" ~ "London",
-        region == "East" ~ "East of England",
-        region == "East Midlands" ~ "East Midlands",
-        region == "North East" ~ "North East",
-        region == "North West" ~ "North West",
-        region == "South East" ~ "South East",
-        region == "South West" ~ "South West",
-        region == "West Midlands" ~ "West Midlands",
-        region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-        #TRUE ~ "Unknown",
-        TRUE ~ NA_character_),
-      
       # Age
       ageband = cut(age,
                     breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
@@ -192,7 +178,6 @@ calculate_table2 <-function(population = "autism", Y = 10000){
            antipsychotic = antipsychotic_any,
            ageband, 
            sex,
-           region,
            imd,
            ethnicity) %>%
     filter(group == 1) %>%

@@ -85,7 +85,6 @@ table_2_all <- data_cohort %>%
   select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,
-         region,
          imd,
          ethnicity) %>%
   tbl_summary(by = antipsychotic) %>%

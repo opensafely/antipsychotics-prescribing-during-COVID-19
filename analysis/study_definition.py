@@ -419,8 +419,73 @@ study = StudyDefinition(
     
   ),
   
+  ### Flag for individuals recieved a prescription for midazolam at the same time as their AP
+  midazolam_with_antipsychotic = patients.satisfying(
+    
+    """
+    antipsychotic_date
+    AND
+    midazolam_date
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.05,
+    },
+    
+    antipsychotic_date = patients.with_these_medications(
+      codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+                                   antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.01}
+    ),
+    
+    midazolam_date = patients.with_these_medications(
+      midazolam_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["antipsychotic_date - 1 day", "antipsychotic_date + 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.01}
+    ),
+  ),
+  
+  ### Flag for individuals recieved a prescription for midazolam at the same time as a new AP
+  midazolam_with_new_antipsychotic = patients.satisfying(
+    
+    """
+    antipsychotic_any_incident
+    AND
+    midazolam
+    """, 
+    
+    return_expectations = {
+      "incidence": 0.05,
+    },
+    
+    antipsychotic = patients.with_these_medications(
+      codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+                                   antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["index_date", "last_day_of_month(index_date)"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.01}
+    ),
+    
+    midazolam = patients.with_these_medications(
+      midazolam_codes,
+      returning = "date",
+      find_last_match_in_period = True,
+      between = ["antipsychotic - 1 day", "antipsychotic + 1 day"],
+      date_format = "YYYY-MM-DD",
+      return_expectations = {"incidence": 0.01}
+    ),
+  ),
+  
 )
-
 
 
 
@@ -648,6 +713,42 @@ measures = [
   Measure(
     id = "antipsychotic_groups_any_alive_2weeks_post_new_antipsychotic",
     numerator = "alive_2weeks_post_new_antipsychotic",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Individuals who recieved a prescription for midazolam at the same time as their AP
+  ### Whole population
+  Measure(
+    id = "midazolam_with_antipsychotic_all",
+    numerator = "midazolam_with_antipsychotic",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ### Sub populations
+  Measure(
+    id = "midazolam_with_antipsychotic_groups",
+    numerator = "midazolam_with_antipsychotic",
+    denominator = "population",
+    group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
+  ),
+  
+  ## Individuals who recieved a prescription for midazolam at the same time as a new AP
+  ### Whole population
+  Measure(
+    id = "midazolam_with_new_antipsychotic_all",
+    numerator = "midazolam_with_new_antipsychotic",
+    denominator = "population",
+    group_by = ["population"],
+    small_number_suppression = True,
+  ),
+  
+  ### Sub populations
+  Measure(
+    id = "midazolam_with_new_antipsychotic_groups",
+    numerator = "midazolam_with_new_antipsychotic",
     denominator = "population",
     group_by = ["dementia", "care_home", "learning_disability", "autism", "serious_mental_illness"]
   ),

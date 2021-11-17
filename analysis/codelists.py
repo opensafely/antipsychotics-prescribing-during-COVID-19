@@ -46,6 +46,12 @@ prochlorperazine_codes = codelist_from_csv(
   column = "dmd_id",
 )
 
+### Midazolam - end of life
+midazolam_codes = codelist_from_csv(
+  "codelists/opensafely-midazolam-end-of-life.csv",
+  system = "snomed",
+  column = "dmd_id",
+)
 
 ## Groups
 

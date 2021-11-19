@@ -1,0 +1,24 @@
+group,variable,population,antipsychotic
+ageband,0-17,97010,615
+ageband,18-24,48050,2075
+ageband,25-34,36995,3155
+ageband,35-44,11775,1805
+ageband,45-54,7360,1425
+ageband,55-69,5810,1330
+ageband,70-79,735,175
+ageband,80+,125,25
+sex,Female,51455,3075
+sex,Male,156400,7535
+imd,1 most deprived,51850,2555
+imd,2,44445,2550
+imd,3,41735,2280
+imd,4,35205,1795
+imd,5 least deprived,29555,1230
+imd,Unknown,5065,205
+ethnicity,White,97445,6100
+ethnicity,Mixed,345,30
+ethnicity,Asian or Asian British,4685,190
+ethnicity,Black or Black British,1100,55
+ethnicity,Other ethnic groups,580,20
+ethnicity,Unknown,91930,3555
+ethnicity,Unknown,11770,665

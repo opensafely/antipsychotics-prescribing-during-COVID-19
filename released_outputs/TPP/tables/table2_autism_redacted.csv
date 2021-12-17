@@ -1,33 +1,24 @@
 group,variable,population,antipsychotic
-ageband,0-17,96750,2560
-ageband,18-24,47935,7355
-ageband,25-34,36915,10120
-ageband,35-44,11750,4735
-ageband,45-54,7340,3375
-ageband,55-69,5795,2890
-ageband,70-79,735,390
-ageband,80+,125,60
-sex,Female,51300,10190
-sex,Male,156045,21300
-region,London,8040,950
-region,East of England,45085,7270
-region,East Midlands,42085,6305
-region,North East,13765,1605
-region,North West,18120,2165
-region,South East,14695,2545
-region,South West,32275,5470
-region,West Midlands,9585,1840
-region,Yorkshire and the Humber,23605,3330
-region,Unknown,95,[REDACTED]
-imd,1 most deprived,51735,7760
-imd,2,44315,7185
-imd,3,41610,6515
-imd,4,35135,5345
-imd,5 least deprived,29495,4030
-imd,Unknown,5055,655
-ethnicity,White,101250,17915
-ethnicity,Mixed,3495,440
-ethnicity,Asian or Asian British,5695,830
-ethnicity,Black or Black British,2650,345
-ethnicity,Other ethnic groups,1480,195
-ethnicity,Unknown,92780,11760
+ageband,0-17,97010,615
+ageband,18-24,48050,2075
+ageband,25-34,36995,3155
+ageband,35-44,11775,1805
+ageband,45-54,7360,1425
+ageband,55-69,5810,1330
+ageband,70-79,735,175
+ageband,80+,125,25
+sex,Female,51455,3075
+sex,Male,156400,7535
+imd,1 most deprived,51850,2555
+imd,2,44445,2550
+imd,3,41735,2280
+imd,4,35205,1795
+imd,5 least deprived,29555,1230
+imd,Unknown,5065,205
+ethnicity,White,97445,6100
+ethnicity,Mixed,345,30
+ethnicity,Asian or Asian British,4685,190
+ethnicity,Black or Black British,1100,55
+ethnicity,Other ethnic groups,580,20
+ethnicity,Unknown,91930,3555
+ethnicity,Unknown,11770,665

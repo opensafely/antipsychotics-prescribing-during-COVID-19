@@ -8,7 +8,7 @@ from cohortextractor import (
 
 from datetime import date
 
-end_date = "2021-04-01"
+end_date = "2021-12-01"
 
 from codelists import *
   

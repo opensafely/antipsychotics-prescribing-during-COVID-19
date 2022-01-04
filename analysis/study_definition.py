@@ -315,6 +315,42 @@ study = StudyDefinition(
     },
   ),
   
+  ### Region
+  region = patients.registered_practice_as_of(
+    "index_date",
+    returning = "nuts1_region_name",
+    return_expectations = {
+      "rate": "universal",
+      "category": {
+        "ratios": {
+          "North East": 0.1,
+          "North West": 0.1,
+          "Yorkshire and The Humber": 0.1,
+          "East Midlands": 0.1,
+          "West Midlands": 0.1,
+          "East": 0.1,
+          "London": 0.2,
+          "South East": 0.1,
+          "South West": 0.1,
+        },
+      },
+    },
+  ),
+  
+  ### MSOA
+  msoa = patients.address_as_of(
+    "index_date",
+    returning = "msoa",
+    return_expectations = {
+      "rate": "universal",
+      "category": {"ratios": {"E02000001": 0.0625, "E02000002": 0.0625, "E02000003": 0.0625, "E02000004": 0.0625,
+        "E02000005": 0.0625, "E02000007": 0.0625, "E02000008": 0.0625, "E02000009": 0.0625, 
+        "E02000010": 0.0625, "E02000011": 0.0625, "E02000012": 0.0625, "E02000013": 0.0625, 
+        "E02000014": 0.0625, "E02000015": 0.0625, "E02000016": 0.0625, "E02000017": 0.0625}},
+    },
+  ),
+  
+  
   
   ## Groups
   
@@ -403,118 +439,118 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
     return_expectations = {"incidence": 0.01}
   ),
-
-
-# ### Flag for individuals who didn't die two weeks after recieving an antipsychotic
-# alive_2weeks_post_antipsychotic = patients.satisfying(
-#   
-#   """
-#   antipsychotics_date
-#   AND
-#   NOT died_2weeks_post_antipsychotic
-#   """, 
-#   
-#   return_expectations = {
-#     "incidence": 0.35,
-#   },
-#   
-#   antipsychotics_date = patients.with_these_medications(
-#     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
-#                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
-#     returning = "date",
-#     find_last_match_in_period = True,
-#     between = ["index_date", "last_day_of_month(index_date)"],
-#     date_format = "YYYY-MM-DD",
-#     return_expectations = {"incidence": 0.1}
-#   ),
-#   
-#   died_2weeks_post_antipsychotic = patients.died_from_any_cause(
-#     between = ["antipsychotics_date", "antipsychotics_date + 14 days"],
-#     returning = "binary_flag",
-#   ),
-# ),
-# 
-# ### Flag for individuals who didn't die two weeks after recieving a new antipsychotic
-# alive_2weeks_post_new_antipsychotic = patients.satisfying(
-#   
-#   """
-#   antipsychotic_any_incident
-#   AND
-#   alive_2weeks_post_antipsychotic
-#   """, 
-#   
-#   return_expectations = {
-#     "incidence": 0.005,
-#   },
-#   
-# ),
-# 
-# ### Flag for individuals who recieved a prescription for midazolam at the same time as their AP
-# midazolam_with_antipsychotic = patients.satisfying(
-#   
-#   """
-#   antipsychotic_date
-#   AND
-#   midazolam_date
-#   """, 
-#   
-#   return_expectations = {
-#     "incidence": 0.05,
-#   },
-#   
-#   antipsychotic_date = patients.with_these_medications(
-#     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
-#                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
-#     returning = "date",
-#     find_last_match_in_period = True,
-#     between = ["index_date", "last_day_of_month(index_date)"],
-#     date_format = "YYYY-MM-DD",
-#     return_expectations = {"incidence": 0.01}
-#   ),
-#   
-#   midazolam_date = patients.with_these_medications(
-#     midazolam_codes,
-#     returning = "date",
-#     find_last_match_in_period = True,
-#     between = ["antipsychotic_date - 1 day", "antipsychotic_date + 1 day"],
-#     date_format = "YYYY-MM-DD",
-#     return_expectations = {"incidence": 0.01}
-#   ),
-# ),
-# 
-# ### Flag for individuals recieved a prescription for midazolam at the same time as a new AP
-# midazolam_with_new_antipsychotic = patients.satisfying(
-#   
-#   """
-#   antipsychotic_any_incident
-#   AND
-#   midazolam
-#   """, 
-#   
-#   return_expectations = {
-#     "incidence": 0.05,
-#   },
-#   
-#   antipsychotic = patients.with_these_medications(
-#     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
-#                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
-#     returning = "date",
-#     find_last_match_in_period = True,
-#     between = ["index_date", "last_day_of_month(index_date)"],
-#     date_format = "YYYY-MM-DD",
-#     return_expectations = {"incidence": 0.01}
-#   ),
-#   
-#   midazolam = patients.with_these_medications(
-#     midazolam_codes,
-#     returning = "date",
-#     find_last_match_in_period = True,
-#     between = ["antipsychotic - 1 day", "antipsychotic + 1 day"],
-#     date_format = "YYYY-MM-DD",
-#     return_expectations = {"incidence": 0.01}
-#   ),
-# ),
-
+  
+  
+  # ### Flag for individuals who didn't die two weeks after recieving an antipsychotic
+  # alive_2weeks_post_antipsychotic = patients.satisfying(
+  #   
+  #   """
+  #   antipsychotics_date
+  #   AND
+  #   NOT died_2weeks_post_antipsychotic
+  #   """, 
+  #   
+  #   return_expectations = {
+  #     "incidence": 0.35,
+  #   },
+  #   
+  #   antipsychotics_date = patients.with_these_medications(
+  #     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+  #                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+  #     returning = "date",
+  #     find_last_match_in_period = True,
+  #     between = ["index_date", "last_day_of_month(index_date)"],
+  #     date_format = "YYYY-MM-DD",
+  #     return_expectations = {"incidence": 0.1}
+  #   ),
+  #   
+  #   died_2weeks_post_antipsychotic = patients.died_from_any_cause(
+  #     between = ["antipsychotics_date", "antipsychotics_date + 14 days"],
+  #     returning = "binary_flag",
+  #   ),
+  # ),
+  # 
+  # ### Flag for individuals who didn't die two weeks after recieving a new antipsychotic
+  # alive_2weeks_post_new_antipsychotic = patients.satisfying(
+  #   
+  #   """
+  #   antipsychotic_any_incident
+  #   AND
+  #   alive_2weeks_post_antipsychotic
+  #   """, 
+  #   
+  #   return_expectations = {
+  #     "incidence": 0.005,
+  #   },
+  #   
+  # ),
+  # 
+  # ### Flag for individuals who recieved a prescription for midazolam at the same time as their AP
+  # midazolam_with_antipsychotic = patients.satisfying(
+  #   
+  #   """
+  #   antipsychotic_date
+  #   AND
+  #   midazolam_date
+  #   """, 
+  #   
+  #   return_expectations = {
+  #     "incidence": 0.05,
+  #   },
+  #   
+  #   antipsychotic_date = patients.with_these_medications(
+  #     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+  #                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+  #     returning = "date",
+  #     find_last_match_in_period = True,
+  #     between = ["index_date", "last_day_of_month(index_date)"],
+  #     date_format = "YYYY-MM-DD",
+  #     return_expectations = {"incidence": 0.01}
+  #   ),
+  #   
+  #   midazolam_date = patients.with_these_medications(
+  #     midazolam_codes,
+  #     returning = "date",
+  #     find_last_match_in_period = True,
+  #     between = ["antipsychotic_date - 1 day", "antipsychotic_date + 1 day"],
+  #     date_format = "YYYY-MM-DD",
+  #     return_expectations = {"incidence": 0.01}
+  #   ),
+  # ),
+  # 
+  # ### Flag for individuals recieved a prescription for midazolam at the same time as a new AP
+  # midazolam_with_new_antipsychotic = patients.satisfying(
+  #   
+  #   """
+  #   antipsychotic_any_incident
+  #   AND
+  #   midazolam
+  #   """, 
+  #   
+  #   return_expectations = {
+  #     "incidence": 0.05,
+  #   },
+  #   
+  #   antipsychotic = patients.with_these_medications(
+  #     codelist = combine_codelists(antipsychotics_first_gen_codes, antipsychotics_second_gen_codes, 
+  #                                  antipsychotics_injectable_and_depot_codes, prochlorperazine_codes),
+  #     returning = "date",
+  #     find_last_match_in_period = True,
+  #     between = ["index_date", "last_day_of_month(index_date)"],
+  #     date_format = "YYYY-MM-DD",
+  #     return_expectations = {"incidence": 0.01}
+  #   ),
+  #   
+  #   midazolam = patients.with_these_medications(
+  #     midazolam_codes,
+  #     returning = "date",
+  #     find_last_match_in_period = True,
+  #     between = ["antipsychotic - 1 day", "antipsychotic + 1 day"],
+  #     date_format = "YYYY-MM-DD",
+  #     return_expectations = {"incidence": 0.01}
+  #   ),
+  # ),
+  
 )
 
 

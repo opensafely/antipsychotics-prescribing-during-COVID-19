@@ -403,7 +403,7 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
     return_expectations = {"incidence": 0.01}
   ),
-),
+
 
 # ### Flag for individuals who didn't die two weeks after recieving an antipsychotic
 # alive_2weeks_post_antipsychotic = patients.satisfying(
@@ -449,7 +449,7 @@ study = StudyDefinition(
 #   
 # ),
 # 
-# ### Flag for individuals recieved a prescription for midazolam at the same time as their AP
+# ### Flag for individuals who recieved a prescription for midazolam at the same time as their AP
 # midazolam_with_antipsychotic = patients.satisfying(
 #   
 #   """

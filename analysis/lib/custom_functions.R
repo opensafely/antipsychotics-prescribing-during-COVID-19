@@ -70,7 +70,7 @@ calculate_SA_measures <- function(x) {
                 "antipsychotic_without_midazolam", "new_antipsychotic_without_midazolam"),
       .fns = ~as.numeric(.x)
     )) %>%
-    select(date, group = variable, 
+    select(date, variable, 
            antipsychotic_any, antipsychotic_any_incident, 
            alive_2weeks_post_antipsychotic, alive_2weeks_post_new_antipsychotic, 
            antipsychotic_without_midazolam, new_antipsychotic_without_midazolam)

@@ -28,6 +28,7 @@ actions:
       highly_sensitive:
         cohort: output/data/input_ethnicity.feather
   
+  
   # Data processing ----
   
   ## Add ethnicity
@@ -49,11 +50,13 @@ actions:
   ## Process data
   data_process:
     run: r:latest analysis/process/process_data.R
-    needs: [generate_measures]
+    needs: [join_ethnicity, generate_measures]
     outputs:
       moderately_sensitive:
+        SA_measure_csv: output/data/measure_SA_*.csv
         data: output/data/data_*.csv
  
+  
   # Results ----
         
   ## Table 1

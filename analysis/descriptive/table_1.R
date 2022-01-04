@@ -24,7 +24,17 @@ dir.create(here::here("output", "tables"), showWarnings = FALSE, recursive=TRUE)
 source(here("analysis", "lib", "custom_functions.R"))
 
 ## Read in data
-data_cohort <- arrow::read_feather(here::here("output", "data", "input_2021-04-01.feather"))
+december <- arrow::read_feather(here::here("output", "data", "input_2021-12-01.feather"))
+
+november <- arrow::read_feather(here::here("output", "data", "input_2021-11-01.feather")) %>%
+  filter(!patient_id %in% december$patient_id)
+
+october <- data_extract <- arrow::read_feather(here::here("output", "data", "input_2021-10-01.feather")) %>%
+  filter(!patient_id %in% c(november$patient_id, december$patient_id))
+
+
+# Process data ----
+data_cohort <- rbind(december, november, october)
 
 
 ## Table 1 ----

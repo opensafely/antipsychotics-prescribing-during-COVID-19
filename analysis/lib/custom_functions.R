@@ -26,6 +26,56 @@ my_read_feather <- function(x) {
 
 }
 
+# SA measures ----
+calculate_SA_measures <- function(x) {
+  
+  data_extract <- arrow::read_feather(
+    here::here("output", "data", x)) %>%
+    mutate(
+      across(
+        where(is.logical),
+        ~.x*1L
+      )) %>%
+    filter(antipsychotic_any == 1) %>%
+    mutate(All = 1,
+           died_2weeks_post_antipsychotic = case_when(death_date >= antipsychotics_date | death_date <= (antipsychotics_date + 14) ~ 1,
+                                                      TRUE ~ 0),
+           alive_2weeks_post_antipsychotic = ifelse(antipsychotic_any == 1 & died_2weeks_post_antipsychotic == 0, 1, 0),
+           alive_2weeks_post_new_antipsychotic = ifelse(antipsychotic_any_incident == 1 & died_2weeks_post_antipsychotic == 0, 1, 0),
+           
+           midazolam_with_AP = case_when(midazolam_date >= (antipsychotics_date - 1) | midazolam_date <= (antipsychotics_date + 1) ~ 1,
+                                         TRUE ~ 0),
+           antipsychotic_without_midazolam = ifelse(antipsychotic_any == 1 & midazolam_with_AP == 0, 1, 0),
+           new_antipsychotic_without_midazolam = ifelse(antipsychotic_any_incident == 1 & midazolam_with_AP == 0, 1, 0)) %>%
+    select(antipsychotic_any, antipsychotic_any_incident, 
+           alive_2weeks_post_antipsychotic, alive_2weeks_post_new_antipsychotic, 
+           antipsychotic_without_midazolam, new_antipsychotic_without_midazolam,
+           All, autism, care_home, dementia, learning_disability, serious_mental_illness) %>%
+    melt(id.vars = (c("antipsychotic_any", "antipsychotic_any_incident", 
+                      "alive_2weeks_post_antipsychotic", "alive_2weeks_post_new_antipsychotic",
+                      "antipsychotic_without_midazolam", "new_antipsychotic_without_midazolam"))) %>%
+    filter(value == 1) %>%
+    group_by(variable) %>%
+    summarise(antipsychotic_any = sum(antipsychotic_any, na.rm = T),
+              antipsychotic_any_incident = sum(antipsychotic_any_incident, na.rm = T),
+              alive_2weeks_post_antipsychotic = sum(alive_2weeks_post_antipsychotic, na.rm = T),
+              alive_2weeks_post_new_antipsychotic = sum(alive_2weeks_post_new_antipsychotic, na.rm = T),
+              antipsychotic_without_midazolam = sum(antipsychotic_without_midazolam, na.rm = T),
+              new_antipsychotic_without_midazolam = sum(new_antipsychotic_without_midazolam, na.rm = T)) %>%
+    mutate(date = as.Date(substr(x, 7, 16), format = "%Y-%m-%d"),
+           variable = as.character(variable)) %>%
+    mutate(across(
+      .cols = c("antipsychotic_any", "antipsychotic_any_incident", 
+                "alive_2weeks_post_antipsychotic", "alive_2weeks_post_new_antipsychotic",
+                "antipsychotic_without_midazolam", "new_antipsychotic_without_midazolam"),
+      .fns = ~as.numeric(.x)
+    )) %>%
+    select(date, group = variable, 
+           antipsychotic_any, antipsychotic_any_incident, 
+           alive_2weeks_post_antipsychotic, alive_2weeks_post_new_antipsychotic, 
+           antipsychotic_without_midazolam, new_antipsychotic_without_midazolam)
+}
+
 # Combine measures ----
 combine_measures <- function(group = "all", incident = TRUE) {
   

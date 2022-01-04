@@ -16,7 +16,7 @@ actions:
   
   ## Cohort data
   extract_data:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-04-01 by month" --output-dir=output/data --output-format=feather
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2019-01-01 to 2021-12-01 by month" --output-dir=output/data --output-format=feather
     outputs:
       highly_sensitive:
         cohort: output/data/input_*.feather
@@ -27,6 +27,7 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/data/input_ethnicity.feather
+  
   
   # Data processing ----
   
@@ -49,11 +50,13 @@ actions:
   ## Process data
   data_process:
     run: r:latest analysis/process/process_data.R
-    needs: [generate_measures]
+    needs: [join_ethnicity, generate_measures]
     outputs:
       moderately_sensitive:
+        SA_measure_csv: output/data/measure_SA_*.csv
         data: output/data/data_*.csv
  
+  
   # Results ----
         
   ## Table 1

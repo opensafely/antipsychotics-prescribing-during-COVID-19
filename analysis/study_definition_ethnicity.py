@@ -8,7 +8,7 @@ from cohortextractor import (
 
 from datetime import date
 
-end_date = "2021-04-01"
+end_date = "2021-12-01"
 
 from codelists import *
   
@@ -40,23 +40,34 @@ study = StudyDefinition(
   ),
     
     # Ethnicity
-    eth2001=patients.with_these_clinical_events(
-      ethnicity_6_codes,
-      returning="category",
-      find_last_match_in_period=True,
-      on_or_before="index_date",
-      return_expectations={
-        "category": {
-          "ratios": {
-            "1": 0.6,
-            "2": 0.1,
-            "3": 0.1,
-            "4": 0.1,
-            "5": 0.1,
-          }
+    eth2001 = patients.with_these_clinical_events(
+        ethnicity_codes_16,
+        returning = "category",
+        find_last_match_in_period = True,
+        include_date_of_match = False,
+        return_expectations = {
+            "category": {
+                "ratios": {
+                    "1": 0.0625,
+                    "2": 0.0625,
+                    "3": 0.0625,
+                    "4": 0.0625,
+                    "5": 0.0625,
+                    "6": 0.0625,
+                    "7": 0.0625,
+                    "8": 0.0625,
+                    "9": 0.0625,
+                    "10": 0.0625,
+                    "11": 0.0625,
+                    "12": 0.0625,
+                    "13": 0.0625,
+                    "14": 0.0625,
+                    "15": 0.0625,
+                    "16": 0.0625,
+                }
+            },
+            "incidence": 0.75,
         },
-        "rate": "universal",
-      },
     ),
     
     

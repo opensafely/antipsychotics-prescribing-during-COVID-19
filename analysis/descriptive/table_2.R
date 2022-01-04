@@ -24,8 +24,17 @@ dir.create(here::here("output", "tables"), showWarnings = FALSE, recursive=TRUE)
 source(here("analysis", "lib", "custom_functions.R"))
 
 ## Read in data
-data_cohort <- arrow::read_feather(here::here("output", "data", "input_2021-04-01.feather"))
+december <- arrow::read_feather(here::here("output", "data", "input_2021-12-01.feather"))
 
+november <- arrow::read_feather(here::here("output", "data", "input_2021-11-01.feather")) %>%
+  filter(!patient_id %in% december$patient_id)
+
+october <- data_extract <- arrow::read_feather(here::here("output", "data", "input_2021-10-01.feather")) %>%
+  filter(!patient_id %in% c(november$patient_id, december$patient_id))
+
+
+# Process data ----
+data_cohort <- rbind(december, november, october)
 
 # Table 2 ----
 
@@ -43,14 +52,25 @@ table_2_all <- data_cohort %>%
     
     # Ethnicity
     ethnicity = as.character(eth2001),
-    ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
+    ethnicity = ifelse(is.na(eth2001), "17", ethnicity),
     ethnicity = fct_case_when(
-      ethnicity == "1" ~ "White",
-      ethnicity == "2" ~ "Mixed",
-      ethnicity == "3" ~ "Asian or Asian British",
-      ethnicity == "4" ~ "Black or Black British",
-      ethnicity == "5" ~ "Other ethnic groups",
-      ethnicity == "Missing" ~ "Unknown",
+      ethnicity == "1" ~ "British or Mixed British",
+      ethnicity == "2" ~ "Irish",
+      ethnicity == "3" ~ "Other White",
+      ethnicity == "4" ~ "White + Black Caribbean",
+      ethnicity == "5" ~ "White + Black African",
+      ethnicity == "6" ~ "White + Asian",
+      ethnicity == "7" ~ "Other mixed",
+      ethnicity == "8" ~ "Indian or British Indian",
+      ethnicity == "9" ~ "Pakistani or British Pakistani",
+      ethnicity == "10" ~ "Bangladeshi or British Bangladeshi",
+      ethnicity == "11" ~ "Other Asian",
+      ethnicity == "12" ~ "Caribbean",
+      ethnicity == "13" ~ "African",
+      ethnicity == "14" ~ "Other Black",
+      ethnicity == "15" ~ "Chinese",
+      ethnicity == "16" ~ "Other",
+      ethnicity == "17" ~ "Unknown",
       #TRUE ~ "Unknown"
       TRUE ~ NA_character_),
     
@@ -65,21 +85,7 @@ table_2_all <- data_cohort %>%
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
-    
-    # Region
-    region = fct_case_when(
-      region == "London" ~ "London",
-      region == "East" ~ "East of England",
-      region == "East Midlands" ~ "East Midlands",
-      region == "North East" ~ "North East",
-      region == "North West" ~ "North West",
-      region == "South East" ~ "South East",
-      region == "South West" ~ "South West",
-      region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_),
-    
+  
     # Age
     ageband = cut(age,
                   breaks = c(0, 17, 24, 34, 44, 54, 69, 79, Inf),
@@ -88,7 +94,6 @@ table_2_all <- data_cohort %>%
   select(antipsychotic = antipsychotic_any,
          ageband, 
          sex,
-         region,
          imd,
          ethnicity) %>%
   tbl_summary(by = antipsychotic) %>%
@@ -125,7 +130,7 @@ table2_smi_redacted <- redact_table(table = table2_smi, threshold = 8)
 table_2_all_redacted <- redact_table(table = table_2_all, threshold = 8)
 
 # Save tables ----
-write_csv(table_2_all, here::here("output",  "tables", "table2_all_redacted.csv"))
+write_csv(table_2_all_redacted, here::here("output",  "tables", "table2_all_redacted.csv"))
 write_csv(table2_autism_redacted, here::here("output",  "tables", "table2_autism_redacted.csv"))
 write_csv(table2_dementia_redacted, here::here("output",  "tables", "table2_dementia_redacted.csv"))
 write_csv(table2_care_home_redacted, here::here("output",  "tables", "table2_care_home_redacted.csv"))

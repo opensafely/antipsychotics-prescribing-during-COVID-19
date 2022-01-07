@@ -338,7 +338,7 @@ study = StudyDefinition(
   ),
   
   ### MSOA
-  msoa = patients.address_as_of(
+  msoa = patients.registered_practice_as_of(
     "index_date",
     returning = "msoa_code",
     return_expectations = {

@@ -1,0 +1,44 @@
+group,variable,population,antipsychotic
+ageband,0-17,4644690,1750
+ageband,18-24,1920725,8545
+ageband,25-34,3421385,25780
+ageband,35-44,3440625,32995
+ageband,45-54,3214825,39580
+ageband,55-69,4473325,56135
+ageband,70-79,2236870,28460
+ageband,80+,1413285,27735
+sex,Female,12367160,127460
+sex,Male,12398575,93525
+region,North West,2115735,16760
+region,East Midlands,4265025,39975
+region,Yorkshire and The Humber,3534085,31240
+region,North East,1173480,9895
+region,East,5767745,56150
+region,London,1812115,11580
+region,West Midlands,1012820,10220
+region,South East,1656560,15255
+region,South West,3393385,29560
+region,Unknown,34785,345
+imd,1 most deprived,4923985,61860
+imd,2,4835865,49895
+imd,3,5087635,43805
+imd,4,4784120,34055
+imd,5 least deprived,4375810,25675
+imd,Unknown,758320,5690
+ethnicity,British or Mixed British,10311070,120445
+ethnicity,Irish,83845,1210
+ethnicity,Other White,1512220,6125
+ethnicity,White + Black Caribbean,70975,850
+ethnicity,White + Black African,66545,440
+ethnicity,White + Asian,68575,410
+ethnicity,Other mixed,108565,735
+ethnicity,Indian or British Indian,566770,3515
+ethnicity,Pakistani or British Pakistani,434565,3990
+ethnicity,Bangladeshi or British Bangladeshi,99360,850
+ethnicity,Other Asian,308105,1825
+ethnicity,Caribbean,84410,1290
+ethnicity,African,285070,1770
+ethnicity,Other Black,68855,640
+ethnicity,Chinese,140635,340
+ethnicity,Other,294655,2000
+ethnicity,Unknown,10261515,74540

@@ -196,14 +196,25 @@ calculate_table2 <-function(population = "autism", Y = 10000){
       
       # Ethnicity
       ethnicity = as.character(eth2001),
-      ethnicity = ifelse(is.na(eth2001), "Missing", ethnicity),
+      ethnicity = ifelse(is.na(eth2001), "17", ethnicity),
       ethnicity = fct_case_when(
-        ethnicity == "1" ~ "White",
-        ethnicity == "2" ~ "Mixed",
-        ethnicity == "3" ~ "Asian or Asian British",
-        ethnicity == "4" ~ "Black or Black British",
-        ethnicity == "5" ~ "Other ethnic groups",
-        ethnicity == "Missing" ~ "Unknown",
+        ethnicity == "1" ~ "British or Mixed British",
+        ethnicity == "2" ~ "Irish",
+        ethnicity == "3" ~ "Other White",
+        ethnicity == "4" ~ "White + Black Caribbean",
+        ethnicity == "5" ~ "White + Black African",
+        ethnicity == "6" ~ "White + Asian",
+        ethnicity == "7" ~ "Other mixed",
+        ethnicity == "8" ~ "Indian or British Indian",
+        ethnicity == "9" ~ "Pakistani or British Pakistani",
+        ethnicity == "10" ~ "Bangladeshi or British Bangladeshi",
+        ethnicity == "11" ~ "Other Asian",
+        ethnicity == "12" ~ "Caribbean",
+        ethnicity == "13" ~ "African",
+        ethnicity == "14" ~ "Other Black",
+        ethnicity == "15" ~ "Chinese",
+        ethnicity == "16" ~ "Other",
+        ethnicity == "17" ~ "Unknown",
         #TRUE ~ "Unknown"
         TRUE ~ NA_character_),
       
@@ -228,6 +239,7 @@ calculate_table2 <-function(population = "autism", Y = 10000){
            antipsychotic = antipsychotic_any,
            ageband, 
            sex,
+           region,
            imd,
            ethnicity) %>%
     filter(group == 1) %>%

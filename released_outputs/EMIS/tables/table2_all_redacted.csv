@@ -1,0 +1,41 @@
+group,variable,population,antipsychotic
+ageband,0-17,6638575,2860
+ageband,18-24,2946405,13425
+ageband,25-34,5225690,36950
+ageband,35-44,5102660,48070
+ageband,45-54,4552070,59185
+ageband,55-69,6032040,84275
+ageband,70-79,2862400,39665
+ageband,80+,1842520,37810
+sex,Female,17570810,182930
+sex,Male,17631555,139300
+region,MIDLANDS COMMISSIONING REGION,5990605,60370
+region,NORTH WEST COMMISSIONING REGION,6844105,75565
+region,SOUTH EAST COMMISSIONING REGION,7452010,65130
+region,LONDON COMMISSIONING REGION,8310930,63340
+region,NORTH EAST AND YORKSHIRE COMMISSIONING REGION,2733920,24115
+region,SOUTH WEST COMMISSIONING REGION,2562780,22110
+region,EAST OF ENGLAND COMMISSIONING REGION,1308015,11600
+imd,1 most deprived,7254655,97905
+imd,2,7540985,75455
+imd,3,6850980,57875
+imd,4,6587990,47965
+imd,5 least deprived,6841460,41220
+imd,Unknown,126295,1815
+ethnicity,British or Mixed British,16233665,195050
+ethnicity,Irish,192815,2960
+ethnicity,Other White,2695825,12885
+ethnicity,White + Black Caribbean,142720,1735
+ethnicity,White + Black African,130430,850
+ethnicity,White + Asian,124130,780
+ethnicity,Other mixed,266700,1765
+ethnicity,Indian or British Indian,981195,5945
+ethnicity,Pakistani or British Pakistani,772290,6725
+ethnicity,Bangladeshi or British Bangladeshi,375240,3735
+ethnicity,Other Asian,667035,4350
+ethnicity,Caribbean,291200,4280
+ethnicity,African,776310,5735
+ethnicity,Other Black,201755,2255
+ethnicity,Chinese,344750,720
+ethnicity,Other,551010,3545
+ethnicity,Unknown,10455295,68915

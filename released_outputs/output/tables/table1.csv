@@ -1,0 +1,38 @@
+variable,var_type,var_class,var_label,row_type,label,stat_0,stat_1,stat_2
+ageband,categorical,factor,ageband,label,ageband,NA,NA,NA
+ageband,categorical,factor,ageband,level,0-17,"6,457,750 (19%)","6,418,815 (22%)","38,935 (0.9%)"
+ageband,categorical,factor,ageband,level,18-24,"2,716,478 (8.0%)","2,583,729 (8.8%)","132,749 (3.1%)"
+ageband,categorical,factor,ageband,level,25-34,"4,897,363 (14%)","4,433,665 (15%)","463,698 (11%)"
+ageband,categorical,factor,ageband,level,35-44,"4,843,135 (14%)","4,217,018 (14%)","626,117 (14%)"
+ageband,categorical,factor,ageband,level,45-54,"4,473,707 (13%)","3,749,499 (13%)","724,208 (17%)"
+ageband,categorical,factor,ageband,level,55-69,"5,866,715 (17%)","4,733,788 (16%)","1,132,927 (26%)"
+ageband,categorical,factor,ageband,level,70-79,"2,801,319 (8.3%)","2,125,484 (7.2%)","675,835 (16%)"
+ageband,categorical,factor,ageband,level,80+,"1,748,328 (5.2%)","1,196,447 (4.1%)","551,881 (13%)"
+sex,categorical,factor,sex,label,sex,NA,NA,NA
+sex,categorical,factor,sex,level,Female,"16,864,052 (50%)","13,914,724 (47%)","2,949,328 (68%)"
+sex,categorical,factor,sex,level,Male,"16,940,743 (50%)","15,543,721 (53%)","1,397,022 (32%)"
+region,categorical,factor,region,label,region,NA,NA,NA
+region,categorical,factor,region,level,London,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,East of England,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,East Midlands,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,North East,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,North West,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,South East,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,South West,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,West Midlands,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,level,Yorkshire and the Humber,0 (NA%),0 (NA%),0 (NA%)
+region,categorical,factor,region,missing,Unknown,"33,804,795","29,458,445","4,346,350"
+imd,categorical,factor,imd,label,imd,NA,NA,NA
+imd,categorical,factor,imd,level,1 most deprived,"6,975,021 (21%)","6,023,321 (21%)","951,700 (22%)"
+imd,categorical,factor,imd,level,2,"7,207,100 (21%)","6,309,050 (21%)","898,050 (21%)"
+imd,categorical,factor,imd,level,3,"6,561,193 (19%)","5,727,406 (20%)","833,787 (19%)"
+imd,categorical,factor,imd,level,4,"6,346,973 (19%)","5,525,914 (19%)","821,059 (19%)"
+imd,categorical,factor,imd,level,5 least deprived,"6,604,338 (20%)","5,776,788 (20%)","827,550 (19%)"
+imd,categorical,factor,imd,missing,Unknown,"110,170","95,966","14,204"
+ethnicity,categorical,factor,ethnicity,label,ethnicity,NA,NA,NA
+ethnicity,categorical,factor,ethnicity,level,White,"18,312,452 (54%)","15,619,318 (53%)","2,693,134 (62%)"
+ethnicity,categorical,factor,ethnicity,level,Mixed,"606,955 (1.8%)","557,984 (1.9%)","48,971 (1.1%)"
+ethnicity,categorical,factor,ethnicity,level,Asian or Asian British,"2,592,116 (7.7%)","2,274,420 (7.7%)","317,696 (7.3%)"
+ethnicity,categorical,factor,ethnicity,level,Black or Black British,"1,209,671 (3.6%)","1,081,735 (3.7%)","127,936 (2.9%)"
+ethnicity,categorical,factor,ethnicity,level,Other ethnic groups,"789,829 (2.3%)","740,197 (2.5%)","49,632 (1.1%)"
+ethnicity,categorical,factor,ethnicity,level,Unknown,"10,293,772 (30%)","9,184,791 (31%)","1,108,981 (26%)"

@@ -1,24 +1,44 @@
 group,variable,population,antipsychotic
-ageband,0-17,375,30
-ageband,18-24,1700,355
-ageband,25-34,4625,1090
-ageband,35-44,4835,1295
-ageband,45-54,6610,1940
-ageband,55-69,15425,4660
-ageband,70-79,19495,4420
-ageband,80+,79155,7950
-sex,Female,84045,11590
-sex,Male,48180,10150
-imd,1 most deprived,26425,4995
-imd,2,27865,4980
-imd,3,29055,4955
-imd,4,25820,3735
-imd,5 least deprived,21105,2735
-imd,Unknown,1955,340
-ethnicity,White,79160,13770
-ethnicity,Mixed,735,120
-ethnicity,Asian or Asian British,2310,335
-ethnicity,Black or Black British,210,60
-ethnicity,Other ethnic groups,100,20
-ethnicity,Unknown,46490,6690
-ethnicity,Unknown,3215,740
+ageband,0-17,405,30
+ageband,18-24,1825,350
+ageband,25-34,4960,1150
+ageband,35-44,5225,1355
+ageband,45-54,6805,1945
+ageband,55-69,16865,4825
+ageband,70-79,22010,4760
+ageband,80+,91240,9135
+sex,Female,94590,12815
+sex,Male,54745,10735
+region,North West,15245,1830
+region,East Midlands,27900,4905
+region,Yorkshire and The Humber,22115,3460
+region,North East,6990,1245
+region,East,32595,5550
+region,London,3570,555
+region,West Midlands,4645,825
+region,South East,12025,1755
+region,South West,24075,3385
+region,Unknown,175,35
+imd,1 most deprived,29550,5340
+imd,2,31555,5350
+imd,3,32900,5325
+imd,4,28935,4055
+imd,5 least deprived,23715,3030
+imd,Unknown,2680,450
+ethnicity,British or Mixed British,84810,14325
+ethnicity,Irish,855,135
+ethnicity,Other White,2600,365
+ethnicity,White + Black Caribbean,235,65
+ethnicity,White + Black African,110,25
+ethnicity,White + Asian,110,20
+ethnicity,Other mixed,175,45
+ethnicity,Indian or British Indian,845,175
+ethnicity,Pakistani or British Pakistani,425,115
+ethnicity,Bangladeshi or British Bangladeshi,95,15
+ethnicity,Other Asian,425,90
+ethnicity,Caribbean,590,150
+ethnicity,African,385,70
+ethnicity,Other Black,195,45
+ethnicity,Chinese,120,20
+ethnicity,Other,450,85
+ethnicity,Unknown,56900,7805

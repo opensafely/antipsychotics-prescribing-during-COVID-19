@@ -1,0 +1,44 @@
+group,variable,total,nonantipsychotic,antipsychotic
+ageband,0-17,6638575,6635715,2860
+ageband,18-24,2946405,2932980,13425
+ageband,25-34,5225690,5188745,36950
+ageband,35-44,5102660,5054590,48070
+ageband,45-54,4552070,4492890,59185
+ageband,55-69,6032040,5947765,84275
+ageband,70-79,2862400,2822735,39665
+ageband,80+,1842520,1804710,37810
+sex,Female,17570810,17387880,182930
+sex,Male,17631555,17492250,139300
+region,London,[REDACTED],[REDACTED],[REDACTED]
+region,East of England,[REDACTED],[REDACTED],[REDACTED]
+region,East Midlands,[REDACTED],[REDACTED],[REDACTED]
+region,North East,[REDACTED],[REDACTED],[REDACTED]
+region,North West,[REDACTED],[REDACTED],[REDACTED]
+region,South East,[REDACTED],[REDACTED],[REDACTED]
+region,South West,[REDACTED],[REDACTED],[REDACTED]
+region,West Midlands,[REDACTED],[REDACTED],[REDACTED]
+region,Yorkshire and the Humber,[REDACTED],[REDACTED],[REDACTED]
+region,Unknown,35202365,34880130,322230
+imd,1 most deprived,7254655,7156750,97905
+imd,2,7540985,7465530,75455
+imd,3,6850980,6793105,57875
+imd,4,6587990,6540025,47965
+imd,5 least deprived,6841460,6800240,41220
+imd,Unknown,126295,124480,1815
+ethnicity,British or Mixed British,16233665,16038615,195050
+ethnicity,Irish,192815,189860,2960
+ethnicity,Other White,2695825,2682935,12885
+ethnicity,White + Black Caribbean,142720,140985,1735
+ethnicity,White + Black African,130430,129580,850
+ethnicity,White + Asian,124130,123350,780
+ethnicity,Other mixed,266700,264935,1765
+ethnicity,Indian or British Indian,981195,975245,5945
+ethnicity,Pakistani or British Pakistani,772290,765565,6725
+ethnicity,Bangladeshi or British Bangladeshi,375240,371505,3735
+ethnicity,Other Asian,667035,662685,4350
+ethnicity,Caribbean,291200,286920,4280
+ethnicity,African,776310,770575,5735
+ethnicity,Other Black,201755,199495,2255
+ethnicity,Chinese,344750,344030,720
+ethnicity,Other,551010,547465,3545
+ethnicity,Unknown,10455295,10386380,68915

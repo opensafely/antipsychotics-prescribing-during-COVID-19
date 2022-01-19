@@ -295,6 +295,7 @@ plot_antipsychotics_by_group <- function(Group = "All",
   if (type == "total"){
     
     total_antipsychotics <- data %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-antipsychotic_any, -group, -population) %>%
       melt(id.vars = c("date")) %>%
@@ -322,6 +323,7 @@ plot_antipsychotics_by_group <- function(Group = "All",
   } else if(type == "rate"){
     
     rate_antipsychotics <- data %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -360,6 +362,7 @@ plot_antipsychotics_by_group <- function(Group = "All",
   } else if (type == "total new") {
     
     total_antipsychotics <- data %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-antipsychotic_any, -group, -population) %>%
       melt(id.vars = c("date")) %>%
@@ -387,6 +390,7 @@ plot_antipsychotics_by_group <- function(Group = "All",
   } else {
     
     rate_antipsychotics <- data %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -438,6 +442,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
   if(type == "rate"){
     
     rate_antipsychotics_TPP <- data_TPP %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -457,6 +462,8 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "TPP")
     
     rate_antipsychotics_EMIS <- data_EMIS %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -476,6 +483,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "EMIS")
     
     plot_all <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable == "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -493,6 +501,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       geom_vline(xintercept = as.Date("2020-12-02"), colour="grey", type = 2)
     
     plot_groups <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable != "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -527,6 +536,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
   } else {
     
     rate_antipsychotics_TPP <- data_TPP %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -546,6 +556,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "TPP")
     
     rate_antipsychotics_EMIS <- data_EMIS %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -565,6 +576,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "EMIS")
     
     plot_all <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable == "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -582,6 +594,7 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       geom_vline(xintercept = as.Date("2020-12-02"), colour="grey", type = 2)
     
     plot_groups <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
+      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable != "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +

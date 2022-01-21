@@ -1,7 +1,7 @@
 group,variable,population,antipsychotic
-ageband,0-17,[REDACTED],[REDACTED]
-ageband,18-24,[REDACTED],[REDACTED]
-ageband,25-34,[REDACTED],[REDACTED]
+ageband,0-17,NA,NA
+ageband,18-24,NA,NA
+ageband,25-34,NA,NA
 ageband,35-44,65,15
 ageband,45-54,790,160
 ageband,55-69,13570,2245

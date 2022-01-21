@@ -394,6 +394,7 @@ plot_antipsychotics_by_group <- function(Group = "All",
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
+      mutate(value = ifelse(is.na(value), 3, value)) %>%
       mutate(est = mapply(function(x,y) glm(y ~ 1 + offset(log(x)), family = "poisson")$coefficients, 
                           .[,2], .[,4]),
              se = mapply(function(x,y) coef(summary(glm(y ~ 1 + offset(log(x)), family = "poisson")))[, "Std. Error"], 
@@ -463,7 +464,6 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
     
     rate_antipsychotics_EMIS <- data_EMIS %>%
       select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
-      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(group == Group) %>%
       select(-group) %>%
       melt(id.vars = c("date", "population")) %>%
@@ -483,7 +483,6 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "EMIS")
     
     plot_all <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
-      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable == "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -501,7 +500,6 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       geom_vline(xintercept = as.Date("2020-12-02"), colour="grey", type = 2)
     
     plot_groups <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
-      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable != "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -576,7 +574,6 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       mutate(backend = "EMIS")
     
     plot_all <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
-      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable == "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -594,7 +591,6 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
       geom_vline(xintercept = as.Date("2020-12-02"), colour="grey", type = 2)
     
     plot_groups <- rbind(rate_antipsychotics_TPP, rate_antipsychotics_EMIS) %>%
-      select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
       filter(variable != "Any antipsychotic") %>%
       ggplot(aes(x = date, y = rate, colour = backend, group = backend)) +
       geom_line() +
@@ -633,7 +629,17 @@ plot_antipsychotic_combined <- function(Group = "Dementia",
 ## Combine TPP and EMIS table 1
 combine_table1 <- function(TPP_Table = table1_TPP, EMIS_Table = table1_EMIS){
   
-  ## TPP
+  # TPP
+  ## Reformat
+  TPP_Table <- TPP_Table %>%
+    mutate(variable = ifelse(variable == "East Midlands" | variable == "West Midlands","Midlands", variable),
+           variable = ifelse(variable == "North East" | variable == "Yorkshire and the Humber","North East and Yorkshire", variable)) %>%
+    group_by(group, variable) %>%
+    summarise(total = sum(total, na.rm = T),
+              nonantipsychotic = sum(nonantipsychotic, na.rm = T),
+              antipsychotic = sum(antipsychotic, na.rm = T)) %>%
+    ungroup()
+  
   ## Calculate group totals
   table1_TPP_totals <- TPP_Table %>%
     group_by(group) %>%
@@ -659,7 +665,25 @@ combine_table1 <- function(TPP_Table = table1_TPP, EMIS_Table = table1_EMIS){
            antipsychotic_TPP = paste(format(antipsychotic, big.mark = ",", scientific = FALSE), " (", round(antipsychotic/g_antipsychotic*100, digits = 0), ")", sep = "")) %>%
     select(group, variable, total_TPP, nonantipsychotic_TPP, antipsychotic_TPP)
   
-  ## EMIS
+  
+  # EMIS
+  ## Reformat
+  EMIS_Table <- EMIS_Table %>%
+    add_row(group = "region", variable = "Unknown", total = 0, nonantipsychotic = 0, antipsychotic = 0) %>%
+    mutate(variable = ifelse(variable == "EAST OF ENGLAND COMMISSIONING REGION",  "East of England", variable),
+           variable = ifelse(variable == "LONDON COMMISSIONING REGION", "London", variable),
+           variable = ifelse(variable == "MIDLANDS COMMISSIONING REGION", "Midlands", variable),
+           variable = ifelse(variable == "NORTH EAST AND YORKSHIRE COMMISSIONING REGION", "North East and Yorkshire", variable),
+           variable = ifelse(variable == "NORTH WEST COMMISSIONING REGION", "North West", variable),
+           variable = ifelse(variable == "SOUTH EAST COMMISSIONING REGION", "South East", variable),
+           variable = ifelse(variable == "SOUTH WEST COMMISSIONING REGION", "South West", variable),
+           variable = ifelse(variable == "Unknown", "Unknown", variable)) %>%
+    group_by(group, variable) %>%
+    summarise(total = sum(total, na.rm = T),
+              nonantipsychotic = sum(nonantipsychotic, na.rm = T),
+              antipsychotic = sum(antipsychotic, na.rm = T)) %>%
+    ungroup()
+  
   ## Calculate group totals
   table1_EMIS_totals <- EMIS_Table %>%
     group_by(group) %>%
@@ -686,7 +710,7 @@ combine_table1 <- function(TPP_Table = table1_TPP, EMIS_Table = table1_EMIS){
     select(group, variable, total_EMIS, nonantipsychotic_EMIS, antipsychotic_EMIS)
   
   ## Combined table
-  table1_combined <- left_join(table1_TPP, table1_EMIS, by = c("group", "variable")) %>%
+  table1_combined <- left_join(TPP_Table, EMIS_Table, by = c("group", "variable")) %>%
     rowwise() %>%
     mutate(total = sum(total.x, total.y, na.rm = T),
            nonantipsychotic = sum(nonantipsychotic.x, nonantipsychotic.y, na.rm = T),
@@ -709,17 +733,32 @@ combine_table1 <- function(TPP_Table = table1_TPP, EMIS_Table = table1_EMIS){
   table1_final <- left_join(table1_TPP_formatted, table1_EMIS_formatted, by = c("group", "variable"))  %>%
     left_join(table1_combined_formatted, by = c("group", "variable")) 
   
+  ## Totals
   table1_final[1,9] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[1]
   table1_final[1,10] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[2]
   table1_final[1,11] <- paste(table1_TPP_totals[1,2:4] + table1_EMIS_totals[1,2:4], " (100)", sep = "")[3]
   
-  table1_final
+  table1_final <- table1_final %>%
+    mutate(group = factor(group, levels = c("All", "ageband", "sex", "imd", "ethnicity", "region"))) %>%
+    arrange(group, variable)
 }
 
 ## Combine TPP and EMIS table 2
 combine_table2 <- function(TPP_Table = table2_autism_TPP, EMIS_Table = table2_autism_EMIS){
   
   # TPP
+  ## Reformat
+  TPP_Table <- TPP_Table %>%
+    mutate(variable = ifelse(variable == "East Midlands" | variable == "West Midlands","Midlands", variable),
+           variable = ifelse(variable == "East", "East of England", variable),
+           variable = ifelse(variable == "North East" | variable == "Yorkshire and the Humber" | variable == "Yorkshire and The Humber", "North East and Yorkshire", variable),
+           population = as.numeric(ifelse(population == "[REDACTED]", NA, population)),
+           antipsychotic = as.numeric(ifelse(antipsychotic == "[REDACTED]", NA, antipsychotic))) %>%
+    group_by(group, variable) %>%
+    summarise(population = sum(population, na.rm = T),
+              antipsychotic = sum(antipsychotic, na.rm = T)) %>%
+    ungroup()
+  
   ## Calculate group totals
   table2_TPP_totals <- TPP_Table %>%
     mutate(population = as.numeric(population),
@@ -745,6 +784,24 @@ combine_table2 <- function(TPP_Table = table2_autism_TPP, EMIS_Table = table2_au
     select(group, variable, total_TPP, rate)
   
   # EMIS
+  ## Reformat
+  EMIS_Table <- EMIS_Table %>%
+    add_row(group = "region", variable = "Unknown", population = 0, antipsychotic = 0) %>%
+    mutate(variable = ifelse(variable == "EAST OF ENGLAND COMMISSIONING REGION",  "East of England", variable),
+           variable = ifelse(variable == "LONDON COMMISSIONING REGION", "London", variable),
+           variable = ifelse(variable == "MIDLANDS COMMISSIONING REGION", "Midlands", variable),
+           variable = ifelse(variable == "NORTH EAST AND YORKSHIRE COMMISSIONING REGION", "North East and Yorkshire", variable),
+           variable = ifelse(variable == "NORTH WEST COMMISSIONING REGION", "North West", variable),
+           variable = ifelse(variable == "SOUTH EAST COMMISSIONING REGION", "South East", variable),
+           variable = ifelse(variable == "SOUTH WEST COMMISSIONING REGION", "South West", variable),
+           variable = ifelse(variable == "Unknown", "Unknown", variable),
+           population = ifelse(population == "[REDACTED]", NA, population),
+           antipsychotic = ifelse(antipsychotic == "[REDACTED]", NA, antipsychotic)) %>%
+    group_by(group, variable) %>%
+    summarise(population = sum(population, na.rm = T),
+              antipsychotic = sum(antipsychotic, na.rm = T)) %>%
+    ungroup()
+  
   ## Calculate group totals
   table2_EMIS_totals <- EMIS_Table %>%
     mutate(population = as.numeric(population),
@@ -805,6 +862,37 @@ combine_table2 <- function(TPP_Table = table2_autism_TPP, EMIS_Table = table2_au
   table2_final[1,9] <- round((all$g_antipsychotic/all$g_population - qnorm(0.975)*(sqrt(all$g_antipsychotic/all$g_population^2)))*1000, digits = 2)
   table2_final[1,10] <- round((all$g_antipsychotic/all$g_population + qnorm(0.975)*(sqrt(all$g_antipsychotic/all$g_population^2)))*1000, digits = 2)
   
+  table2_final <- table2_final %>%
+    mutate(group = factor(group, levels = c("All", "ageband", "sex", "imd", "ethnicity", "region"))) %>%
+    arrange(group, variable)
+  
   table2_final
+  
 }
 
+## Population plot
+population_plots <- function(cohort = "All"){
+  
+  plot_population <- data_prevalence_TPP %>%
+    select(date, group, `(a) Antipsychotic` = antipsychotic_any, `(b) Base population` = population) %>%
+    melt(id.var = c("date", "group")) %>%
+    filter(group == cohort) %>%
+    ggplot() +
+    geom_line(aes(x = date, y = value, colour = variable)) +
+    facet_wrap(~variable, scales = "free", ncol = 1) +
+    theme_bw() +
+    theme(legend.position = "none") +
+    ylab("Number of patients") +
+    xlab("") +
+    scale_x_date(date_breaks = "3 month", date_labels =  "%b %Y") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    geom_vline(xintercept = as.Date("2020-03-16"), colour="grey", type = 2) +
+    geom_vline(xintercept = as.Date("2020-12-02"), colour="grey", type = 2)
+  
+  ggsave(filename = here::here(paste("released_outputs/", "Combined", "/figures/populations_group_", cohort, ".png", sep = "")),
+         plot_population,
+         units = "cm", width = 25, height = 15)
+  
+}
+  
+  

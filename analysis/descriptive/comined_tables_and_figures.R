@@ -28,6 +28,7 @@ dir.create(here::here("released_outputs", "TPP", "figures"), showWarnings = FALS
 dir.create(here::here("released_outputs", "EMIS", "figures"), showWarnings = FALSE, recursive=TRUE)
 dir.create(here::here("released_outputs", "Combined", "figures"), showWarnings = FALSE, recursive=TRUE)
 dir.create(here::here("released_outputs", "Combined", "tables"), showWarnings = FALSE, recursive=TRUE)
+dir.create(here::here("released_outputs", "Combined", "data"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
 
@@ -249,7 +250,7 @@ ggsave(filename = here::here("released_outputs/EMIS/figures/rate_antipsychotics_
        units = "cm", width = 35, height = 40)
 
 ### Combined
-plot_rates_all <- data_prevalence %>%
+plot_rates_all_weekly_data <- data_prevalence %>%
   select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
   melt(id.vars = c("date", "population", "group")) %>%
   mutate(est = mapply(function(x,y) glm(y ~ 1 + offset(log(x)), family = "poisson")$coefficients, 
@@ -265,6 +266,28 @@ plot_rates_all <- data_prevalence %>%
                                                 "Long acting injectable and depot antipsychotics",
                                                 "Prochlorperazine"))) %>%
   filter(variable == "Any antipsychotic") %>%
+  ungroup() %>%
+  arrange(group, date)
+
+write_csv(plot_rates_all_weekly_data, "released_outputs/Combined/data/weekly_rate_antipsychotics_all.csv")
+
+plot_rates_all_quarterly_data <- plot_rates_all_weekly_data %>%
+  select(date, group, variable, value, population) %>%
+  mutate(quarter = zoo::as.yearqtr(date, format = "%Yq%q")) %>%
+  group_by(group, variable, quarter) %>%
+  summarise(value = round(mean(value, na.rm = T), digits = 0),
+            population = round(mean(population, na.rm = T), digits = 0)) %>%
+  ungroup() %>%
+  rowwise() %>%
+  mutate(est = glm(value ~ 1 + offset(log(population)), family = "poisson")$coefficients,
+         se = coef(summary(glm(value ~ 1 + offset(log(population)), family = "poisson")))[, "Std. Error"],
+         rate = exp(est)*1000,
+         lci = exp(est - se)*1000,
+         uci = exp(est + se)*1000) 
+  
+write_csv(plot_rates_all_quarterly_data, "released_outputs/Combined/data/quarterly_rate_antipsychotics_all.csv")
+
+plot_rates_all <- plot_rates_all_weekly_data %>%
   ggplot(aes(x = date, y = rate, colour = group)) +
   geom_line() +
   geom_ribbon(aes(ymin = lci, ymax = uci, fill = group), alpha=0.2, colour = "transparent", show.legend = F) +
@@ -385,10 +408,9 @@ ggsave(filename = here::here("released_outputs/EMIS/figures/new_rate_antipsychot
        units = "cm", width = 35, height = 40)
 
 ### Combined
-plot_rates_all <- data_incidence %>%
+plot_new_rates_all_weekly_data <- data_incidence %>%
   select(-alive_2weeks_post_antipsychotic, -antipsychotic_without_midazolam) %>%
   melt(id.vars = c("date", "population", "group")) %>%
-  filter(! is.na(value)) %>%
   mutate(est = mapply(function(x,y) glm(y ~ 1 + offset(log(x)), family = "poisson")$coefficients, 
                       .[,2], .[,5]),
          se = mapply(function(x,y) coef(summary(glm(y ~ 1 + offset(log(x)), family = "poisson")))[, "Std. Error"], 
@@ -402,6 +424,28 @@ plot_rates_all <- data_incidence %>%
                                                 "Long acting injectable and depot antipsychotics",
                                                 "Prochlorperazine"))) %>%
   filter(variable == "Any antipsychotic") %>%
+  ungroup() %>%
+  arrange(group, date)
+
+write_csv(plot_new_rates_all_weekly_data, "released_outputs/Combined/data/weekly_new_rate_antipsychotics_all.csv")
+
+plot_new_rates_all_quarterly_data <- plot_new_rates_all_weekly_data %>%
+  select(date, group, variable, value, population) %>%
+  mutate(quarter = zoo::as.yearqtr(date, format = "%Yq%q")) %>%
+  group_by(group, variable, quarter) %>%
+  summarise(value = round(mean(value, na.rm = T), digits = 0),
+            population = round(mean(population, na.rm = T), digits = 0)) %>%
+  ungroup() %>%
+  rowwise() %>%
+  mutate(est = glm(value ~ 1 + offset(log(population)), family = "poisson")$coefficients,
+         se = coef(summary(glm(value ~ 1 + offset(log(population)), family = "poisson")))[, "Std. Error"],
+         rate = exp(est)*1000,
+         lci = exp(est - se)*1000,
+         uci = exp(est + se)*1000) 
+
+write_csv(plot_new_rates_all_quarterly_data, "released_outputs/Combined/data/quarterly_new_rate_antipsychotics_all.csv")
+
+plot_rates_all <- plot_new_rates_all_weekly_data %>%
   ggplot(aes(x = date, y = rate, colour = group)) +
   geom_line() +
   geom_ribbon(aes(ymin = lci, ymax = uci, fill = group), alpha=0.2, colour = "transparent", show.legend = F) +

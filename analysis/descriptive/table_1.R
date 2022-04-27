@@ -36,6 +36,10 @@ october <- data_extract <- arrow::read_feather(here::here("output", "data", "inp
 # Process data ----
 data_cohort <- rbind(december, november, october)
 
+# Number check----
+print(dim(data_cohort))
+print(length(unique(data_cohort$practice)))
+
 ## Table 1 ----
 counts_table1 <- data_cohort %>% 
   mutate(

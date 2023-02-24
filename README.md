@@ -1,6 +1,6 @@
 # Prescribing of antipsychotic during COVID-19 to specific groups with the population
 
-[View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252F$antipsychotics-prescribing-during-covid-19)
+[View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fantipsychotics-prescribing-during-covid-19)
 
 Details of the purpose and any published outputs from this project can be found at the link above.
 
